@@ -2,28 +2,28 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 
+// Import components
+import Login from "@/components/onboarding/Login";
+
 export default function App() {
-	return (
-		<View style={styles.container}>
-			<Text>Default screen</Text>
-			<Link style={styles.link} href="/tabs/orbits">
-				Click me
-			</Link>
-			<StatusBar style="auto" />
-		</View>
-	);
+  return (
+    <View style={styles.container}>
+      <Login />
+      <StatusBar style="auto" />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	link: {
-		color: "blue",
-		textDecorationLine: "underline",
-		marginTop: 20,
-	},
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline",
+    marginTop: 20,
+  },
 });
