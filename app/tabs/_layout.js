@@ -3,6 +3,9 @@ import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import IonIcon from "@expo/vector-icons/Ionicons";
 
+// Import themes
+import Theme from "@/assets/theme";
+
 export default function Layout() {
   return (
     <Tabs
