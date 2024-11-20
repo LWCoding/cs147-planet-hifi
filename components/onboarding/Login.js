@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import {
-  Text,
-  Alert,
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
+	Text,
+	Alert,
+	StyleSheet,
+	View,
+	TextInput,
+	TouchableOpacity,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -15,129 +15,131 @@ import db from "@/database/db";
 import Theme from "@/assets/theme";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const signInWithEmail = async () => {
-    // For now, skip worrying about email validation
-    router.navigate("tabs/orbits");
-    return;
+	const signInWithEmail = async () => {
+		// For now, skip worrying about email validation
+		router.navigate("tabs/galaxy");
+		return;
 
-    setLoading(true);
-    try {
-      const { data, error } = await db.auth.signInWithPassword({
-        username: "Test User",
-        email: email,
-        password: password,
-        options: {
-          shouldCreateUser: true,
-        },
-      });
+		setLoading(true);
+		try {
+			const { data, error } = await db.auth.signInWithPassword({
+				username: "Test User",
+				email: email,
+				password: password,
+				options: {
+					shouldCreateUser: true,
+				},
+			});
 
-      if (error) {
-        Alert.alert(error.message);
-      }
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+			if (error) {
+				Alert.alert(error.message);
+			}
+			setLoading(false);
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
-  const isSignInDisabled =
-    loading || email.length === 0 || password.length === 0;
+	const isSignInDisabled =
+		loading || email.length === 0 || password.length === 0;
 
-  return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
-      <View style={styles.splash}>
-        <MaterialCommunityIcons
-          size={64}
-          name="orbit"
-          color={Theme.colors.iconHighlighted}
-        />
-        <Text style={styles.splashText}>Planet</Text>
-      </View>
-      <TextInput
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-        placeholder="email@address.com"
-        placeholderTextColor={Theme.colors.textSecondary}
-        autoCapitalize={"none"}
-        style={styles.input}
-      />
-      <TextInput
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-        placeholder="Password"
-        placeholderTextColor={Theme.colors.textSecondary}
-        secureTextEntry={true}
-        autoCapitalize={"none"}
-        style={styles.input}
-      />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => signInWithEmail()}
-          disabled={isSignInDisabled}
-        >
-          <Text
-            style={[
-              styles.button,
-              isSignInDisabled ? styles.buttonDisabled : undefined,
-            ]}
-          >
-            Sign in
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+	return (
+		<View style={styles.container}>
+			<StatusBar style="light" />
+			<View style={styles.splash}>
+				<MaterialCommunityIcons
+					size={64}
+					name="orbit"
+					color={Theme.colors.iconHighlighted}
+				/>
+				<Text style={styles.splashText}>Planet</Text>
+			</View>
+			<TextInput
+				onChangeText={(text) => setEmail(text)}
+				value={email}
+				placeholder="email@address.com"
+				placeholderTextColor={Theme.colors.textSecondary}
+				autoCapitalize={"none"}
+				style={styles.input}
+			/>
+			<TextInput
+				onChangeText={(text) => setPassword(text)}
+				value={password}
+				placeholder="Password"
+				placeholderTextColor={Theme.colors.textSecondary}
+				secureTextEntry={true}
+				autoCapitalize={"none"}
+				style={styles.input}
+			/>
+			<View style={styles.buttonContainer}>
+				<TouchableOpacity
+					onPress={() => signInWithEmail()}
+					disabled={isSignInDisabled}
+				>
+					<Text
+						style={[
+							styles.button,
+							isSignInDisabled
+								? styles.buttonDisabled
+								: undefined,
+						]}
+					>
+						Sign in
+					</Text>
+				</TouchableOpacity>
+			</View>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingTop: 60,
-    padding: 12,
-    backgroundColor: Theme.colors.backgroundPrimary,
-    flex: 1,
-  },
-  splash: {
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  splashText: {
-    fontWeight: "bold",
-    color: Theme.colors.textPrimary,
-    fontSize: 60,
-  },
-  buttonContainer: {
-    marginTop: 12,
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  verticallySpaced: {
-    marginVertical: 4,
-    alignSelf: "stretch",
-  },
-  mt20: {
-    marginTop: 20,
-  },
-  input: {
-    color: Theme.colors.textPrimary,
-    backgroundColor: Theme.colors.backgroundSecondary,
-    width: "100%",
-    padding: 16,
-  },
-  button: {
-    color: Theme.colors.textHighlighted,
-    fontSize: 18,
-    fontWeight: 18,
-    padding: 8,
-  },
-  buttonDisabled: {
-    color: Theme.colors.textSecondary,
-  },
+	container: {
+		width: "100%",
+		paddingTop: 60,
+		padding: 12,
+		backgroundColor: Theme.colors.backgroundPrimary,
+		flex: 1,
+	},
+	splash: {
+		alignItems: "center",
+		marginBottom: 12,
+	},
+	splashText: {
+		fontWeight: "bold",
+		color: Theme.colors.textPrimary,
+		fontSize: 60,
+	},
+	buttonContainer: {
+		marginTop: 12,
+		flexDirection: "row",
+		justifyContent: "space-around",
+	},
+	verticallySpaced: {
+		marginVertical: 4,
+		alignSelf: "stretch",
+	},
+	mt20: {
+		marginTop: 20,
+	},
+	input: {
+		color: Theme.colors.textPrimary,
+		backgroundColor: Theme.colors.backgroundSecondary,
+		width: "100%",
+		padding: 16,
+	},
+	button: {
+		color: Theme.colors.textHighlighted,
+		fontSize: 18,
+		fontWeight: 18,
+		padding: 8,
+	},
+	buttonDisabled: {
+		color: Theme.colors.textSecondary,
+	},
 });

@@ -1,12 +1,12 @@
 import { Stack } from "expo-router";
 
-export default function OrbitsStackLayout() {
+export default function GalaxyStackLayout() {
 	return (
 		<Stack>
 			<Stack.Screen
 				name="index"
 				options={{
-					title: "My Profile",
+					title: "My Galaxy",
 					headerTitleAlign: "center",
 				}}
 			/>
