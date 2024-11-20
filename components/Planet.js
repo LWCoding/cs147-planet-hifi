@@ -1,17 +1,33 @@
 import { Text, View, Image } from "react-native";
-import IonIcon from "@expo/vector-icons/Ionicons";
-
-// Import themes
-import Theme from "@/assets/theme";
 
 // Import planet image
-import PlanetBG from "@/assets/planet/planet-bg.png";
+import PlanetImages from "@/assets/planet";
 
-export default function Planet({ username }) {
+export default function Planet({ username, emotion }) {
+	// Given an emotion, return the corresponding image
+	const getImageFromEmotion = (emotion) => {
+		switch (emotion) {
+			case "happy":
+				return PlanetImages.faces.happy;
+			case "sad":
+				return PlanetImages.faces.sad;
+			case "angry":
+				return PlanetImages.faces.angry;
+			case "neutral":
+				return PlanetImages.faces.neutral;
+			default:
+				return PlanetImages.faces.happy; // Default to happy
+		}
+	};
+
 	return (
 		<View style={styles.container}>
-			<Image source={PlanetBG} style={styles.planet} />
-			<Text style={styles.relativeOver}>{username}</Text>
+			<Image source={PlanetImages.base} style={styles.planet} />
+			<Image
+				style={styles.face}
+				source={getImageFromEmotion(emotion)}
+			></Image>
+			<Text style={styles.relativeOverText}>{username}</Text>
 		</View>
 	);
 }
@@ -21,9 +37,14 @@ const styles = {
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	relativeOver: {
-		position: "relative",
-		top: -5, // Y offset of the text from the planet
+	face: {
+		width: 100,
+		height: 100,
+		position: "absolute",
+		top: 0, // Y offset of the text from the planet
+	},
+	relativeOverText: {
+		top: -10, // Shift closer to planet
 	},
 	planet: {
 		width: 100,
