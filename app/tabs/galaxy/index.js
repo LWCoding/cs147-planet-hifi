@@ -50,7 +50,7 @@ export default function Galaxy() {
 
       return {
         username: user.username,
-        realname: user.last_name,
+        realname: user.first_name,
         emotion,
       };
     });
@@ -70,7 +70,11 @@ export default function Galaxy() {
       {/* Render center item */}
       {planets.length > 0 && (
         <View style={styles.centerItem}>
-          <Planet username={planets[0].username} emotion={planets[0].emotion} />
+          <Planet
+            username={planets[0].username}
+            realname={planets[0].realname}
+            emotion={planets[0].emotion}
+          />
         </View>
       )}
 
@@ -82,7 +86,11 @@ export default function Galaxy() {
 
         return (
           <View key={item.username} style={[styles.item, { left: x, top: y }]}>
-            <Planet username={item.username} emotion={item.emotion} />
+            <Planet
+              username={item.username}
+              realname={item.realname}
+              emotion={item.emotion}
+            />
           </View>
         );
       })}

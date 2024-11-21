@@ -18,6 +18,11 @@ export default function Planet() {
     });
   }, []);
 
+  /*
+    TODO: Find the user from the database based on the username, and set information
+    in here to be relevant information
+  */
+
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}

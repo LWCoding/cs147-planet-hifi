@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 // Import planet image
 import PlanetImages from "@/assets/planet";
 
-export default function Planet({ username, emotion }) {
+export default function Planet({ username, realname, emotion }) {
   const router = useRouter();
 
   // Given an emotion, return the corresponding image
@@ -37,7 +37,7 @@ export default function Planet({ username, emotion }) {
           source={getImageFromEmotion(emotion)}
         ></Image>
       </TouchableOpacity>
-      <Text style={styles.relativeOverText}>{username}</Text>
+      <Text style={styles.relativeOverText}>{realname}</Text>
     </View>
   );
 }
