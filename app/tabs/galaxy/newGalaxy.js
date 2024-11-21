@@ -39,7 +39,7 @@ export default function NewGalaxy() {
     const { data: usersData, error: usersError } = await db
       .from("users")
       .select("*")
-      .limit(1); // Limit to only the first user
+      .limit(1);
 
     if (usersError) {
       console.error("Error fetching users: " + usersError.message);
@@ -54,7 +54,7 @@ export default function NewGalaxy() {
       return;
     }
 
-    const user = usersData[0]; // Get the first user
+    const user = usersData[0];
 
     let emotion = "happy";
     if (user.current_status_id) {
@@ -72,9 +72,9 @@ export default function NewGalaxy() {
       emotion,
     };
     console.log(userInfo);
-    setUserPlanet(userInfo); // Set userPlanet directly to an object
+    setUserPlanet(userInfo);
   };
-
+  // NOTE FROM KRISTINE: MIGHT HAVE TO EXPLORE FOCUS TO RENDER WHEN WE NAV TO STACK CUZ ITS NOT WORKING SOMETIMES ACTUALLY LOL
   useEffect(() => {
     fetchUser();
   }, []);
@@ -103,7 +103,7 @@ export default function NewGalaxy() {
             value={galaxyName}
             onChangeText={handleChangeText}
             autoFocus={true}
-            onBlur={handleBlur} // End editing when the input loses focus
+            onBlur={handleBlur} // end editing when the input loses focus
           />
         ) : (
           // If not editing, render current galaxy name (default: new galaxy)
@@ -115,7 +115,6 @@ export default function NewGalaxy() {
       </View>
       <View style={styles.planetContainer}>
         <Image source={PlanetImages.base} style={styles.planet} />
-        {/* Conditional rendering to ensure userPlanet is available */}
         {userPlanet && (
           <Image
             style={styles.face}
