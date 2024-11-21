@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { useTheme } from "react-native-paper";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useRouter } from "expo-router";
+// import { useNavigation } from "expo-router";
 
 // Import components
 import Planet from "@/components/Planet";
@@ -17,7 +26,9 @@ const itemSize = 150; // Diameter of items
 export default function Galaxy() {
   const [planets, setPlanets] = useState([]);
 
+  const router = useRouter();
   const theme = useTheme();
+  // const navigation = useNavigation();
 
   // Fetch all planets from the database and return them in the form
   // [{username: String, realname: String, emotion: String}]
@@ -63,11 +74,26 @@ export default function Galaxy() {
     fetchPlanets();
   }, []);
 
+  const handlePress = () => {
+    console.log("hi");
+  };
+
+  const navToNewGalaxy = () => {
+    router.push("/tabs/galaxy/newGalaxy");
+  };
+
+  const navToManage = () => {
+    router.push("/tabs/galaxy/manageAll");
+  };
+
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      {/* Render center item */}
+      <TouchableOpacity style={styles.newGalaxy} onPress={navToNewGalaxy}>
+        <Text style={styles.buttonText}>New Galaxy</Text>
+      </TouchableOpacity>
+      {/* center planet */}
       {planets.length > 0 && (
         <View style={styles.centerItem}>
           <Planet
@@ -78,7 +104,7 @@ export default function Galaxy() {
         </View>
       )}
 
-      {/* Render circular items */}
+      {/* planets around center */}
       {planets.slice(1).map((item, index) => {
         const angle = (index / Math.min(planets.length - 1, 8)) * (2 * Math.PI); // Angle for spacing planets evenly
         const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
@@ -94,6 +120,10 @@ export default function Galaxy() {
           </View>
         );
       })}
+      {/* manage button */}
+      <TouchableOpacity onPress={navToManage} style={styles.iconContainer}>
+        <Icon name="bars" size={30} color="#000" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -102,6 +132,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative", // Allows absolute positioning for items
+  },
+  newGalaxy: {
+    backgroundColor: "#9393BA",
+    borderRadius: 30,
+    position: "absolute",
+    left: (width - 180) / 2,
+    top: 30,
+    width: 180,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
   centerItem: {
     position: "absolute",
@@ -121,5 +162,20 @@ const styles = StyleSheet.create({
   },
   itemText: {
     top: -20, // Shift text up closer to planet
+  },
+  iconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30, // half of width/height
+    backgroundColor: "#9393BA",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    right: 20,
+    bottom: 60,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

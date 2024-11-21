@@ -7,7 +7,7 @@ import {
 const theme = {
   ...DefaultTheme,
   colors: {
-    primary: "rgb(220, 184, 255)",
+    primary: "#9393BA",
     onPrimary: "rgb(71, 12, 122)",
     primaryContainer: "rgb(95, 43, 146)",
     onPrimaryContainer: "rgb(240, 219, 255)",
