@@ -17,6 +17,8 @@ import Planet from "@/components/Planet";
 // Import database access
 import db from "@/database/db";
 
+// NOTE FROM KRISTINE: might have to update the logic and not assume that first user is main user lol oops
+
 const { width, height } = Dimensions.get("window");
 const centerX = width / 2; // Center X position
 const centerY = height / 2 - 100; // Center Y position

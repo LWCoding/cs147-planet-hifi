@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function manageAll() {
+export default function addFriendstoGalaxy() {
   return (
     <View style={styles.container}>
-      <Text>manage</Text>
+      <Text>add friends</Text>
     </View>
   );
 }

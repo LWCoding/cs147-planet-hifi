@@ -13,10 +13,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import PlanetImages from "@/assets/planet";
 import db from "@/database/db";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
 export default function NewGalaxy() {
+  const router = useRouter();
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [galaxyName, setGalaxyName] = useState("New Galaxy");
@@ -82,9 +84,22 @@ export default function NewGalaxy() {
   //   useEffect(() => {
   //     fetchUser();
   //   }, []);
-  useFocusEffect(() => {
-    fetchUser();
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+
+      const fetchData = async () => {
+        if (!isActive) return;
+        await fetchUser();
+      };
+
+      fetchData();
+
+      return () => {
+        isActive = false;
+      };
+    }, []) // Empty dependencies to avoid multiple calls
+  );
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
@@ -120,11 +135,10 @@ export default function NewGalaxy() {
         console.error("Error inserting Galaxy: ", insertError.message);
         return;
       }
-
-      console.log("New galaxy added:", newGalaxy);
     } catch (error) {
       console.error("Error in addFriends function: ", error.message);
     }
+    router.push("/tabs/galaxy/newGalaxy/addFriends");
   };
 
   return (
@@ -155,7 +169,7 @@ export default function NewGalaxy() {
           />
         )}
       </View>
-      <TouchableOpacity style={styles.addFriends}>
+      <TouchableOpacity style={styles.addFriends} onPress={addFriends}>
         <Text style={styles.buttonText}>Add friends!</Text>
       </TouchableOpacity>
     </View>
