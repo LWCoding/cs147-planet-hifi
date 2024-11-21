@@ -11,6 +11,7 @@ import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import PlanetImages from "@/assets/planet";
 import db from "@/database/db";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function NewGalaxy() {
   const theme = useTheme();
@@ -78,6 +79,9 @@ export default function NewGalaxy() {
   useEffect(() => {
     fetchUser();
   }, []);
+  useFocusEffect(() => {
+    fetchUser();
+  });
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
