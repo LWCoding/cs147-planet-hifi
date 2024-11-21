@@ -118,7 +118,7 @@ export default function NewGalaxy() {
 
   const addFriends = async () => {
     if (galaxyName === "New Galaxy") {
-      alert("Please change the galaxy name first!");
+      alert("Please change the Galaxy name first!");
       return;
     }
     try {
