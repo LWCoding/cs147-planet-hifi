@@ -79,9 +79,9 @@ export default function NewGalaxy() {
     setUserPlanet(userInfo);
   };
   // NOTE FROM KRISTINE: MIGHT HAVE TO EXPLORE FOCUS TO RENDER WHEN WE NAV TO STACK CUZ ITS NOT WORKING SOMETIMES ACTUALLY LOL
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  //   useEffect(() => {
+  //     fetchUser();
+  //   }, []);
   useFocusEffect(() => {
     fetchUser();
   });
@@ -99,6 +99,32 @@ export default function NewGalaxy() {
       setGalaxyName("New Galaxy"); // resetting to placeholder if empty
     }
     setIsEditing(false);
+  };
+
+  const addFriends = async () => {
+    if (galaxyName === "New Galaxy") {
+      alert("Please change the galaxy name first!");
+      return;
+    }
+    try {
+      const { data: newGalaxy, error: insertError } = await db
+        .from("galaxies")
+        .insert([
+          {
+            name: galaxyName,
+            planets: null,
+          },
+        ]);
+
+      if (insertError) {
+        console.error("Error inserting Galaxy: ", insertError.message);
+        return;
+      }
+
+      console.log("New galaxy added:", newGalaxy);
+    } catch (error) {
+      console.error("Error in addFriends function: ", error.message);
+    }
   };
 
   return (
