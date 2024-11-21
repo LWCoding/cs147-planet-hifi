@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  Dimensions,
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import PlanetImages from "@/assets/planet";
 import db from "@/database/db";
 import { useFocusEffect } from "@react-navigation/native";
+
+const { width, height } = Dimensions.get("window");
 
 export default function NewGalaxy() {
   const theme = useTheme();
@@ -126,6 +129,9 @@ export default function NewGalaxy() {
           />
         )}
       </View>
+      <TouchableOpacity style={styles.addFriends}>
+        <Text style={styles.buttonText}>Add friends!</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -134,7 +140,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    paddingTop: 100,
+    paddingTop: 170,
     alignItems: "center",
     backgroundColor: "rgb(29, 27, 30)",
   },
@@ -165,7 +171,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     position: "absolute",
-    top: 0, // Y offset of the text from the planet
+    top: 30, // changed to 30 bc i put paddingtop
   },
   relativeOverText: {
     top: -10, // Shift closer to planet
@@ -175,6 +181,15 @@ const styles = StyleSheet.create({
     height: 100,
   },
   planetContainer: {
+    padding: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addFriends: {
+    backgroundColor: "#9393BA",
+    borderRadius: 30,
+    width: 180,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
