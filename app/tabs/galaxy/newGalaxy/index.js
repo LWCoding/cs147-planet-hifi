@@ -8,6 +8,8 @@ import {
   Image,
   Dimensions,
 } from "react-native";
+
+// NOTE FROM KRISTINE: UPDATE SO THAT 'BACK BUTTON' DOESNT ALLOW U TO DUPLIACET GALAXY AND IF U EDIT THE NAME, U EDIT THE ROW U JUST CREATED!!
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import PlanetImages from "@/assets/planet";
