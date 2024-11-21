@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, Dimensions, Text } from "react-native";
 import { Button } from "react-native-paper";
 
 // Import components
@@ -9,11 +9,17 @@ import Planet from "@/components/Planet";
 // Import database access
 import db from "@/database/db";
 
+const { width, height } = Dimensions.get("window");
+const centerX = width / 2; // Center X position
+const centerY = height / 2 - 100; // Center Y position
+const radius = 150; // Radius for circular layout
+const itemSize = 150; // Diameter of items
+
 export default function Galaxy() {
-  const [planets, setPlanets] = useState(null);
+  const [planets, setPlanets] = useState([]);
 
   // Fetch all planets from the database and return them in the form
-  // [{username: String, emotion: String}]
+  // [{username: String, realname: String, emotion: String}]
   const fetchPlanets = async () => {
     const { data: usersData, error: usersError } = await db
       .from("users")
@@ -43,6 +49,7 @@ export default function Galaxy() {
 
       return {
         username: user.username,
+        realname: user.name,
         emotion,
       };
     });
@@ -57,20 +64,32 @@ export default function Galaxy() {
 
   return (
     <View style={styles.container}>
-      {/* This is an example of how to use a React Native Paper element - Lucas */}
-      <Button mode="contained" onPress={() => fetchPlanets()}>
-        Press Me
-      </Button>
+      {/* Render center item */}
+      {planets.length > 0 && (
+        <View style={[styles.centerItem]}>
+          <Planet username={planets[0].name} emotion={planets[0].emotion} />
+          <Text style={styles.itemText}>{planets[0].username}</Text>
+        </View>
+      )}
 
-      <FlatList
-        style={styles.planetContainer}
-        data={planets}
-        keyExtractor={(item) => item.username}
-        renderItem={({ item }) => (
-          <Planet username={item.username} emotion={item.emotion} />
-        )}
-      />
-      <StatusBar style="auto" />
+      {/* Render circular items */}
+      {planets.slice(1).map((item, index) => {
+        const angle = (index / Math.min(planets.length - 1, 8)) * (2 * Math.PI); // Angle for spacing planets evenly
+        const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
+        const y = centerY + radius * Math.sin(angle) - itemSize / 2; // Y position
+
+        return (
+          <View key={item.username} style={[styles.item, { left: x, top: y }]}>
+            <Planet
+              username={item.username}
+              emotion={item.emotion}
+              style={styles.planetImage}
+            />
+
+            <Text style={styles.itemText}>{item.realname}</Text>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -78,12 +97,37 @@ export default function Galaxy() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    position: "relative", // Allows absolute positioning for items
+    backgroundColor: "#11172A",
   },
-  planetContainer: {
-    width: "100%",
-    height: "100%",
+  centerItem: {
+    position: "absolute",
+    left: centerX - itemSize / 2, // center horizontally
+    top: centerY - itemSize / 2, // center vertically
+    width: itemSize,
+    height: itemSize,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: itemSize / 2,
+    padding: 5,
+  },
+  item: {
+    position: "absolute", // how to get rid of cut off tho lol this might be a later problem? - kristine
+    width: itemSize,
+    height: itemSize,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  itemText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 14,
+    fontWeight: "bold",
+    top: -20, // Shift text up closer to planet
+  },
+  planetImage: {
+    width: itemSize,
+    height: itemSize,
+    padding: 5,
   },
 });
