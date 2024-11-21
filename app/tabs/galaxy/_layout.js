@@ -43,13 +43,13 @@ export default function GalaxyStackLayout() {
       <Stack.Screen
         name="newGalaxy"
         options={{
-          title: "Create a new Galaxy!",
+          headerTitle: "Create a new Galaxy!",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
           },
           headerTitleStyle: {
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: "bold",
           },
         }}
