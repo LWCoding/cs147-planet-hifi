@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, FlatList, Dimensions } from "react-native";
-import { Text } from "react-native-paper";
+import { StyleSheet, View, Dimensions } from "react-native";
+import { useTheme } from "react-native-paper";
 
 // Import components
 import Planet from "@/components/Planet";
@@ -17,6 +16,8 @@ const itemSize = 150; // Diameter of items
 
 export default function Galaxy() {
   const [planets, setPlanets] = useState([]);
+
+  const theme = useTheme();
 
   // Fetch all planets from the database and return them in the form
   // [{username: String, realname: String, emotion: String}]
@@ -63,7 +64,9 @@ export default function Galaxy() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       {/* Render center item */}
       {planets.length > 0 && (
         <View style={styles.centerItem}>
@@ -91,7 +94,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative", // Allows absolute positioning for items
-    backgroundColor: "#11172A",
   },
   centerItem: {
     position: "absolute",
