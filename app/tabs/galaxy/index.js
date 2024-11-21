@@ -47,8 +47,6 @@ export default function Galaxy() {
       };
     });
 
-    console.log(usersInfo);
-
     setPlanets(usersInfo);
   };
 
