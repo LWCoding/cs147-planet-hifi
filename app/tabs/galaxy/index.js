@@ -49,7 +49,7 @@ export default function Galaxy() {
 
       return {
         username: user.username,
-        realname: user.name,
+        realname: user.last_name,
         emotion,
       };
     });
@@ -67,8 +67,8 @@ export default function Galaxy() {
       {/* Render center item */}
       {planets.length > 0 && (
         <View style={[styles.centerItem]}>
-          <Planet username={planets[0].name} emotion={planets[0].emotion} />
-          <Text style={styles.itemText}>{planets[0].username}</Text>
+          <Planet username={planets[0].username} emotion={planets[0].emotion} />
+          <Text style={styles.itemText}>{planets[0].realname}</Text>
         </View>
       )}
 
