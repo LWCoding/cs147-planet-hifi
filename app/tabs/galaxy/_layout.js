@@ -12,13 +12,11 @@ export default function GalaxyStackLayout() {
           title: "My Galaxy",
           headerTitleAlign: "center",
           headerStyle: {
-            backgroundColor: theme.colors.background,
+            backgroundColor: theme.colors.primary,
           },
-          headerTintColor: theme.colors.text,
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
-            color: theme.colors.text,
           },
         }}
       />

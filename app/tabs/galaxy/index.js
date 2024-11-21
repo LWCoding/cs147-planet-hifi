@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, FlatList, Dimensions, Text } from "react-native";
-import { Button } from "react-native-paper";
+import { StyleSheet, View, FlatList, Dimensions } from "react-native";
+import { Text } from "react-native-paper";
 
 // Import components
 import Planet from "@/components/Planet";
@@ -66,9 +66,8 @@ export default function Galaxy() {
     <View style={styles.container}>
       {/* Render center item */}
       {planets.length > 0 && (
-        <View style={[styles.centerItem]}>
+        <View style={styles.centerItem}>
           <Planet username={planets[0].username} emotion={planets[0].emotion} />
-          <Text style={styles.itemText}>{planets[0].realname}</Text>
         </View>
       )}
 
@@ -80,13 +79,7 @@ export default function Galaxy() {
 
         return (
           <View key={item.username} style={[styles.item, { left: x, top: y }]}>
-            <Planet
-              username={item.username}
-              emotion={item.emotion}
-              style={styles.planetImage}
-            />
-
-            <Text style={styles.itemText}>{item.realname}</Text>
+            <Planet username={item.username} emotion={item.emotion} />
           </View>
         );
       })}
@@ -108,8 +101,6 @@ const styles = StyleSheet.create({
     height: itemSize,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: itemSize / 2,
-    padding: 5,
   },
   item: {
     position: "absolute", // how to get rid of cut off tho lol this might be a later problem? - kristine
@@ -119,15 +110,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   itemText: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
     top: -20, // Shift text up closer to planet
-  },
-  planetImage: {
-    width: itemSize,
-    height: itemSize,
-    padding: 5,
   },
 });

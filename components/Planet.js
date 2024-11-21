@@ -1,4 +1,5 @@
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
+import { Text } from "react-native-paper";
 import { useRouter } from "expo-router";
 
 // Import planet image
