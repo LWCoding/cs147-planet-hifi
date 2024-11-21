@@ -23,8 +23,14 @@ export default function GalaxyStackLayout() {
       <Stack.Screen
         name="[user]/index"
         options={{
-          title: "My Galaxy",
           headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTitleStyle: {
+            fontSize: 24,
+            fontWeight: "bold",
+          },
         }}
       />
     </Stack>

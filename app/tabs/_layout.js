@@ -11,7 +11,7 @@ export default function Layout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.colors.primary,
+        tabBarActiveTintColor: theme.colors.inversePrimary,
       }}
     >
       <Tabs.Screen
