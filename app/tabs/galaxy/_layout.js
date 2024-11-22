@@ -7,7 +7,13 @@ export default function GalaxyStackLayout() {
   const theme = useTheme();
 
   return (
-    <Stack>
+    <Stack
+      options={{
+        headerStyle: {
+          backgroundColor: theme.colors.primary,
+        },
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
@@ -26,18 +32,19 @@ export default function GalaxyStackLayout() {
             fontWeight: "bold",
             color: theme.colors.text,
           },
-          headerRight: () => (
-            <TouchableOpacity // copied this over from my pre-github version lol - kristine
-              onPress={() => console.log("hi button pressed")} //eventually this should navigate to other planets - kristine navigation.navigate("nextStackName")}
-              style={{ marginRight: 10 }}
-            >
-              <MaterialIcons
-                name="arrow-forward"
-                size={24}
-                color={theme.colors.text}
-              />
-            </TouchableOpacity> // => navigation.navigate("nextStackName")
-          ),
+          // NOTE: consider bringing arrow down - kristine
+          // headerRight: () => (
+          //   <TouchableOpacity // copied this over from my pre-github version lol - kristine
+          //     onPress={() => console.log("hi button pressed")} //eventually this should navigate to other planets - kristine navigation.navigate("nextStackName")}
+          //     style={{ marginRight: 10 }}
+          //   >
+          //     <MaterialIcons
+          //       name="arrow-forward"
+          //       size={24}
+          //       color={theme.colors.text}
+          //     />
+          //   </TouchableOpacity> // => navigation.navigate("nextStackName")
+          // ),
         }}
       />
       <Stack.Screen
@@ -69,8 +76,9 @@ export default function GalaxyStackLayout() {
         }}
       />
       <Stack.Screen
-        name="[user]/index"
+        name="[user]"
         options={{
+          headerTitle: "",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
