@@ -75,11 +75,7 @@ export default function Galaxy() {
   useEffect(() => {
     fetchPlanets();
   }, []);
-
-  const handlePress = () => {
-    console.log("hi");
-  };
-
+  
   const navToNewGalaxy = () => {
     router.push("/tabs/galaxy/newGalaxy");
   };

@@ -8,10 +8,11 @@ export default function GalaxyStackLayout() {
 
   return (
     <Stack
-      options={{
+      screenOptions={{
         headerStyle: {
           backgroundColor: theme.colors.primary,
         },
+        headerTintColor: "black",
       }}
     >
       <Stack.Screen
@@ -19,9 +20,6 @@ export default function GalaxyStackLayout() {
         options={{
           title: "My Galaxy",
           headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
@@ -52,9 +50,6 @@ export default function GalaxyStackLayout() {
         options={{
           headerTitle: "Create a new Galaxy!",
           headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
           headerTitleStyle: {
             fontSize: 20,
             fontWeight: "bold",
@@ -66,9 +61,6 @@ export default function GalaxyStackLayout() {
         options={{
           title: "Manage All Friends",
           headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",

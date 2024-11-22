@@ -3,7 +3,6 @@ import { useLocalSearchParams } from "expo-router";
 
 export default function expandImage() {
   const { url } = useLocalSearchParams();
-  console.log("hh:", url);
 
   return (
     <View style={styles.container}>

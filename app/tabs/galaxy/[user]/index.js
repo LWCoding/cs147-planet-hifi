@@ -51,7 +51,6 @@ export default function userDetails() {
         console.error("Error fetching users: ", userError.message);
         return;
       }
-      console.log("user:", userData);
       setUser(userData);
       const userCurrStatusId = userData.current_status_id;
       if (userCurrStatusId) {
@@ -60,8 +59,7 @@ export default function userDetails() {
           .select("*")
           .eq("status_id", userCurrStatusId)
           .single();
-        console.log("status:", statusData);
-        console.log(statusData.image_url);
+
         setStatus(statusData);
         if (statusError) {
           console.error("Error fetching statuses: ", statusError.message);
@@ -82,7 +80,6 @@ export default function userDetails() {
   }, [username]);
 
   const navtoImage = () => {
-    console.log("Navigating with URL:", status.image_url);
     navigation.navigate("image", { url: status.image_url });
   };
 
