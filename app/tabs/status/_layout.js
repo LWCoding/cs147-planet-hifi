@@ -9,7 +9,35 @@ export default function StatusStackLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "My Status",
+          title: "Set Your Status",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTitleStyle: {
+            fontSize: 24,
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="textStatus"
+        options={{
+          title: "Text Status",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTitleStyle: {
+            fontSize: 24,
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="photoStatus"
+        options={{
+          title: "Photo Status",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
