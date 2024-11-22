@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative", // Allows absolute positioning for items
+    fontFamily: "PPPierSans-Regular",
   },
   newGalaxy: {
     backgroundColor: "#9393BA",
@@ -145,6 +146,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   centerItem: {
     position: "absolute",
@@ -154,6 +156,7 @@ const styles = StyleSheet.create({
     height: itemSize,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   item: {
     position: "absolute", // how to get rid of cut off tho lol this might be a later problem? - kristine
@@ -161,8 +164,10 @@ const styles = StyleSheet.create({
     height: itemSize,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   itemText: {
+    fontFamily: "PPPierSans-Regular",
     top: -20, // Shift text up closer to planet
   },
   iconContainer: {
@@ -175,9 +180,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
     bottom: 60,
+    fontFamily: "PPPierSans-Regular"
   },
   buttonText: {
     fontSize: 18,
     fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular", // Add custom font
   },
 });

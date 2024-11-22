@@ -15,5 +15,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgb(29, 27, 30)",
+    fontFamily: "PPPierSans-Regular"
   },
 });

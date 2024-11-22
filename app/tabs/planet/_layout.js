@@ -16,6 +16,7 @@ export default function PlanetStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", 
           },
         }}
       />

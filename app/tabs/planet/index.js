@@ -25,10 +25,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    
   },
   logout: {
     color: "red",
     textDecorationLine: "underline",
     marginTop: 20,
+    fontFamily: "PPPierSans-Regular"
   },
 });

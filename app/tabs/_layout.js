@@ -15,6 +15,10 @@ export default function Layout() {
         tabBarStyle: {
           backgroundColor: theme.colors.background,
         },
+        tabBarLabelStyle: {
+          fontFamily: "PPPierSans-Regular",
+          fontSize: 12,
+        },
       }}
     >
       <Tabs.Screen

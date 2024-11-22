@@ -19,16 +19,13 @@ export default function GalaxyStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
-          },
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontSize: 24,
-            fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
             color: theme.colors.text,
           },
+          headerTintColor: theme.colors.text,
           headerRight: () => (
-            <TouchableOpacity // copied this over from my pre-github version lol - kristine
-              onPress={() => console.log("hi button pressed")} //eventually this should navigate to other planets - kristine navigation.navigate("nextStackName")}
+            <TouchableOpacity
+              onPress={() => console.log("hi button pressed")}
               style={{ marginRight: 10 }}
             >
               <MaterialIcons
@@ -36,7 +33,7 @@ export default function GalaxyStackLayout() {
                 size={24}
                 color={theme.colors.text}
               />
-            </TouchableOpacity> // => navigation.navigate("nextStackName")
+            </TouchableOpacity>
           ),
         }}
       />
@@ -47,10 +44,12 @@ export default function GalaxyStackLayout() {
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
           headerTitleStyle: {
             fontSize: 20,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
         }}
       />
@@ -61,10 +60,13 @@ export default function GalaxyStackLayout() {
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
+            fontFamily: "PPPierSans-Regular", // Custom font
+
           },
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
         }}
       />
@@ -78,6 +80,7 @@ export default function GalaxyStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
         }}
       />
