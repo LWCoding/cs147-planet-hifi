@@ -13,7 +13,7 @@ const theme = {
     onPrimaryContainer: "rgb(240, 219, 255)",
     secondary: "rgb(208, 193, 218)",
     onSecondary: "rgb(54, 44, 63)",
-    secondaryContainer: "rgb(77, 67, 87)",
+    secondaryContainer: "rgb(77, 67, 87)", // Will change the background of segmented buttons
     onSecondaryContainer: "rgb(237, 221, 246)",
     tertiary: "rgb(243, 183, 190)",
     onTertiary: "rgb(75, 37, 43)",
