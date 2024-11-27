@@ -28,7 +28,7 @@ const itemSize = 150; // Diameter of items
 export default function Galaxy() {
   const [otherPlanets, setOtherPlanets] = useState([]);
   const [mainPlanet, setMainPlanet] = useState(null);
-  const { username } = useContext(UserContext);
+  const { userId } = useContext(UserContext);
 
   const router = useRouter();
   const theme = useTheme();
@@ -63,6 +63,7 @@ export default function Galaxy() {
       }
 
       return {
+        userId: user.user_id,
         username: user.username,
         realname: user.first_name,
         emotion,
@@ -70,9 +71,9 @@ export default function Galaxy() {
     });
 
     // Find logged-in user's planet
-    setMainPlanet(usersInfo.find((user) => user.username === username));
+    setMainPlanet(usersInfo.find((user) => user.userId === userId));
     // Set all other planets
-    setOtherPlanets(usersInfo.filter((user) => user.username !== username));
+    setOtherPlanets(usersInfo.filter((user) => user.userId !== userId));
   };
 
   // Get all planets from the database

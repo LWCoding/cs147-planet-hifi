@@ -12,7 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setUsername } = useContext(UserContext);
+  const { setUserId } = useContext(UserContext);
 
   const router = useRouter();
   const theme = useTheme();
@@ -43,7 +43,7 @@ export default function Login() {
       }
 
       // If we've found the user, navigate to their galaxy
-      setUsername(data.username); // Store the user's username
+      setUserId(data.user_id); // Store the user's id
       router.navigate("tabs/galaxy");
     } catch (err) {
       console.error(err);
