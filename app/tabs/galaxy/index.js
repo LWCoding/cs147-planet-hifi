@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
-// import { useNavigation } from "expo-router";
+import { UserContext } from "@/contexts/UserContext";
 
 // Import components
 import Planet from "@/components/Planet";
@@ -26,11 +26,12 @@ const radius = 150; // Radius for circular layout
 const itemSize = 150; // Diameter of items
 
 export default function Galaxy() {
-  const [planets, setPlanets] = useState([]);
+  const [otherPlanets, setOtherPlanets] = useState([]);
+  const [mainPlanet, setMainPlanet] = useState(null);
+  const { username } = useContext(UserContext);
 
   const router = useRouter();
   const theme = useTheme();
-  // const navigation = useNavigation();
 
   // Fetch all planets from the database and return them in the form
   // [{username: String, realname: String, emotion: String}]
@@ -68,14 +69,17 @@ export default function Galaxy() {
       };
     });
 
-    setPlanets(usersInfo);
+    // Find logged-in user's planet
+    setMainPlanet(usersInfo.find((user) => user.username === username));
+    // Set all other planets
+    setOtherPlanets(usersInfo.filter((user) => user.username !== username));
   };
 
   // Get all planets from the database
   useEffect(() => {
     fetchPlanets();
   }, []);
-  
+
   const navToNewGalaxy = () => {
     router.push("/tabs/galaxy/newGalaxy");
   };
@@ -92,19 +96,19 @@ export default function Galaxy() {
         <Text style={styles.buttonText}>New Galaxy</Text>
       </TouchableOpacity>
       {/* center planet */}
-      {planets.length > 0 && (
+      {mainPlanet != null && (
         <View style={styles.centerItem}>
           <Planet
-            username={planets[0].username}
-            realname={planets[0].realname}
-            emotion={planets[0].emotion}
+            username={mainPlanet.username}
+            realname={mainPlanet.realname}
+            emotion={mainPlanet.emotion}
           />
         </View>
       )}
 
       {/* planets around center */}
-      {planets.slice(1).map((item, index) => {
-        const angle = (index / Math.min(planets.length - 1, 8)) * (2 * Math.PI); // Angle for spacing planets evenly
+      {otherPlanets.map((item, index) => {
+        const angle = (index / otherPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
         const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
         const y = centerY + radius * Math.sin(angle) - itemSize / 2; // Y position
 
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
     bottom: 60,
-    fontFamily: "PPPierSans-Regular"
+    fontFamily: "PPPierSans-Regular",
   },
   buttonText: {
     fontSize: 18,
