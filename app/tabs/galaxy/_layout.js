@@ -23,26 +23,22 @@ export default function GalaxyStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
-          },
-          headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            fontSize: 24,
-            fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
             color: theme.colors.text,
           },
-          // NOTE: consider bringing arrow down - kristine
-          // headerRight: () => (
-          //   <TouchableOpacity // copied this over from my pre-github version lol - kristine
-          //     onPress={() => console.log("hi button pressed")} //eventually this should navigate to other planets - kristine navigation.navigate("nextStackName")}
-          //     style={{ marginRight: 10 }}
-          //   >
-          //     <MaterialIcons
-          //       name="arrow-forward"
-          //       size={24}
-          //       color={theme.colors.text}
-          //     />
-          //   </TouchableOpacity> // => navigation.navigate("nextStackName")
-          // ),
+          headerTintColor: theme.colors.text,
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => console.log("hi button pressed")}
+              style={{ marginRight: 10 }}
+            >
+              <MaterialIcons
+                name="arrow-forward"
+                size={24}
+                color={theme.colors.text}
+              />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen
@@ -50,9 +46,14 @@ export default function GalaxyStackLayout() {
         options={{
           headerTitle: "Create a new Galaxy!",
           headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+            fontFamily: "PPPierSans-Regular", // Custom font
+          },
           headerTitleStyle: {
             fontSize: 20,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
         }}
       />
@@ -61,9 +62,15 @@ export default function GalaxyStackLayout() {
         options={{
           title: "Manage All Friends",
           headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+            fontFamily: "PPPierSans-Regular", // Custom font
+
+          },
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
         }}
       />
@@ -78,6 +85,7 @@ export default function GalaxyStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
           },
         }}
       />

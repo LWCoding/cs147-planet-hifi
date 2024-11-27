@@ -175,10 +175,11 @@ const styles = StyleSheet.create({
   planetContainer: {
     padding: 30,
     justifyContent: "center",
-    alignItems: "center",
+    fontFamily: "PPPierSans-Regular"
+    alignItems: "center",  // start of kept merge (may look wonky, may be okay)
     position: "absolute",
     top: "8%",
-    zIndex: 1,
+    zIndex: 1,  // end of kept merge
   },
   image: {
     width: "80%",
