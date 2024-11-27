@@ -1,18 +1,57 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
+import { useRouter } from "expo-router";
 import { useTheme } from "react-native-paper";
 
 export default function Status() {
   const theme = useTheme();
+  const router = useRouter();
+
+  const handlePressCamera = () => {
+    router.push("/tabs/status/photoStatus");
+  };
+
+  const handlePressText = () => {
+    router.push("/tabs/status/textStatus");
+  };
 
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <Text variant="displaySmall">Planet status screen</Text>
-      <StatusBar style="auto" />
+      <TouchableOpacity
+        style={styles.iconContainer}
+        onPress={handlePressCamera}
+      >
+        <MaterialCommunityIcons
+          style={[styles.iconButton, { backgroundColor: theme.colors.primary }]}
+          size={82}
+          name="camera"
+          color={theme.colors.inverseSurface}
+        />
+        <Text style={styles.iconButtonText} variant="displaySmall">
+          Camera
+        </Text>
+        <Text style={styles.iconButtonText} variant="bodyMedium">
+          Take a snapshot of your current environment and tag it with a caption
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconContainer} onPress={handlePressText}>
+        <MaterialCommunityIcons
+          style={[styles.iconButton, { backgroundColor: theme.colors.primary }]}
+          size={82}
+          name="format-text"
+          color={theme.colors.inverseSurface}
+        />
+        <Text style={styles.iconButtonText} variant="displaySmall">
+          Text
+        </Text>
+        <Text style={styles.iconButtonText} variant="bodyMedium">
+          Update your current mood through text, hassle-free and photo-free
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -20,6 +59,23 @@ export default function Status() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 80,
+  },
+  iconButton: {
+    borderRadius: 96,
+    padding: 12,
+    width: "100%",
+  },
+  iconButtonText: {
+    textAlign: "center",
+    paddingHorizontal: 36,
+    marginVertical: 2,
+  },
+  iconContainer: {
+    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },

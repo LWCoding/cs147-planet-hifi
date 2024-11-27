@@ -7,15 +7,19 @@ export default function GalaxyStackLayout() {
   const theme = useTheme();
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: theme.colors.primary,
+        },
+        headerTintColor: "black",
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
           title: "My Galaxy",
           headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
@@ -71,8 +75,9 @@ export default function GalaxyStackLayout() {
         }}
       />
       <Stack.Screen
-        name="[user]/index"
+        name="[user]"
         options={{
+          headerTitle: "",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
