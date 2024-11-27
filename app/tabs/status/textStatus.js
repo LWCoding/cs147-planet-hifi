@@ -1,10 +1,13 @@
 import { StyleSheet, View } from "react-native";
 import { Text, TextInput, SegmentedButtons, Button } from "react-native-paper";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import db from "@/database/db";
+
+// Import user context
+import { UserContext } from "@/contexts/UserContext";
 
 export default function TextStatus() {
   const theme = useTheme();
@@ -12,29 +15,32 @@ export default function TextStatus() {
 
   const [statusText, setStatusText] = useState();
   const [emotion, setEmotion] = useState();
+  const { userId } = useContext(UserContext);
 
   // Given an emotion string and text for the user's current status, inserts that into the database
   const submitPost = async () => {
     try {
-      // NOTE: We need to make this get the current user! Right now it always chooses James Landay
-      const user = { user_id: "f79c391c-226f-4cdc-b85d-96b3b16a0a3e" };
+      const { data: createdStatusData, error: createdStatusError } = await db
+        .from("statuses")
+        .insert([
+          {
+            emotion: emotion,
+            status_text: statusText,
+            user_id: userId,
+          },
+        ])
+        .single()
+        .select();
 
-      //   const info = await db.auth.getUser();
-      //   const user = info.data.user;
-
-      const { data, error } = await db.from("statuses").insert([
-        {
-          emotion: emotion,
-          status_text: statusText,
-          user_id: user.user_id,
-        },
-      ]);
-
-      if (error) {
+      if (createdStatusError) {
         throw new Error(error.message);
       }
 
-      // TODO: Set the user's current status id to the status that was just made
+      // Set the user's current status id to the status that was just made
+      await db
+        .from("users")
+        .update({ current_status_id: createdStatusData.status_id })
+        .eq("user_id", userId);
 
       router.back(); // Send user back after posting
     } catch (error) {
