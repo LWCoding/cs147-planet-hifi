@@ -15,25 +15,32 @@ export default function Login() {
   const router = useRouter();
   const theme = useTheme();
 
-  const signInWithEmail = async () => {
-    // For now, skip worrying about email validation
-    router.navigate("tabs/galaxy");
-    return;
-
+  const signIn = async () => {
+    // This email validation is super insecure, but I'm not considering serious authentication -Lucas
     setLoading(true);
     try {
-      const { data, error } = await db.auth.signInWithPassword({
-        username: "Test User",
-        email: email,
-        password: password,
-        options: {
-          shouldCreateUser: true,
-        },
-      });
+      // Try to get the user that matches the info provided
+      const { data, error } = await db
+        .from("users")
+        .select("*")
+        .eq("email", email)
+        .eq("password", password)
+        .single();
 
+      // Heuristic something: make errors clear so user can recover 🤓
+      if (!data) {
+        Alert.alert("Provided username or password is incorrect");
+        return;
+      }
+
+      // If all else fails, give general error message
       if (error) {
         Alert.alert(error.message);
+        return;
       }
+
+      // If we've found the user, navigate to their galaxy
+      router.navigate("tabs/galaxy", { user: data.username });
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -70,7 +77,7 @@ export default function Login() {
         style={styles.input}
       />
       <View style={styles.buttonContainer}>
-        <Button onPress={() => signInWithEmail()} disabled={isSignInDisabled}>
+        <Button onPress={() => signIn()} disabled={isSignInDisabled}>
           <Text
             style={[
               styles.button,
