@@ -1,5 +1,6 @@
 import { Slot } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { UserProvider } from "@/contexts/UserContext";
 import { View, ActivityIndicator } from "react-native";
 import * as Font from "expo-font";
 import {
@@ -92,7 +93,9 @@ export default function SlotLayout() {
 
   return (
     <PaperProvider theme={theme}>
-      <Slot />
+      <UserProvider>
+        <Slot />
+      </UserProvider>
     </PaperProvider>
   );
 }

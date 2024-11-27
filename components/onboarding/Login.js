@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "expo-router";
 import { Alert, StyleSheet, View } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
+import { UserContext } from "@/contexts/UserContext";
 import { useTheme } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -11,32 +12,43 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUsername } = useContext(UserContext);
 
   const router = useRouter();
   const theme = useTheme();
 
-  const signInWithEmail = async () => {
-    // For now, skip worrying about email validation
-    router.navigate("tabs/galaxy");
-    return;
+  const signIn = async () => {
+    // This email validation is super insecure, but I'm not considering serious authentication -Lucas
+    setLoading(true); // Prevent user from submitting another request until done
 
-    setLoading(true);
     try {
-      const { data, error } = await db.auth.signInWithPassword({
-        username: "Test User",
-        email: email,
-        password: password,
-        options: {
-          shouldCreateUser: true,
-        },
-      });
+      // Try to get the user that matches the info provided
+      const { data, error } = await db
+        .from("users")
+        .select("*")
+        .eq("email", email)
+        .eq("password", password)
+        .single();
 
+      // Heuristic something: make errors clear so user can recover 🤓
+      if (!data) {
+        Alert.alert("Provided username or password is incorrect");
+        return;
+      }
+
+      // If all else fails, give general error message
       if (error) {
         Alert.alert(error.message);
+        return;
       }
-      setLoading(false);
+
+      // If we've found the user, navigate to their galaxy
+      setUsername(data.username); // Store the user's username
+      router.navigate("tabs/galaxy");
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false); // Allow user to submit another request
     }
   };
 
@@ -70,7 +82,7 @@ export default function Login() {
         style={styles.input}
       />
       <View style={styles.buttonContainer}>
-        <Button onPress={() => signInWithEmail()} disabled={isSignInDisabled}>
+        <Button onPress={() => signIn()} disabled={isSignInDisabled}>
           <Text
             style={[
               styles.button,

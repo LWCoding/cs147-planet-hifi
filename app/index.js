@@ -1,6 +1,5 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
-import { Link } from "expo-router";
 import { useTheme } from "react-native-paper";
 
 // Import components
