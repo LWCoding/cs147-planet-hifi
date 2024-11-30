@@ -5,7 +5,12 @@ import { useRouter } from "expo-router";
 // Import planet image
 import PlanetImages from "@/assets/planet";
 
-export default function Planet({ username, realname, emotion }) {
+export default function Planet({
+  username,
+  realname,
+  emotion,
+  isClickable = true, // Set isClickable = false if clicking the planet shouldn't navigate to account
+}) {
   const router = useRouter();
 
   // Given an emotion, return the corresponding image
@@ -30,13 +35,20 @@ export default function Planet({ username, realname, emotion }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handlePress}>
-        <Image source={PlanetImages.base} style={styles.planet} />
-        <Image
-          style={styles.face}
-          source={getImageFromEmotion(emotion)}
-        ></Image>
-      </TouchableOpacity>
+      {isClickable ? (
+        <TouchableOpacity onPress={handlePress}>
+          <Image source={PlanetImages.base} style={styles.planet} />
+          <Image
+            style={styles.face}
+            source={getImageFromEmotion(emotion)}
+          ></Image>
+        </TouchableOpacity>
+      ) : (
+        <View>
+          <Image source={PlanetImages.base} style={styles.planet} />
+          <Image style={styles.face} source={getImageFromEmotion(emotion)} />
+        </View>
+      )}
       <Text style={styles.relativeOverText}>{realname}</Text>
     </View>
   );
