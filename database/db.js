@@ -74,16 +74,17 @@ export const fetchAllPlanets = async () => {
 
   const usersInfo = usersData.map((user) => {
     // If the user has a status, then find the status
-    let emotion = "happy"; // Default emotion to happy
     if (user.current_status_id) {
       const status = statusData.find(
         (status) => status.user_id === user.user_id
       );
-      user.emotion = status.emotion;
+      user.emotion = status.emotion || "happy";
     }
 
     return user;
   });
+
+  return usersInfo;
 };
 
 // Given a status id, asynchronously fetches the status's data from the database
@@ -94,9 +95,11 @@ export const findStatusById = async (statusId) => {
     .select("*")
     .eq("status_id", statusId)
     .single();
+
   if (error) {
-    console.error("Error fetching status: ", error.message);
+    console.warn("Error fetching status: ", error.message);
   }
+
   return data;
 };
 
