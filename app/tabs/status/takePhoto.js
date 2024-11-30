@@ -1,13 +1,23 @@
 import { Camera, CameraView, useCameraPermissions } from "expo-camera";
+import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Image,
+  Dimensions,
+} from "react-native";
 import { Button, Text } from "react-native-paper";
 
 import { useTheme } from "react-native-paper";
 
+const screenWidth = Dimensions.get("window").width;
+
 export default function PhotoStatus() {
   const theme = useTheme();
   const cameraRef = useRef(null);
+  const router = useRouter();
   const [picUri, setPicUri] = useState("");
   const [cameraPerms, requestCameraPerms] = useCameraPermissions();
 
@@ -31,8 +41,16 @@ export default function PhotoStatus() {
   const takePicture = async () => {
     console.log("Taking picture...");
     const pic = await cameraRef.current.takePictureAsync();
-    console.log(pic.uri); // Saves the URI of the picture
     setPicUri(pic.uri);
+
+    // Retrieve the size of the picture
+    Image.getSize(pic.uri, (width, height) => {
+      // Navigate to photo status screen, pass in parameters
+      router.push({
+        pathname: "tabs/status/photoStatus",
+        params: { uri: pic.uri, width, height },
+      });
+    });
   };
 
   // Or else, load the camera background and the photo button
@@ -40,25 +58,17 @@ export default function PhotoStatus() {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <CameraView style={styles.camera} ref={cameraRef} facing="back">
-        <TouchableOpacity
-          onPress={takePicture}
-          style={[
-            styles.cameraButton,
-            { backgroundColor: theme.colors.onBackground },
-          ]}
-        ></TouchableOpacity>
-        <Image // This is a placeholder for now! We should open on a separate screen
-          style={{
-            position: "absolute",
-            right: 20,
-            bottom: 50,
-            width: 100,
-            height: 100,
-          }}
-          source={{ uri: picUri }}
-        ></Image>
-      </CameraView>
+      <View style={styles.cameraWrapper}>
+        <CameraView style={styles.camera} ref={cameraRef} facing="back">
+          <TouchableOpacity
+            onPress={takePicture}
+            style={[
+              styles.cameraButton,
+              { backgroundColor: theme.colors.onBackground },
+            ]}
+          ></TouchableOpacity>
+        </CameraView>
+      </View>
     </View>
   );
 }
@@ -66,13 +76,16 @@ export default function PhotoStatus() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   camera: {
+    width: screenWidth,
+    height: (screenWidth * 3) / 4,
+  },
+  cameraWrapper: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    justifyContent: "center", // Center camera feed vertically
+    alignItems: "center", // Center camera feed horizontally
+    overflow: "hidden", // Clip any overflow outside the container
   },
   cameraButton: {
     width: 64,
