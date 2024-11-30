@@ -31,4 +31,73 @@ AppState.addEventListener("change", (state) => {
   }
 });
 
+// Given a user id, asynchronously fetches the user's data from the database
+// as well as their associated emotion. Return it.
+export const findPlanetById = async (userId) => {
+  const { data: userData, error: userError } = await db
+    .from("users")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+  if (userError) {
+    console.error("Error fetching user: ", error.message);
+  }
+  const { data: statusData, error: statusError } = await db
+    .from("statuses")
+    .select("*")
+    .eq("status_id", userData.current_status_id)
+    .single();
+  if (!statusError) {
+    userData.emotion = statusData.emotion;
+  }
+  return userData;
+};
+
+// Fetches all planets from the database as well as their associated emotions
+// and returns a list of them.
+export const fetchAllPlanets = async () => {
+  const { data: usersData, error: usersError } = await db
+    .from("users")
+    .select("*");
+
+  if (usersError) {
+    console.error("Error fetching users: " + error.message);
+  }
+
+  const { data: statusData, error: statusError } = await db
+    .from("statuses")
+    .select("*");
+
+  if (statusError) {
+    console.error("Error fetching statuses: " + error.message);
+  }
+
+  const usersInfo = usersData.map((user) => {
+    // If the user has a status, then find the status
+    let emotion = "happy"; // Default emotion to happy
+    if (user.current_status_id) {
+      const status = statusData.find(
+        (status) => status.user_id === user.user_id
+      );
+      user.emotion = status.emotion;
+    }
+
+    return user;
+  });
+};
+
+// Given a status id, asynchronously fetches the status's data from the database
+// and returns it.
+export const findStatusById = async (statusId) => {
+  const { data, error } = await db
+    .from("statuses")
+    .select("*")
+    .eq("status_id", statusId)
+    .single();
+  if (error) {
+    console.error("Error fetching status: ", error.message);
+  }
+  return data;
+};
+
 export default db;
