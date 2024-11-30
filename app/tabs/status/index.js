@@ -10,7 +10,7 @@ export default function Status() {
   const router = useRouter();
 
   const handlePressCamera = () => {
-    router.push("/tabs/status/photoStatus");
+    router.push("/tabs/status/takePhoto");
   };
 
   const handlePressText = () => {

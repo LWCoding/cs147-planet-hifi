@@ -15,7 +15,7 @@ import { UserContext } from "@/contexts/UserContext";
 import Planet from "@/components/Planet";
 
 // Import database access
-import db from "@/database/db";
+import db, { fetchAllPlanets } from "@/database/db";
 
 // NOTE FROM KRISTINE: might have to update the logic and not assume that first user is main user lol oops
 
@@ -36,44 +36,12 @@ export default function Galaxy() {
   // Fetch all planets from the database and return them in the form
   // [{username: String, realname: String, emotion: String}]
   const fetchPlanets = async () => {
-    const { data: usersData, error: usersError } = await db
-      .from("users")
-      .select("*");
-
-    if (usersError) {
-      console.error("Error fetching users: " + error.message);
-    }
-
-    const { data: statusData, error: statusError } = await db
-      .from("statuses")
-      .select("*");
-
-    if (statusError) {
-      console.error("Error fetching statuses: " + error.message);
-    }
-
-    const usersInfo = usersData.map((user) => {
-      // If the user has a status, then find the status
-      let emotion = "happy"; // Default emotion to happy
-      if (user.current_status_id) {
-        const status = statusData.find(
-          (status) => status.user_id === user.user_id
-        );
-        emotion = status.emotion;
-      }
-
-      return {
-        userId: user.user_id,
-        username: user.username,
-        realname: user.first_name,
-        emotion,
-      };
-    });
+    const allPlanets = await fetchAllPlanets();
 
     // Find logged-in user's planet
-    setMainPlanet(usersInfo.find((user) => user.userId === userId));
+    setMainPlanet(allPlanets.find((user) => user.user_id === userId));
     // Set all other planets
-    setOtherPlanets(usersInfo.filter((user) => user.userId !== userId));
+    setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
   };
 
   // Get all planets from the database
@@ -99,11 +67,7 @@ export default function Galaxy() {
       {/* center planet */}
       {mainPlanet != null && (
         <View style={styles.centerItem}>
-          <Planet
-            username={mainPlanet.username}
-            realname={mainPlanet.realname}
-            emotion={mainPlanet.emotion}
-          />
+          <Planet userId={mainPlanet.user_id} />
         </View>
       )}
 
@@ -115,11 +79,7 @@ export default function Galaxy() {
 
         return (
           <View key={item.username} style={[styles.item, { left: x, top: y }]}>
-            <Planet
-              username={item.username}
-              realname={item.realname}
-              emotion={item.emotion}
-            />
+            <Planet userId={item.user_id} />
           </View>
         );
       })}
