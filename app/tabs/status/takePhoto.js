@@ -1,6 +1,6 @@
 import { Camera, CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -18,7 +18,6 @@ export default function PhotoStatus() {
   const theme = useTheme();
   const cameraRef = useRef(null);
   const router = useRouter();
-  const [picUri, setPicUri] = useState("");
   const [cameraPerms, requestCameraPerms] = useCameraPermissions();
 
   // If this is null, camera permissions are still loading
@@ -41,15 +40,10 @@ export default function PhotoStatus() {
   const takePicture = async () => {
     console.log("Taking picture...");
     const pic = await cameraRef.current.takePictureAsync();
-    setPicUri(pic.uri);
 
-    // Retrieve the size of the picture
-    Image.getSize(pic.uri, (width, height) => {
-      // Navigate to photo status screen, pass in parameters
-      router.push({
-        pathname: "tabs/status/photoStatus",
-        params: { uri: pic.uri, width, height },
-      });
+    router.push({
+      pathname: "tabs/status/photoStatus",
+      params: { uri: pic.uri },
     });
   };
 
