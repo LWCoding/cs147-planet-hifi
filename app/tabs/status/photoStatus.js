@@ -1,6 +1,6 @@
 import Planet from "@/components/Planet";
 import { UserContext } from "@/contexts/UserContext";
-import db from "@/database/db";
+import db, { findPlanetById } from "@/database/db";
 import { useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Image, Dimensions } from "react-native";
@@ -18,27 +18,9 @@ export default function PhotoStatus() {
 
   // Fetch the user's info from the database
   const fetchMainUserInfo = async () => {
-    const { data, error } = await db
-      .from("users")
-      .select("*")
-      .eq("user_id", userId)
-      .single();
+    const planet = await findPlanetById(userId);
 
-    if (error) {
-      console.error("Error fetching user: ", error.message);
-    }
-
-    const { data: statusData, error: statusError } = await db
-      .from("statuses")
-      .select("*")
-      .eq("status_id", data.current_status_id)
-      .single();
-
-    if (!statusError) {
-      data.emotion = statusData.emotion;
-    }
-
-    setUserPlanet(data);
+    setUserPlanet(planet);
   };
 
   useEffect(() => {

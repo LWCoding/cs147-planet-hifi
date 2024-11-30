@@ -1,17 +1,27 @@
 import { View, Image, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
 import { Text } from "react-native-paper";
 import { useRouter } from "expo-router";
+import { findPlanetById } from "@/database/db";
 
 // Import planet image
 import PlanetImages from "@/assets/planet";
 
 export default function Planet({
-  username,
-  realname,
-  emotion,
+  userId,
   isClickable = true, // Set isClickable = false if clicking the planet shouldn't navigate to account
 }) {
   const router = useRouter();
+  const [user, setUser] = useState(null);
+
+  const fetchUserInfo = async () => {
+    const user = await findPlanetById(userId);
+    setUser(user);
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   // Given an emotion, return the corresponding image
   const getImageFromEmotion = (emotion) => {
@@ -30,28 +40,33 @@ export default function Planet({
   };
 
   const handlePress = () => {
-    router.push(`tabs/galaxy/${username}`);
+    router.push(`tabs/galaxy/${userId}`);
   };
 
-  return (
-    <View style={styles.container}>
-      {isClickable ? (
-        <TouchableOpacity onPress={handlePress}>
-          <Image source={PlanetImages.base} style={styles.planet} />
-          <Image
-            style={styles.face}
-            source={getImageFromEmotion(emotion)}
-          ></Image>
-        </TouchableOpacity>
-      ) : (
-        <View>
-          <Image source={PlanetImages.base} style={styles.planet} />
-          <Image style={styles.face} source={getImageFromEmotion(emotion)} />
-        </View>
-      )}
-      <Text style={styles.relativeOverText}>{realname}</Text>
-    </View>
-  );
+  if (user) {
+    return (
+      <View style={styles.container}>
+        {isClickable ? (
+          <TouchableOpacity onPress={handlePress}>
+            <Image source={PlanetImages.base} style={styles.planet} />
+            <Image
+              style={styles.face}
+              source={getImageFromEmotion(user.emotion)}
+            ></Image>
+          </TouchableOpacity>
+        ) : (
+          <View>
+            <Image source={PlanetImages.base} style={styles.planet} />
+            <Image
+              style={styles.face}
+              source={getImageFromEmotion(user.emotion)}
+            />
+          </View>
+        )}
+        <Text style={styles.relativeOverText}>{user.first_name}</Text>
+      </View>
+    );
+  }
 }
 
 const styles = {
