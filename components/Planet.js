@@ -1,6 +1,6 @@
 import { View, Image, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
-import { Text } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { findPlanetById } from "@/database/db";
 
@@ -66,6 +66,8 @@ export default function Planet({
         <Text style={styles.relativeOverText}>{user.first_name}</Text>
       </View>
     );
+  } else {
+    <ActivityIndicator size="small" animating={true} />;
   }
 }
 
