@@ -1,60 +1,53 @@
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
 import { useTheme } from "react-native-paper";
-import { MaterialIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
+import IonIcon from "@expo/vector-icons/Ionicons";
 
-export default function GalaxyStackLayout() {
+export default function Layout() {
   const theme = useTheme();
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        tabBarLabelStyle: {
+          fontFamily: "PPPierSans-Regular", // Add custom font
+          fontSize: 12, // Adjust size as needed
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="status"
         options={{
-          headerShown: false,
+          tabBarLabel: "Status",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcon name="emoji-emotions" size={24} color={color} />
+          ),
         }}
       />
-      <Stack.Screen
-        name="addFriends"
+      <Tabs.Screen
+        name="galaxy"
         options={{
-          headerTitle: "Add friends!", // maybe also make it dynamci like 'add friends to CS147L! Or whatever the galaxy name is
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTitleStyle: {
-            fontSize: 20,
-            fontWeight: "bold",
-          },
+          tabBarLabel: "Galaxy",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcon name="orbit" size={24} color={color} />
+          ),
         }}
       />
-      <Stack.Screen
-        name="manageAll"
+      <Tabs.Screen
+        name="planet"
         options={{
-          title: "Manage All Friends",
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTitleStyle: {
-            fontSize: 24,
-            fontWeight: "bold",
-          },
+          tabBarLabel: "My Planet",
+          tabBarIcon: ({ color }) => (
+            <IonIcon name="planet" size={24} color={color} />
+          ),
         }}
       />
-      <Stack.Screen
-        name="[user]/index"
-        options={{
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTitleStyle: {
-            fontSize: 24,
-            fontWeight: "bold",
-          },
-        }}
-      />
-    </Stack>
+    </Tabs>
   );
 }

@@ -1,21 +1,21 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { Text } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
-import db from "@/database/db";
+import db, { findPlanetById, findStatusById } from "@/database/db";
 import PlanetImages from "@/assets/planet";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function userDetails() {
-  const { user: username } = useLocalSearchParams(); // Get the user's info from navigation
+  const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
 
   const navigation = useNavigation();
   const theme = useTheme();
-  const [user, setUser] = useState([]);
-  const [status, setStatus] = useState([]);
+  const [user, setUser] = useState(null);
+  const [status, setStatus] = useState(null);
 
   const getImageFromEmotion = (emotion) => {
     switch (emotion) {
@@ -32,52 +32,20 @@ export default function userDetails() {
     }
   };
 
-  // Override the navigation bar information to show username
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     title: "",
-  //   });
-  // }, []);
-
   const fetchUserInfo = async () => {
-    try {
-      const { data: userData, error: userError } = await db
-        .from("users")
-        .select("*")
-        .eq("username", username)
-        .single();
+    const user = await findPlanetById(userId);
 
-      if (userError) {
-        console.error("Error fetching users: ", userError.message);
-        return;
-      }
-      setUser(userData);
-      const userCurrStatusId = userData.current_status_id;
-      if (userCurrStatusId) {
-        const { data: statusData, error: statusError } = await db
-          .from("statuses")
-          .select("*")
-          .eq("status_id", userCurrStatusId)
-          .single();
+    const status = user.current_status_id
+      ? await findStatusById(user.current_status_id)
+      : null;
 
-        setStatus(statusData);
-        if (statusError) {
-          console.error("Error fetching statuses: ", statusError.message);
-          return;
-        }
-      } else {
-        setStatus(null);
-      }
-    } catch (error) {
-      console.error("Error fetching user information:", error);
-    }
+    setUser(user);
+    setStatus(status);
   };
 
   useEffect(() => {
-    if (username) {
-      fetchUserInfo();
-    }
-  }, [username]);
+    fetchUserInfo();
+  }, []);
 
   const navtoImage = () => {
     navigation.navigate("image", { url: status.image_url });
@@ -117,14 +85,27 @@ export default function userDetails() {
     );
   }
 
-  return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <Text style={styles.text}>{user.first_name}'s Planet</Text>
-      {renderItem}
-    </View>
-  );
+  // If we have the user's info, display it -- or else show a loading icon
+  if (user != null) {
+    return (
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <Text style={styles.text}>{user.first_name}'s Planet</Text>
+        {renderItem}
+      </View>
+    );
+  } else {
+    return (
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <View style={styles.activityIndicatorContainer}>
+          <ActivityIndicator size="large" animating={true} />
+        </View>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -134,6 +115,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // justifyContent: "center",
     position: "relative",
+  },
+  activityIndicatorContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
   },
   text: {
     color: "white",
@@ -175,6 +161,7 @@ const styles = StyleSheet.create({
   planetContainer: {
     padding: 30,
     justifyContent: "center",
+    fontFamily: "PPPierSans-Regular",
     alignItems: "center",
     position: "absolute",
     top: "8%",

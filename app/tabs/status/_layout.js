@@ -35,6 +35,20 @@ export default function StatusStackLayout() {
         }}
       />
       <Stack.Screen
+        name="takePhoto"
+        options={{
+          title: "Take a Photo",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+          headerTitleStyle: {
+            fontSize: 24,
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <Stack.Screen
         name="photoStatus"
         options={{
           title: "Photo Status",

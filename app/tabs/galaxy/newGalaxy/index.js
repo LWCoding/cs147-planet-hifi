@@ -172,7 +172,7 @@ export default function NewGalaxy() {
         )}
       </View>
       <TouchableOpacity style={styles.addFriends} onPress={addFriends}>
-        <Text style={styles.buttonText}>Add friends!</Text>
+        <Text style={{ fontFamily: "PPPierSans-Regular", fontSize: 16, color: "#000" }}>Add friends!</Text>
       </TouchableOpacity>
     </View>
   );
@@ -185,12 +185,14 @@ const styles = StyleSheet.create({
     paddingTop: 170,
     alignItems: "center",
     backgroundColor: "rgb(29, 27, 30)",
+    
   },
   text: {
     fontSize: 35,
     color: "#FFFFFF",
     fontWeight: "bold",
     marginRight: 10,
+    fontFamily: "PPPierSans-Regular"
   },
   textInput: {
     fontSize: 35,
@@ -202,6 +204,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 5,
     width: 200,
+    fontFamily: "PPPierSans-Regular"
+
   },
   newGalaxy: {
     // view for pencil and text
@@ -217,6 +221,7 @@ const styles = StyleSheet.create({
   },
   relativeOverText: {
     top: -10, // Shift closer to planet
+    fontFamily: "PPPierSans-Regular",
   },
   planet: {
     width: 100,
@@ -234,5 +239,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular"
   },
 });

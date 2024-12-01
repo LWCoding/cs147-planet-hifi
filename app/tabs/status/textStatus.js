@@ -1,16 +1,55 @@
 import { StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput, SegmentedButtons, Button } from "react-native-paper";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { useTheme } from "react-native-paper";
+import { useRouter } from "expo-router";
+import db from "@/database/db";
+
+// Import user context
+import { UserContext } from "@/contexts/UserContext";
 
 export default function TextStatus() {
   const theme = useTheme();
-  const [text, setText] = useState();
+  const router = useRouter();
+
+  const [statusText, setStatusText] = useState();
   const [emotion, setEmotion] = useState();
   // NOTE FROM KRISTINE: oh just realized we prob want to do what we did in A4 where we don't let users click on post if everything is null / disable the post button...
   const handlePost = () => {
     // Alert.alert("Your status has been updated!", [{ text: "OK :)" }]);
+  };
+  const { userId } = useContext(UserContext);
+
+  // Given an emotion string and text for the user's current status, inserts that into the database
+  const submitPost = async () => {
+    try {
+      const { data: createdStatusData, error: createdStatusError } = await db
+        .from("statuses")
+        .insert([
+          {
+            emotion: emotion,
+            status_text: statusText,
+            user_id: userId,
+          },
+        ])
+        .single()
+        .select();
+
+      if (createdStatusError) {
+        throw new Error(error.message);
+      }
+
+      // Set the user's current status id to the status that was just made
+      await db
+        .from("users")
+        .update({ current_status_id: createdStatusData.status_id })
+        .eq("user_id", userId);
+
+      router.back(); // Send user back after posting
+    } catch (error) {
+      console.error("Error adding post:", error.message);
+    }
   };
 
   return (
@@ -39,14 +78,14 @@ export default function TextStatus() {
       <View margin={10}>
         <TextInput
           placeholder="What's on your mind?"
-          value={text}
+          value={statusText}
           multiline={true}
           numberOfLines={3}
-          onChangeText={(text) => setText(text)}
+          onChangeText={(text) => setStatusText(text)}
         />
       </View>
       <View margin={10}>
-        <Button icon="send" mode="contained" onPress={() => handlePost()}>
+        <Button icon="send" mode="contained" onPress={() => submitPost()}>
           Post
         </Button>
       </View>

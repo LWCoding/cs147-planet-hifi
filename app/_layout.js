@@ -1,4 +1,8 @@
 import { Slot } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { UserProvider } from "@/contexts/UserContext";
+import { View, ActivityIndicator } from "react-native";
+import * as Font from "expo-font";
 import {
   Provider as PaperProvider,
   MD3LightTheme as DefaultTheme,
@@ -6,6 +10,21 @@ import {
 
 const theme = {
   ...DefaultTheme,
+  fonts: {
+    ...DefaultTheme.fonts,
+    bodyLarge: {
+      fontFamily: "PPPierSans-Regular", // Set your custom font here
+      fontWeight: "400",
+    },
+    bodyMedium: {
+      fontFamily: "PPPierSans-Regular",
+      fontWeight: "400",
+    },
+    bodySmall: {
+      fontFamily: "PPPierSans-Regular",
+      fontWeight: "400",
+    },
+  },
   colors: {
     primary: "#9393BA",
     onPrimary: "rgb(71, 12, 122)",
@@ -51,18 +70,32 @@ const theme = {
 };
 
 export default function SlotLayout() {
-  // Override default layout to ensure that our screen background bleeds
-  // into the status bar.
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFonts() {
+      await Font.loadAsync({
+        "PPPierSans-Regular": require("../assets/fonts/PPPierSans-Regular.otf"),
+      });
+      setFontsLoaded(true);
+    }
+    loadFonts();
+  }, []);
+
+  if (!fontsLoaded) {
+    // Show a loading indicator while the font is being loaded
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <PaperProvider theme={theme}>
-      <Slot />
+      <UserProvider>
+        <Slot />
+      </UserProvider>
     </PaperProvider>
   );
 }
-
-const styles = {
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-};

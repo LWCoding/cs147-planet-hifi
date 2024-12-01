@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -9,13 +9,13 @@ import {
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
-// import { useNavigation } from "expo-router";
+import { UserContext } from "@/contexts/UserContext";
 
 // Import components
 import Planet from "@/components/Planet";
 
 // Import database access
-import db from "@/database/db";
+import db, { fetchAllPlanets } from "@/database/db";
 
 // NOTE FROM KRISTINE: might have to update the logic and not assume that first user is main user lol oops
 
@@ -26,56 +26,29 @@ const radius = 150; // Radius for circular layout
 const itemSize = 150; // Diameter of items
 
 export default function Galaxy() {
-  const [planets, setPlanets] = useState([]);
+  const [otherPlanets, setOtherPlanets] = useState([]);
+  const [mainPlanet, setMainPlanet] = useState(null);
+  const { userId } = useContext(UserContext);
 
   const router = useRouter();
   const theme = useTheme();
-  // const navigation = useNavigation();
 
   // Fetch all planets from the database and return them in the form
   // [{username: String, realname: String, emotion: String}]
   const fetchPlanets = async () => {
-    const { data: usersData, error: usersError } = await db
-      .from("users")
-      .select("*");
+    const allPlanets = await fetchAllPlanets();
 
-    if (usersError) {
-      console.error("Error fetching users: " + error.message);
-    }
-
-    const { data: statusData, error: statusError } = await db
-      .from("statuses")
-      .select("*");
-
-    if (statusError) {
-      console.error("Error fetching statuses: " + error.message);
-    }
-
-    const usersInfo = usersData.map((user) => {
-      // If the user has a status, then find the status
-      let emotion = "happy"; // Default emotion to happy
-      if (user.current_status_id) {
-        const status = statusData.find(
-          (status) => status.user_id === user.user_id
-        );
-        emotion = status.emotion;
-      }
-
-      return {
-        username: user.username,
-        realname: user.first_name,
-        emotion,
-      };
-    });
-
-    setPlanets(usersInfo);
+    // Find logged-in user's planet
+    setMainPlanet(allPlanets.find((user) => user.user_id === userId));
+    // Set all other planets
+    setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
   };
 
   // Get all planets from the database
   useEffect(() => {
     fetchPlanets();
   }, []);
-  
+
   const navToNewGalaxy = () => {
     router.push("/tabs/galaxy/newGalaxy");
   };
@@ -92,29 +65,21 @@ export default function Galaxy() {
         <Text style={styles.buttonText}>New Galaxy</Text>
       </TouchableOpacity>
       {/* center planet */}
-      {planets.length > 0 && (
+      {mainPlanet != null && (
         <View style={styles.centerItem}>
-          <Planet
-            username={planets[0].username}
-            realname={planets[0].realname}
-            emotion={planets[0].emotion}
-          />
+          <Planet userId={mainPlanet.user_id} />
         </View>
       )}
 
       {/* planets around center */}
-      {planets.slice(1).map((item, index) => {
-        const angle = (index / Math.min(planets.length - 1, 8)) * (2 * Math.PI); // Angle for spacing planets evenly
+      {otherPlanets.map((item, index) => {
+        const angle = (index / otherPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
         const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
         const y = centerY + radius * Math.sin(angle) - itemSize / 2; // Y position
 
         return (
           <View key={item.username} style={[styles.item, { left: x, top: y }]}>
-            <Planet
-              username={item.username}
-              realname={item.realname}
-              emotion={item.emotion}
-            />
+            <Planet userId={item.user_id} />
           </View>
         );
       })}
@@ -130,6 +95,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative", // Allows absolute positioning for items
+    fontFamily: "PPPierSans-Regular",
   },
   newGalaxy: {
     backgroundColor: "#9393BA",
@@ -141,6 +107,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   centerItem: {
     position: "absolute",
@@ -150,6 +117,7 @@ const styles = StyleSheet.create({
     height: itemSize,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   item: {
     position: "absolute", // how to get rid of cut off tho lol this might be a later problem? - kristine
@@ -157,8 +125,10 @@ const styles = StyleSheet.create({
     height: itemSize,
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   itemText: {
+    fontFamily: "PPPierSans-Regular",
     top: -20, // Shift text up closer to planet
   },
   iconContainer: {
@@ -171,9 +141,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 20,
     bottom: 60,
+    fontFamily: "PPPierSans-Regular",
   },
   buttonText: {
     fontSize: 18,
     fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular", // Add custom font
   },
 });
