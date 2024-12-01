@@ -53,7 +53,9 @@ export default function TextStatus() {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View margin={10}>
-        <Text margin={5}>I'm feeling...</Text>
+        <Text variant="titleLarge" margin={5}>
+          I'm feeling...
+        </Text>
         <SegmentedButtons
           value={emotion}
           onValueChange={setEmotion}

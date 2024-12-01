@@ -3,9 +3,16 @@ import { UserContext } from "@/contexts/UserContext";
 import db, { findPlanetById } from "@/database/db";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Image, Dimensions } from "react-native";
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  View,
+  Image,
+  Dimensions,
+} from "react-native";
+import { Text, SegmentedButtons, Button, TextInput } from "react-native-paper";
 
-import { Button, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -13,7 +20,10 @@ export default function PhotoStatus() {
   const theme = useTheme();
   const router = useRouter();
   const { uri } = useLocalSearchParams();
+
   const [user, setUser] = useState(null);
+  const [emotion, setEmotion] = useState(null);
+  const [statusText, setStatusText] = useState(null);
 
   const { userId } = useContext(UserContext);
 
@@ -35,8 +45,8 @@ export default function PhotoStatus() {
         .from("statuses")
         .insert([
           {
-            emotion: "happy",
-            status_text: "This is a test picture status", // TODO: Add text box and integrate into status posting
+            emotion,
+            status_text: statusText,
             image_url: uri,
             user_id: userId,
           },
@@ -65,6 +75,11 @@ export default function PhotoStatus() {
       <View
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >
+        <View margin={10}>
+          <Text variant="titleLarge" margin={5}>
+            Photo Preview
+          </Text>
+        </View>
         <View style={styles.photoContainer}>
           <Image
             style={[
@@ -77,7 +92,35 @@ export default function PhotoStatus() {
             <Planet userId={user.user_id} isClickable={false} />
           </View>
         </View>
-        <View top={80} margin={10}>
+        <View top={65} margin={10}>
+          <Text variant="titleLarge" margin={5}>
+            I'm feeling...
+          </Text>
+          <SegmentedButtons
+            value={emotion}
+            onValueChange={setEmotion}
+            buttons={[
+              {
+                value: "happy",
+                label: "Happy",
+              },
+              {
+                value: "neutral",
+                label: "Neutral",
+              },
+              { value: "sad", label: "Sad" },
+              { value: "angry", label: "Angry" },
+            ]}
+          />
+          <View margin={10}>
+            <TextInput
+              placeholder="What's on your mind?"
+              value={statusText}
+              multiline={true}
+              numberOfLines={3}
+              onChangeText={(text) => setStatusText(text)}
+            />
+          </View>
           <Button icon="send" mode="contained" onPress={() => submitPost()}>
             Post
           </Button>
