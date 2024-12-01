@@ -3,13 +3,7 @@ import { UserContext } from "@/contexts/UserContext";
 import db, { findPlanetById } from "@/database/db";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  View,
-  Image,
-  Dimensions,
-} from "react-native";
+import { ScrollView, StyleSheet, View, Image, Dimensions } from "react-native";
 import { Text, SegmentedButtons, Button, TextInput } from "react-native-paper";
 
 import { useTheme } from "react-native-paper";
@@ -72,7 +66,7 @@ export default function PhotoStatus() {
 
   if (user) {
     return (
-      <View
+      <ScrollView
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >
         <View margin={10}>
@@ -125,7 +119,7 @@ export default function PhotoStatus() {
             Post
           </Button>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
