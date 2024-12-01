@@ -14,7 +14,7 @@ import db, { findPlanetById, findStatusById } from "@/database/db";
 import PlanetImages from "@/assets/planet";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import ProfileButton from "@/components/ProfileButton";
+import IconButton from "@/components/IconButton";
 
 export default function userDetails() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
@@ -94,12 +94,8 @@ export default function userDetails() {
           <Text style={styles.statusText}>{status.status_text}</Text>
         </View>
         <View style={styles.buttonRow}>
-          <ProfileButton
-            to={`tabs/status`}
-            icon="emoticon-happy"
-            text="Status"
-          />
-          <ProfileButton
+          <IconButton to={`tabs/status`} icon="emoticon-happy" text="Status" />
+          <IconButton
             to={`tabs/galaxy/${userId}/calendar`}
             icon="calendar-account"
             text="Calendar"

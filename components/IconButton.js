@@ -13,7 +13,7 @@ export default function ProfileButton({ icon, text, to }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <TouchableOpacity
         style={[styles.button, { backgroundColor: theme.colors.primary }]}
         onPress={handlePress}
@@ -24,17 +24,13 @@ export default function ProfileButton({ icon, text, to }) {
           color={theme.colors.inverseSurface}
           style={styles.buttonIcon}
         />
-        <Text>{text}</Text>
+        <Text style={styles.buttonText}>{text}</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = {
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
   button: {
     width: 80,
     aspectRatio: "1/1",
@@ -44,5 +40,9 @@ const styles = {
   },
   buttonIcon: {
     marginBottom: 2,
+  },
+  buttonText: {
+    textAlign: "center",
+    paddingHorizontal: 5,
   },
 };
