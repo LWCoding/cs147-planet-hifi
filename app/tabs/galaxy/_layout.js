@@ -44,14 +44,14 @@ export default function GalaxyStackLayout() {
       <Stack.Screen
         name="newGalaxy"
         options={{
-          headerTitle: "Create a new Galaxy!",
+          headerTitle: "Create Galaxy",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
             fontFamily: "PPPierSans-Regular", // Custom font
           },
           headerTitleStyle: {
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: "bold",
             fontFamily: "PPPierSans-Regular", // Custom font
           },
@@ -60,12 +60,11 @@ export default function GalaxyStackLayout() {
       <Stack.Screen
         name="manageAll"
         options={{
-          title: "Manage All Friends",
+          title: "Manage Friends",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
             fontFamily: "PPPierSans-Regular", // Custom font
-
           },
           headerTitleStyle: {
             fontSize: 24,

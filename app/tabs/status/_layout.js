@@ -1,11 +1,17 @@
 import { Stack } from "expo-router";
+import { Text } from "react-native-paper";
+import { TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 
 export default function StatusStackLayout() {
   const theme = useTheme();
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerTintColor: "black",
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
@@ -17,6 +23,7 @@ export default function StatusStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular",
           },
         }}
       />
@@ -31,6 +38,7 @@ export default function StatusStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular",
           },
         }}
       />
@@ -45,6 +53,7 @@ export default function StatusStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular",
           },
         }}
       />
@@ -59,6 +68,7 @@ export default function StatusStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular",
           },
         }}
       />
