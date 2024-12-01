@@ -1,6 +1,5 @@
 import { Tabs } from "expo-router";
 import { useTheme } from "react-native-paper";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import IonIcon from "@expo/vector-icons/Ionicons";
 
@@ -26,7 +25,11 @@ export default function Layout() {
         options={{
           tabBarLabel: "Status",
           tabBarIcon: ({ color }) => (
-            <MaterialIcon name="emoji-emotions" size={24} color={color} />
+            <MaterialCommunityIcon
+              name="emoticon-happy"
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
