@@ -3,7 +3,15 @@ import { UserContext } from "@/contexts/UserContext";
 import db, { findPlanetById } from "@/database/db";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View, Image, Dimensions } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import { Text, SegmentedButtons, Button, TextInput } from "react-native-paper";
 
 import { useTheme } from "react-native-paper";
@@ -66,60 +74,64 @@ export default function PhotoStatus() {
 
   if (user) {
     return (
-      <ScrollView
+      <KeyboardAvoidingView
         style={[styles.container, { backgroundColor: theme.colors.background }]}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // Use 'padding' for iOS and 'height' for Android
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // Adjust offset if necessary
       >
-        <View margin={10}>
-          <Text variant="titleLarge" margin={5}>
-            Photo Preview
-          </Text>
-        </View>
-        <View style={styles.photoContainer}>
-          <Image
-            style={[
-              styles.photo,
-              { width: screenWidth, height: (screenWidth * 3) / 4 },
-            ]}
-            source={{ uri: uri }}
-          />
-          <View style={styles.photoPlanet}>
-            <Planet userId={user.user_id} isClickable={false} />
-          </View>
-        </View>
-        <View top={65} margin={10}>
-          <Text variant="titleLarge" margin={5}>
-            I'm feeling...
-          </Text>
-          <SegmentedButtons
-            value={emotion}
-            onValueChange={setEmotion}
-            buttons={[
-              {
-                value: "happy",
-                label: "Happy",
-              },
-              {
-                value: "neutral",
-                label: "Neutral",
-              },
-              { value: "sad", label: "Sad" },
-              { value: "angry", label: "Angry" },
-            ]}
-          />
+        <ScrollView contentContainerStyle={[styles.scrollContent]}>
           <View margin={10}>
-            <TextInput
-              placeholder="What's on your mind?"
-              value={statusText}
-              multiline={true}
-              numberOfLines={3}
-              onChangeText={(text) => setStatusText(text)}
-            />
+            <Text variant="titleLarge" margin={5}>
+              Photo Preview
+            </Text>
           </View>
-          <Button icon="send" mode="contained" onPress={() => submitPost()}>
-            Post
-          </Button>
-        </View>
-      </ScrollView>
+          <View style={styles.photoContainer}>
+            <Image
+              style={[
+                styles.photo,
+                { width: screenWidth, height: (screenWidth * 3) / 4 },
+              ]}
+              source={{ uri: uri }}
+            />
+            <View style={styles.photoPlanet}>
+              <Planet userId={user.user_id} isClickable={false} />
+            </View>
+          </View>
+          <View top={65} margin={10}>
+            <Text variant="titleLarge" margin={5}>
+              I'm feeling...
+            </Text>
+            <SegmentedButtons
+              value={emotion}
+              onValueChange={setEmotion}
+              buttons={[
+                {
+                  value: "happy",
+                  label: "Happy",
+                },
+                {
+                  value: "neutral",
+                  label: "Neutral",
+                },
+                { value: "sad", label: "Sad" },
+                { value: "angry", label: "Angry" },
+              ]}
+            />
+            <View margin={10}>
+              <TextInput
+                placeholder="What's on your mind?"
+                value={statusText}
+                multiline={true}
+                numberOfLines={3}
+                onChangeText={(text) => setStatusText(text)}
+              />
+            </View>
+            <Button icon="send" mode="contained" onPress={() => submitPost()}>
+              Post
+            </Button>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -127,6 +139,10 @@ export default function PhotoStatus() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
   },
   photo: {
     position: "relative",
