@@ -24,6 +24,21 @@ export default function UserLayout() {
           },
         }}
       />
+      <Stack.Screen
+        name="calendar"
+        options={{
+          presentation: "modal",
+          headerTitle: "",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text style={{ fontSize: 16, marginLeft: 10 }}>Back</Text>
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            backgroundColor: theme.colors.primary,
+          },
+        }}
+      />
     </Stack>
   );
 }
