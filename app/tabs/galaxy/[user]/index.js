@@ -1,5 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Touchable,
+} from "react-native";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -8,6 +14,7 @@ import db, { findPlanetById, findStatusById } from "@/database/db";
 import PlanetImages from "@/assets/planet";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import ProfileButton from "@/components/ProfileButton";
 
 export default function userDetails() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
@@ -16,6 +23,7 @@ export default function userDetails() {
   const theme = useTheme();
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState(null);
+  const [hasPhotoStatus, setHasPhotoStatus] = useState(false);
 
   const getImageFromEmotion = (emotion) => {
     switch (emotion) {
@@ -38,6 +46,10 @@ export default function userDetails() {
     const status = user.current_status_id
       ? await findStatusById(user.current_status_id)
       : null;
+
+    if (status.image_url) {
+      setHasPhotoStatus(true);
+    }
 
     setUser(user);
     setStatus(status);
@@ -66,13 +78,32 @@ export default function userDetails() {
             />
           )}
         </View>
-        <TouchableOpacity style={styles.expandButton} onPress={navtoImage}>
-          <View style={styles.circle}>
-            <Icon name="expand" size={30} color="white" />
-          </View>
-        </TouchableOpacity>
+        {hasPhotoStatus && (
+          <TouchableOpacity style={styles.expandButton} onPress={navtoImage}>
+            <View
+              style={[
+                styles.circle,
+                { backgroundColor: theme.colors.interactable },
+              ]}
+            >
+              <Icon name="expand" size={30} color="white" />
+            </View>
+          </TouchableOpacity>
+        )}
         <View style={styles.statusContainer}>
           <Text style={styles.statusText}>{status.status_text}</Text>
+        </View>
+        <View style={styles.buttonRow}>
+          <ProfileButton
+            to={`tabs/status`}
+            icon="emoticon-happy"
+            text="Status"
+          />
+          <ProfileButton
+            to={`tabs/galaxy/${userId}/calendar`}
+            icon="calendar-account"
+            text="Calendar"
+          />
         </View>
         <StatusBar style="auto" />
       </>
@@ -150,11 +181,18 @@ const styles = StyleSheet.create({
     right: 40,
     bottom: 200,
   },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+    margin: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+  },
   circle: {
     width: 50, // Circle's diameter
     height: 50, // Circle's diameter
     borderRadius: 25, // Half of the width/height for a perfect circle
-    backgroundColor: "#575788", // Circle's background color
     justifyContent: "center", // Center the icon vertically
     alignItems: "center", // Center the icon horizontally
   },

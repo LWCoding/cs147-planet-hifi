@@ -61,7 +61,13 @@ export default function Galaxy() {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <TouchableOpacity style={styles.newGalaxy} onPress={navToNewGalaxy}>
+      <TouchableOpacity
+        style={[
+          styles.newGalaxy,
+          { backgroundColor: theme.colors.interactable },
+        ]}
+        onPress={navToNewGalaxy}
+      >
         <Text style={styles.buttonText}>New Galaxy</Text>
       </TouchableOpacity>
       {/* center planet */}
@@ -84,7 +90,13 @@ export default function Galaxy() {
         );
       })}
       {/* manage button */}
-      <TouchableOpacity onPress={navToManage} style={styles.iconContainer}>
+      <TouchableOpacity
+        onPress={navToManage}
+        style={[
+          styles.iconContainer,
+          { backgroundColor: theme.colors.interactable },
+        ]}
+      >
         <Icon name="bars" size={30} color="#000" />
       </TouchableOpacity>
     </View>
@@ -98,7 +110,6 @@ const styles = StyleSheet.create({
     fontFamily: "PPPierSans-Regular",
   },
   newGalaxy: {
-    backgroundColor: "#9393BA",
     borderRadius: 30,
     position: "absolute",
     left: (width - 180) / 2,
@@ -135,7 +146,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30, // half of width/height
-    backgroundColor: "#9393BA",
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",

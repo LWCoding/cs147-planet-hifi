@@ -30,6 +30,7 @@ const theme = {
     onPrimary: "rgb(71, 12, 122)",
     primaryContainer: "rgb(95, 43, 146)",
     onPrimaryContainer: "rgb(240, 219, 255)",
+    interactable: "#9393BA", // Use for any buttons that are clickable
     secondary: "rgb(208, 193, 218)",
     onSecondary: "rgb(54, 44, 63)",
     secondaryContainer: "rgb(77, 67, 87)", // Will change the background of segmented buttons
