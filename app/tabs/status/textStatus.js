@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput, SegmentedButtons, Button } from "react-native-paper";
 import { useState } from "react";
 
@@ -8,8 +8,10 @@ export default function TextStatus() {
   const theme = useTheme();
   const [text, setText] = useState();
   const [emotion, setEmotion] = useState();
-
-  const handlePost = () => {};
+  // NOTE FROM KRISTINE: oh just realized we prob want to do what we did in A4 where we don't let users click on post if everything is null / disable the post button...
+  const handlePost = () => {
+    // Alert.alert("Your status has been updated!", [{ text: "OK :)" }]);
+  };
 
   return (
     <View
