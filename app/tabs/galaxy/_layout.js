@@ -27,18 +27,6 @@ export default function GalaxyStackLayout() {
             color: theme.colors.text,
           },
           headerTintColor: theme.colors.text,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => console.log("hi button pressed")}
-              style={{ marginRight: 10 }}
-            >
-              <MaterialIcons
-                name="arrow-forward"
-                size={24}
-                color={theme.colors.text}
-              />
-            </TouchableOpacity>
-          ),
         }}
       />
       <Stack.Screen
