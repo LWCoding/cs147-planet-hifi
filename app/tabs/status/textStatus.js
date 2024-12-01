@@ -83,7 +83,12 @@ export default function TextStatus() {
         />
       </View>
       <View margin={10}>
-        <Button icon="send" mode="contained" onPress={() => submitPost()}>
+        <Button
+          disabled={!statusText || !emotion}
+          icon="send"
+          mode="contained"
+          onPress={() => submitPost()}
+        >
           Post
         </Button>
       </View>

@@ -97,26 +97,28 @@ export default function PhotoStatus() {
               <Planet userId={user.user_id} isClickable={false} />
             </View>
           </View>
-          <View top={65} margin={10}>
+          <View top={65}>
             <Text variant="titleLarge" margin={5}>
               I'm feeling...
             </Text>
-            <SegmentedButtons
-              value={emotion}
-              onValueChange={setEmotion}
-              buttons={[
-                {
-                  value: "happy",
-                  label: "Happy",
-                },
-                {
-                  value: "neutral",
-                  label: "Neutral",
-                },
-                { value: "sad", label: "Sad" },
-                { value: "angry", label: "Angry" },
-              ]}
-            />
+            <View margin={10}>
+              <SegmentedButtons
+                value={emotion}
+                onValueChange={setEmotion}
+                buttons={[
+                  {
+                    value: "happy",
+                    label: "Happy",
+                  },
+                  {
+                    value: "neutral",
+                    label: "Neutral",
+                  },
+                  { value: "sad", label: "Sad" },
+                  { value: "angry", label: "Angry" },
+                ]}
+              />
+            </View>
             <View margin={10}>
               <TextInput
                 placeholder="What's on your mind?"
@@ -126,9 +128,22 @@ export default function PhotoStatus() {
                 onChangeText={(text) => setStatusText(text)}
               />
             </View>
-            <Button icon="send" mode="contained" onPress={() => submitPost()}>
-              Post
-            </Button>
+            <View margin={10}>
+              <Button
+                disabled={!emotion || !statusText}
+                icon="send"
+                mode="contained"
+                onPress={() => submitPost()}
+                style={{
+                  backgroundColor:
+                    !emotion || !statusText
+                      ? theme.colors.disabled
+                      : theme.colors.primary, // Use the theme's primary color for enabled state
+                }}
+              >
+                Post
+              </Button>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
