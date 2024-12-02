@@ -18,15 +18,22 @@ export default function CalendarView() {
       const rawCalendarInfo = await findCalendarInfoById(userId); // Fetch the user's calendar info
 
       // Transform data to match BigCalendar's format
-      const transformedEvents = rawCalendarInfo.map((event) => ({
-        title: event.title,
-        start: new Date(event.start), // Convert ISO string to Date object
-        end: new Date(event.end),
-      }));
-
-      setCalendarInfo(transformedEvents);
+      if (Array.isArray(rawCalendarInfo)) {
+        const transformedEvents = rawCalendarInfo.map((event) => ({
+          title: event.title,
+          start: new Date(event.start),
+          end: new Date(event.end),
+        }));
+        setCalendarInfo(transformedEvents);
+      } else {
+        console.warn("Invalid data format: expected an array");
+        setCalendarInfo([]); // Fallback to empty array
+      }
     } catch (error) {
       console.error("Error fetching calendar info:", error);
+      setCalendarInfo([]);
+    } finally {
+      setLoading(false); // Ensure loading stops
     }
   };
 
@@ -40,7 +47,6 @@ export default function CalendarView() {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
