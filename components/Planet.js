@@ -9,6 +9,8 @@ import PlanetImages from "@/assets/planet";
 
 export default function Planet({
   userId,
+  width = 100,
+  height = 100,
   isClickable = true, // Set isClickable = false if clicking the planet shouldn't navigate to account
   isNameVisible = true, // Set isNameVisible = false if the name should not be displayed
 }) {
@@ -49,17 +51,23 @@ export default function Planet({
       <View style={styles.container}>
         {isClickable ? (
           <TouchableOpacity onPress={handlePress}>
-            <Image source={PlanetImages.base} style={styles.planet} />
             <Image
-              style={styles.face}
+              source={PlanetImages.base}
+              style={[styles.planet, { width, height }]}
+            />
+            <Image
+              style={[styles.face, { width, height }]}
               source={getImageFromEmotion(user.emotion)}
             ></Image>
           </TouchableOpacity>
         ) : (
           <View>
-            <Image source={PlanetImages.base} style={styles.planet} />
             <Image
-              style={styles.face}
+              source={PlanetImages.base}
+              style={[styles.planet, { width, height }]}
+            />
+            <Image
+              style={[styles.face, { width, height }]}
               source={getImageFromEmotion(user.emotion)}
             />
           </View>
@@ -80,16 +88,10 @@ const styles = {
     alignItems: "center",
   },
   face: {
-    width: 100,
-    height: 100,
     position: "absolute",
     top: 0, // Y offset of the text from the planet
   },
   relativeOverText: {
     top: -10, // Shift closer to planet
-  },
-  planet: {
-    width: 100,
-    height: 100,
   },
 };

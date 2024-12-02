@@ -83,7 +83,15 @@ export default function Account() {
     <ScrollView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <Planet userId={userId} isClickable={false} isNameVisible={false} />
+      <View marginTop={10}>
+        <Planet
+          width={150}
+          height={150}
+          userId={userId}
+          isClickable={false}
+          isNameVisible={false}
+        />
+      </View>
       <View margin={10}>
         <Text>Username (you cannot change this)</Text>
         <TextInput value={username} disabled={true} />

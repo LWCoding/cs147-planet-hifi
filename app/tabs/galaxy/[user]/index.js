@@ -12,6 +12,7 @@ import IconButton from "@/components/IconButton";
 // Import images
 import PlanetImages from "@/assets/planet";
 import PlaceholderImage from "@/assets/placeholder.png";
+import Planet from "@/components/Planet";
 
 export default function userDetails() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
@@ -84,13 +85,13 @@ export default function userDetails() {
           <Image source={PlaceholderImage} style={styles.image} />
         )}
         <View style={styles.planetContainer}>
-          <Image source={PlanetImages.base} style={styles.planet} />
-          {user && status && (
-            <Image
-              style={styles.face}
-              source={getImageFromEmotion(status.emotion)}
-            />
-          )}
+          <Planet
+            userId={userId}
+            width={150}
+            height={150}
+            isClickable={false}
+            isNameVisible={false}
+          />
         </View>
         {hasPhotoStatus && isPhotoStatusLoaded && (
           <TouchableOpacity style={styles.expandButton} onPress={navtoImage}>
@@ -177,18 +178,8 @@ const styles = StyleSheet.create({
     // fontWeight: "bold",
     fontSize: 15,
   },
-  face: {
-    width: 150,
-    height: 150,
-    position: "absolute",
-    top: 30, // changed to 30 bc i put paddingtop
-  },
   relativeOverText: {
     top: -10, // Shift closer to planet
-  },
-  planet: {
-    width: 150,
-    height: 150,
   },
   expandButton: {
     position: "absolute",
