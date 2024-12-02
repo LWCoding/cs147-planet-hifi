@@ -9,7 +9,7 @@ import { Calendar } from 'react-native-big-calendar';
 export default function CalendarView() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
 
-  const [calendarInfo, setCalendarInfo] = useState(null);
+  const [calendarInfo, setCalendarInfo] = useState([]);
 
   const theme = useTheme();
 
