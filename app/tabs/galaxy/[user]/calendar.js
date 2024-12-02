@@ -1,14 +1,28 @@
 import { StyleSheet, View } from "react-native";
+import { useState, useEffect } from "react";
 import { Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useTheme } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { findCalendarInfoById } from "@/database/db";
 
 export default function Calendar() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
 
-  const navigation = useNavigation();
+  const [calendarInfo, setCalendarInfo] = useState(null);
+
   const theme = useTheme();
+
+  const fetchCalendarInfo = async () => {
+    // Fetch the user's calendar information
+    const calendarInfo = await findCalendarInfoById(userId);
+
+    console.log(calendarInfo);
+    setCalendarInfo(calendarInfo); // Store calendar info
+  };
+
+  useEffect(() => {
+    fetchCalendarInfo();
+  }, []);
 
   return (
     <View
