@@ -1,20 +1,17 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Touchable,
-} from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
-import db, { findPlanetById, findStatusById } from "@/database/db";
-import PlanetImages from "@/assets/planet";
+import { findPlanetById, findStatusById } from "@/database/db";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IconButton from "@/components/IconButton";
+
+// Import images
+import PlanetImages from "@/assets/planet";
+import PlaceholderImage from "@/assets/placeholder.png";
 
 export default function userDetails() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
@@ -47,7 +44,7 @@ export default function userDetails() {
       ? await findStatusById(user.current_status_id)
       : null;
 
-    if (status.image_url) {
+    if (status?.image_url) {
       setHasPhotoStatus(true);
     }
 
@@ -68,7 +65,11 @@ export default function userDetails() {
   if (user && status) {
     renderItem = (
       <>
-        {<Image source={{ uri: status.image_url }} style={styles.image} />}
+        {status?.image_url ? (
+          <Image source={{ uri: status.image_url }} style={styles.image} />
+        ) : (
+          <Image source={PlaceholderImage} style={styles.image} />
+        )}
         <View style={styles.planetContainer}>
           <Image source={PlanetImages.base} style={styles.planet} />
           {user && status && (
