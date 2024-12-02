@@ -21,6 +21,7 @@ export default function userDetails() {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState(null);
   const [hasPhotoStatus, setHasPhotoStatus] = useState(false);
+  const [isPhotoStatusLoaded, setIsPhotoStatusLoaded] = useState(false);
 
   const getImageFromEmotion = (emotion) => {
     switch (emotion) {
@@ -65,8 +66,20 @@ export default function userDetails() {
   if (user && status) {
     renderItem = (
       <>
+        <ActivityIndicator
+          color={theme.colors.primary}
+          style={[
+            styles.imageLoadingIndicator,
+            { display: !isPhotoStatusLoaded ? "flex" : "none" },
+          ]}
+          size="small"
+        />
         {status?.image_url ? (
-          <Image source={{ uri: status.image_url }} style={styles.image} />
+          <Image
+            source={{ uri: status.image_url }}
+            style={[styles.image]}
+            onLoadEnd={() => setIsPhotoStatusLoaded(true)}
+          />
         ) : (
           <Image source={PlaceholderImage} style={styles.image} />
         )}
@@ -79,7 +92,7 @@ export default function userDetails() {
             />
           )}
         </View>
-        {hasPhotoStatus && (
+        {hasPhotoStatus && isPhotoStatusLoaded && (
           <TouchableOpacity style={styles.expandButton} onPress={navtoImage}>
             <View
               style={[
@@ -143,6 +156,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // justifyContent: "center",
     position: "relative",
+  },
+  imageLoadingIndicator: {
+    position: "absolute",
+    top: "50%", // Position loading indicator over picture
   },
   activityIndicatorContainer: {
     alignItems: "center",
