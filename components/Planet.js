@@ -10,6 +10,7 @@ import PlanetImages from "@/assets/planet";
 export default function Planet({
   userId,
   isClickable = true, // Set isClickable = false if clicking the planet shouldn't navigate to account
+  isNameVisible = true, // Set isNameVisible = false if the name should not be displayed
 }) {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -63,11 +64,13 @@ export default function Planet({
             />
           </View>
         )}
-        <Text style={styles.relativeOverText}>{user.first_name}</Text>
+        {isNameVisible && (
+          <Text style={styles.relativeOverText}>{user.first_name}</Text>
+        )}
       </View>
     );
   } else {
-    <ActivityIndicator size="small" animating={true} />;
+    return <ActivityIndicator size="small" animating={true} />;
   }
 }
 
