@@ -70,7 +70,7 @@ export default function Planet({
       </View>
     );
   } else {
-    <ActivityIndicator size="small" animating={true} />;
+    return <ActivityIndicator size="small" animating={true} />;
   }
 }
 

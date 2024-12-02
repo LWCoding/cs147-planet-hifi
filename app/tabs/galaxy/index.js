@@ -7,7 +7,7 @@ import {
   Text,
   ImageBackground,
 } from "react-native";
-import { useTheme } from "react-native-paper";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
@@ -52,6 +52,19 @@ export default function Galaxy() {
   useEffect(() => {
     fetchPlanets();
   }, []);
+
+  if (!mainPlanet || !otherPlanets) {
+    return (
+      <View
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: theme.colors.background },
+        ]}
+      >
+        <ActivityIndicator size="large" animating={true} />
+      </View>
+    );
+  }
 
   return (
     <View
@@ -103,6 +116,11 @@ export default function Galaxy() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     fontFamily: "PPPierSans-Regular",
