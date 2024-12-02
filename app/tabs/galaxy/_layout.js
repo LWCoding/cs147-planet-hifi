@@ -27,31 +27,19 @@ export default function GalaxyStackLayout() {
             color: theme.colors.text,
           },
           headerTintColor: theme.colors.text,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => console.log("hi button pressed")}
-              style={{ marginRight: 10 }}
-            >
-              <MaterialIcons
-                name="arrow-forward"
-                size={24}
-                color={theme.colors.text}
-              />
-            </TouchableOpacity>
-          ),
         }}
       />
       <Stack.Screen
         name="newGalaxy"
         options={{
-          headerTitle: "Create a new Galaxy!",
+          headerTitle: "Create Galaxy",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
             fontFamily: "PPPierSans-Regular", // Custom font
           },
           headerTitleStyle: {
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: "bold",
             fontFamily: "PPPierSans-Regular", // Custom font
           },
@@ -60,12 +48,11 @@ export default function GalaxyStackLayout() {
       <Stack.Screen
         name="manageAll"
         options={{
-          title: "Manage All Friends",
+          title: "Manage Friends",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: theme.colors.primary,
             fontFamily: "PPPierSans-Regular", // Custom font
-
           },
           headerTitleStyle: {
             fontSize: 24,

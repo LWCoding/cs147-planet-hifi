@@ -57,7 +57,9 @@ export default function TextStatus() {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View margin={10}>
-        <Text margin={5}>I'm feeling...</Text>
+        <Text variant="titleLarge" margin={5}>
+          I'm feeling...
+        </Text>
         <SegmentedButtons
           value={emotion}
           onValueChange={setEmotion}
@@ -85,7 +87,12 @@ export default function TextStatus() {
         />
       </View>
       <View margin={10}>
-        <Button icon="send" mode="contained" onPress={() => submitPost()}>
+        <Button
+          disabled={!statusText || !emotion}
+          icon="send"
+          mode="contained"
+          onPress={() => submitPost()}
+        >
           Post
         </Button>
       </View>

@@ -5,8 +5,9 @@ import {
   Dimensions,
   TouchableOpacity,
   Text,
+  ImageBackground,
 } from "react-native";
-import { useTheme } from "react-native-paper";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
@@ -14,10 +15,14 @@ import { UserContext } from "@/contexts/UserContext";
 // Import components
 import Planet from "@/components/Planet";
 
-// Import database access
-import db, { fetchAllPlanets } from "@/database/db";
+// Import assets
+import spaceBackgroundImage from "@/assets/space-bg.jpg";
 
-// NOTE FROM KRISTINE: might have to update the logic and not assume that first user is main user lol oops
+// Import database access
+import { fetchAllPlanets } from "@/database/db";
+import IconButton from "@/components/IconButton";
+
+const galaxyMarginTop = 50; // How far from top entire galaxy should be pushed down
 
 const { width, height } = Dimensions.get("window");
 const centerX = width / 2; // Center X position
@@ -30,7 +35,6 @@ export default function Galaxy() {
   const [mainPlanet, setMainPlanet] = useState(null);
   const { userId } = useContext(UserContext);
 
-  const router = useRouter();
   const theme = useTheme();
 
   // Fetch all planets from the database and return them in the form
@@ -49,70 +53,98 @@ export default function Galaxy() {
     fetchPlanets();
   }, []);
 
-  const navToNewGalaxy = () => {
-    router.push("/tabs/galaxy/newGalaxy");
-  };
-
-  const navToManage = () => {
-    router.push("/tabs/galaxy/manageAll");
-  };
+  if (!mainPlanet || !otherPlanets) {
+    return (
+      <View
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: theme.colors.background },
+        ]}
+      >
+        <ActivityIndicator size="large" animating={true} />
+      </View>
+    );
+  }
 
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <TouchableOpacity style={styles.newGalaxy} onPress={navToNewGalaxy}>
-        <Text style={styles.buttonText}>New Galaxy</Text>
-      </TouchableOpacity>
-      {/* center planet */}
-      {mainPlanet != null && (
-        <View style={styles.centerItem}>
-          <Planet userId={mainPlanet.user_id} />
+      <ImageBackground
+        source={spaceBackgroundImage}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <View paddingHorizontal={50} top={30} style={styles.topButtonRow}>
+          <IconButton
+            to="/tabs/galaxy/newGalaxy"
+            icon="plus-circle"
+            text="New Galaxy"
+          />
+          <IconButton
+            to="/tabs/galaxy/manageAll"
+            icon="menu"
+            text="Manage Galaxy"
+          />
         </View>
-      )}
-
-      {/* planets around center */}
-      {otherPlanets.map((item, index) => {
-        const angle = (index / otherPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
-        const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
-        const y = centerY + radius * Math.sin(angle) - itemSize / 2; // Y position
-
-        return (
-          <View key={item.username} style={[styles.item, { left: x, top: y }]}>
-            <Planet userId={item.user_id} />
+        {/* center planet */}
+        {mainPlanet != null && (
+          <View style={styles.centerItem}>
+            <Planet userId={mainPlanet.user_id} />
           </View>
-        );
-      })}
-      {/* manage button */}
-      <TouchableOpacity onPress={navToManage} style={styles.iconContainer}>
-        <Icon name="bars" size={30} color="#000" />
-      </TouchableOpacity>
+        )}
+
+        {/* planets around center */}
+        {otherPlanets.map((item, index) => {
+          const angle = (index / otherPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
+          const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
+          const y =
+            centerY + radius * Math.sin(angle) - itemSize / 2 + galaxyMarginTop; // Y position
+
+          return (
+            <View
+              key={item.username}
+              style={[styles.item, { left: x, top: y }]}
+            >
+              <Planet userId={item.user_id} />
+            </View>
+          );
+        })}
+      </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
-    position: "relative", // Allows absolute positioning for items
     fontFamily: "PPPierSans-Regular",
   },
   newGalaxy: {
-    backgroundColor: "#9393BA",
     borderRadius: 30,
-    position: "absolute",
-    left: (width - 180) / 2,
-    top: 30,
     width: 180,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
     fontFamily: "PPPierSans-Regular",
   },
+  image: {
+    flex: 1,
+  },
+  topButtonRow: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
   centerItem: {
     position: "absolute",
     left: centerX - itemSize / 2, // center horizontally
-    top: centerY - itemSize / 2, // center vertically
+    top: centerY - itemSize / 2 + galaxyMarginTop, // center vertically
     width: itemSize,
     height: itemSize,
     justifyContent: "center",
@@ -127,20 +159,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontFamily: "PPPierSans-Regular",
   },
-  itemText: {
-    fontFamily: "PPPierSans-Regular",
-    top: -20, // Shift text up closer to planet
-  },
   iconContainer: {
     width: 60,
     height: 60,
     borderRadius: 30, // half of width/height
-    backgroundColor: "#9393BA",
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    right: 20,
-    bottom: 60,
     fontFamily: "PPPierSans-Regular",
   },
   buttonText: {

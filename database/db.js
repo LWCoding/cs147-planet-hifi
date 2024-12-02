@@ -103,4 +103,19 @@ export const findStatusById = async (statusId) => {
   return data;
 };
 
+// Given a user id, asynchronously fetches the user's associated calendar information
+// from the database and returns it.
+export const findCalendarInfoById = async (userId) => {
+  const { data, error } = await db
+    .from("availabilities")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("Error fetching calendar info: ", error.message);
+  }
+
+  return data;
+};
+
 export default db;
