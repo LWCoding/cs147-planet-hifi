@@ -4,9 +4,9 @@ import { Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useTheme } from "react-native-paper";
 import { findCalendarInfoById } from "@/database/db";
-import BigCalendar from '@event-calendar/react-native-big-calendar';
+import { Calendar } from 'react-native-big-calendar';
 
-export default function Calendar() {
+export default function CalendarView() {
   const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
 
   const [calendarInfo, setCalendarInfo] = useState(null);
@@ -14,11 +14,20 @@ export default function Calendar() {
   const theme = useTheme();
 
   const fetchCalendarInfo = async () => {
-    // Fetch the user's calendar information
-    const calendarInfo = await findCalendarInfoById(userId);
+    try {
+      const rawCalendarInfo = await findCalendarInfoById(userId); // Fetch the user's calendar info
 
-    console.log(calendarInfo);
-    setCalendarInfo(calendarInfo); // Store calendar info
+      // Transform data to match BigCalendar's format
+      const transformedEvents = rawCalendarInfo.map((event) => ({
+        title: event.title,
+        start: new Date(event.start), // Convert ISO string to Date object
+        end: new Date(event.end),
+      }));
+
+      setCalendarInfo(transformedEvents);
+    } catch (error) {
+      console.error("Error fetching calendar info:", error);
+    }
   };
 
   useEffect(() => {
@@ -27,7 +36,7 @@ export default function Calendar() {
 
   return (
     <View style={styles.container}>
-      <BigCalendar events={calendarInfo} height={600} />
+      <Calendar events={calendarInfo} height={600} />
     </View>
   );
 };
