@@ -140,7 +140,7 @@ export default function NewGalaxy() {
     } catch (error) {
       console.error("Error in addFriends function: ", error.message);
     }
-    console.log(galaxyName);
+    // console.log(galaxyName);
 
     router.push({
       pathname: "tabs/galaxy/newGalaxy/addFriends",
