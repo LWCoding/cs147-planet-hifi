@@ -1,10 +1,15 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
-export default function addFriendstoGalaxy() {
+export default function AddFriends() {
+  const router = useRouter();
+  const { galaxyName } = useLocalSearchParams();
+
   return (
     <View style={styles.container}>
-      <Text>add friends</Text>
+      <Text style={styles.text}>{galaxyName ? galaxyName : "Loading..."}</Text>
     </View>
   );
 }
@@ -15,7 +20,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgb(29, 27, 30)",
-        fontFamily: "PPPierSans-Regular",
-
+  },
+  text: {
+    color: "white",
+    fontSize: 30,
   },
 });
