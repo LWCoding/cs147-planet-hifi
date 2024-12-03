@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import db, { fetchFriends } from "@/database/db";
 import { fetchAllPlanets } from "@/database/db";
-import { FriendComponent } from "@/components/FriendComponent";
+import FriendComponent from "@/components/FriendComponent";
 
 export default function AddFriends() {
   const router = useRouter();
@@ -34,13 +34,14 @@ export default function AddFriends() {
       for (let i = 0; i < friendIds.length; i++) {
         const friendId = friendIds[i];
         const friendPlanet = allPlanets.find(
-          (friendId) => friendId.user_id === friendId
+          (planet) => planet.user_id === friendId
         );
+        // console.log(friendPlanet);
         if (friendPlanet) {
           array.push(friendPlanet);
         }
       }
-      console.log(array);
+      console.log("array:", array);
       setFriendPlanets(array);
     } catch (error) {
       console.error("Error fetching planets:", error);
