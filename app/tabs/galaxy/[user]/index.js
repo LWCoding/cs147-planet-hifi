@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
 import { findPlanetById, findStatusById } from "@/database/db";
 import { useNavigation } from "@react-navigation/native";
@@ -10,37 +10,24 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import IconButton from "@/components/IconButton";
 
 // Import images
-import PlanetImages from "@/assets/planet";
 import PlaceholderImage from "@/assets/placeholder.png";
 import Planet from "@/components/Planet";
+import { UserContext } from "@/contexts/UserContext";
 
 export default function userDetails() {
-  const { user: userId } = useLocalSearchParams(); // Get the user's info from navigation
+  const { user: inputtedUserId } = useLocalSearchParams(); // Get the user's info from navigation
+  const { userId } = useContext(UserContext); // The current user's info
 
   const navigation = useNavigation();
   const theme = useTheme();
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState(null);
+  const [isUserProfile, setIsUserProfile] = useState(false);
   const [hasPhotoStatus, setHasPhotoStatus] = useState(false);
   const [isPhotoStatusLoaded, setIsPhotoStatusLoaded] = useState(false);
 
-  const getImageFromEmotion = (emotion) => {
-    switch (emotion) {
-      case "happy":
-        return PlanetImages.faces.happy;
-      case "sad":
-        return PlanetImages.faces.sad;
-      case "angry":
-        return PlanetImages.faces.angry;
-      case "neutral":
-        return PlanetImages.faces.neutral;
-      default:
-        return PlanetImages.faces.happy; // Default to happy
-    }
-  };
-
   const fetchUserInfo = async () => {
-    const user = await findPlanetById(userId);
+    const user = await findPlanetById(inputtedUserId);
 
     const status = user.current_status_id
       ? await findStatusById(user.current_status_id)
@@ -49,6 +36,8 @@ export default function userDetails() {
     if (status?.image_url) {
       setHasPhotoStatus(true);
     }
+
+    setIsUserProfile(user.user_id === userId);
 
     setUser(user);
     setStatus(status);
@@ -86,7 +75,7 @@ export default function userDetails() {
         )}
         <View style={styles.planetContainer}>
           <Planet
-            userId={userId}
+            userId={inputtedUserId}
             width={150}
             height={150}
             isClickable={false}
@@ -109,9 +98,15 @@ export default function userDetails() {
           <Text style={styles.statusText}>{status.status_text}</Text>
         </View>
         <View style={styles.buttonRow}>
-          <IconButton to={`tabs/status`} icon="emoticon-happy" text="Status" />
+          {isUserProfile && (
+            <IconButton
+              to={`tabs/status`}
+              icon="emoticon-happy"
+              text="Status"
+            />
+          )}
           <IconButton
-            to={`tabs/galaxy/${userId}/calendar`}
+            to={`tabs/galaxy/${inputtedUserId}/calendar`}
             icon="calendar-account"
             text="Calendar"
           />
@@ -128,7 +123,7 @@ export default function userDetails() {
   }
 
   // If we have the user's info, display it -- or else show a loading icon
-  if (user != null) {
+  if (user) {
     return (
       <View
         style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -171,7 +166,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 30,
-    margin: 40,
+    margin: 30,
     fontFamily: "PPPierSans-Regular",
   },
   statusText: {
@@ -180,13 +175,10 @@ const styles = StyleSheet.create({
     fontFamily: "PPPierSans-Regular",
     fontSize: 15,
   },
-  relativeOverText: {
-    top: -10, // Shift closer to planet
-  },
   expandButton: {
     position: "absolute",
     right: 40,
-    bottom: 200,
+    bottom: "32%",
   },
   buttonRow: {
     flexDirection: "row",
@@ -209,7 +201,7 @@ const styles = StyleSheet.create({
     fontFamily: "PPPierSans-Regular",
     alignItems: "center",
     position: "absolute",
-    top: "8%",
+    top: "7%",
     zIndex: 1,
   },
   image: {
