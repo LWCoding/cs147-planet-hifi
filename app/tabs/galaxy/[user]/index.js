@@ -172,10 +172,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 30,
     margin: 40,
+    fontFamily: "PPPierSans-Regular",
   },
   statusText: {
     color: "black",
     // fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular",
     fontSize: 15,
   },
   relativeOverText: {

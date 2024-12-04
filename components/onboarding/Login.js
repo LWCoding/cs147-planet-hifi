@@ -100,8 +100,8 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingTop: 60,
-    padding: 12,
+    paddingTop: 140,
+    padding: 20,
     flex: 1,
   },
   splash: {
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   splashText: {
+    fontFamily: "PPPierSans-Regular",
     fontWeight: "bold",
     fontSize: 60,
   },
@@ -132,5 +133,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 18,
     padding: 8,
+    fontFamily: "PPPierSans-Regular",
   },
 });
