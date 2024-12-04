@@ -106,6 +106,11 @@ export default function userDetails() {
             />
           )}
           <IconButton
+            to={`tabs/galaxy/${inputtedUserId}/statusHistory`}
+            icon="history"
+            text="History"
+          />
+          <IconButton
             to={`tabs/galaxy/${inputtedUserId}/calendar`}
             icon="calendar-account"
             text="Calendar"
