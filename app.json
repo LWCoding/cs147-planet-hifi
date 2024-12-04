@@ -26,6 +26,20 @@
     "plugins": [
       "expo-router"
     ],
-    "scheme": "cs147-planet"
+    "scheme": "cs147-planet",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c1c815ed-69fc-4b69-a275-77ce6425a826"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c1c815ed-69fc-4b69-a275-77ce6425a826"
+    }
   }
 }

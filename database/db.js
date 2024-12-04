@@ -100,6 +100,23 @@ export const fetchAllPlanets = async () => {
   return usersInfo;
 };
 
+// Given a user id, asynchronously fetches all of the user's statuses from the database,
+// even expired ones. Returns the statuses in a list.
+export const fetchAllStatusesById = async (userId) => {
+  const user = await findPlanetById(userId);
+
+  const { data: statusData, error: statusError } = await db
+    .from("statuses")
+    .select("*")
+    .eq("user_id", user.user_id);
+
+  if (statusError) {
+    console.error("Error fetching statuses: " + error.message);
+  }
+
+  return statusData;
+};
+
 // Given a status id, asynchronously fetches the status's data from the database
 // and returns it.
 export const findStatusById = async (statusId) => {

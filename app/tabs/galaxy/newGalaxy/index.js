@@ -7,9 +7,11 @@ import {
   TextInput,
   Image,
   Dimensions,
+  Alert,
 } from "react-native";
 
-// NOTE FROM KRISTINE: UPDATE SO THAT 'BACK BUTTON' DOESNT ALLOW U TO DUPLIACET GALAXY AND IF U EDIT THE NAME, U EDIT THE ROW U JUST CREATED!!
+// NOTE FROM KRISTINE: ADD BACK BUTTON NAV?
+
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import PlanetImages from "@/assets/planet";
@@ -24,7 +26,7 @@ export default function NewGalaxy() {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [galaxyName, setGalaxyName] = useState("New Galaxy");
-  const [userPlanet, setUserPlanet] = useState(null); // Start with null or an empty object, not an array
+  const [userPlanet, setUserPlanet] = useState(null);
 
   // Given an emotion, return the corresponding image
   const getImageFromEmotion = (emotion) => {
@@ -41,7 +43,21 @@ export default function NewGalaxy() {
         return PlanetImages.faces.happy; // Default to happy
     }
   };
-
+  const checkExisting = async (galName) => {
+    const { data, error } = await db
+      .from("galaxies")
+      .select("name")
+      .eq("name", galaxyName);
+    if (error) {
+      console.error("err fetching galaxies");
+      return;
+    }
+    if (data.length > 0) {
+      Alert.alert("Galaxy already exists! Choose a different name.");
+      return true;
+    }
+    return false;
+  };
   const fetchUser = async () => {
     //fetching first user in db
     const { data: usersData, error: usersError } = await db
@@ -82,10 +98,7 @@ export default function NewGalaxy() {
     console.log(userInfo);
     setUserPlanet(userInfo);
   };
-  // NOTE FROM KRISTINE: MIGHT HAVE TO EXPLORE FOCUS TO RENDER WHEN WE NAV TO STACK CUZ ITS NOT WORKING SOMETIMES ACTUALLY LOL
-  //   useEffect(() => {
-  //     fetchUser();
-  //   }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true;
@@ -100,7 +113,7 @@ export default function NewGalaxy() {
       return () => {
         isActive = false;
       };
-    }, []) // Empty dependencies to avoid multiple calls
+    }, [])
   );
 
   const handleEdit = () => {
@@ -119,6 +132,10 @@ export default function NewGalaxy() {
   };
 
   const addFriends = async () => {
+    const galaxyExists = await checkExisting();
+    if (galaxyExists) {
+      return;
+    }
     if (galaxyName === "New Galaxy") {
       alert("Please change the Galaxy name first!");
       return;
@@ -129,7 +146,7 @@ export default function NewGalaxy() {
         .insert([
           {
             name: galaxyName,
-            planets: null,
+            planets: [],
           },
         ]);
 
@@ -160,7 +177,7 @@ export default function NewGalaxy() {
             onBlur={handleBlur} // end editing when the input loses focus
           />
         ) : (
-          // If not editing, render current galaxy name (default: new galaxy)
+          // if not editing, render current galaxy name (default: new galaxy)
           <Text style={styles.text}>{galaxyName}</Text>
         )}
         <TouchableOpacity onPress={handleEdit}>
