@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import db, { fetchFriends } from "@/database/db";
 import { fetchAllPlanets } from "@/database/db";
-import FriendComponent from "@/components/friendComponent";
+import FriendComponent from "@/components/FriendComponent";
 
 export default function AddFriends() {
   const router = useRouter();
