@@ -7,18 +7,14 @@ import {
   Text,
   ImageBackground,
 } from "react-native";
+// NOTE FROM KRISTINE: HOW TO AVOID DUPLICATE OF PLANET NAMES LOL?
+
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
-
-// Import components
 import Planet from "@/components/Planet";
-
-// Import assets
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
-
-// Import database access
 import { fetchAllPlanets } from "@/database/db";
 import IconButton from "@/components/IconButton";
 

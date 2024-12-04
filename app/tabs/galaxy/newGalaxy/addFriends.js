@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import db, { fetchFriends } from "@/database/db";
 import { fetchAllPlanets } from "@/database/db";
-import FriendComponent from "@/components/FriendComponent";
+import FriendComponent from "@/components/friendComponent";
 
 export default function AddFriends() {
   const router = useRouter();
@@ -17,59 +17,65 @@ export default function AddFriends() {
   const fetchFriendIds = async () => {
     const friendsIds = await fetchFriends(userId);
     console.log("Fetched Friend IDs:", friendsIds);
-
     setFriendIds(friendsIds);
   };
-
   const fetchPlanets = async () => {
     try {
       const allPlanets = await fetchAllPlanets();
       console.log("All Planets:", allPlanets);
 
-      // Find logged-in user's planet
-      // setMainPlanet(allPlanets.find((user) => user.user_id === userId));
-
-      // Set other planets for friends
       let array = [];
       for (let i = 0; i < friendIds.length; i++) {
         const friendId = friendIds[i];
         const friendPlanet = allPlanets.find(
           (planet) => planet.user_id === friendId
         );
-        // console.log(friendPlanet);
         if (friendPlanet) {
           array.push(friendPlanet);
         }
       }
-      console.log("array:", array);
+
+      console.log("Array of Friend Planets:", array);
       setFriendPlanets(array);
     } catch (error) {
       console.error("Error fetching planets:", error);
     }
   };
+
   useEffect(() => {
-    const fetchData = async () => {
-      console.log("hi");
-      await fetchFriendIds(); // Fetch friend IDs first
-      fetchPlanets(); // Then fetch planets based on friend IDs
-    };
-    fetchData();
+    fetchFriendIds();
   }, []);
 
+  useEffect(() => {
+    if (friendIds.length > 0) {
+      fetchPlanets(); // fetch planets when friendIds is updated
+    }
+  }, [friendIds]);
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{galaxyName ? galaxyName : "Loading..."}</Text>
+      <View style={styles.topContainer}>
+        <Text style={styles.topText}>Add friends to</Text>
+        <Text style={styles.text}>{galaxyName}</Text>
+      </View>
       <FlatList
         data={friendPlanets}
         renderItem={({ item }) => (
           <FriendComponent
-            userId={item.user_id}
-            username={item.username}
-            firstname={item.first_name}
-            lastname={item.last_name}
+            galaxyName={galaxyName}
+            planetObj={item}
+            // userId={item.user_id}
+            // username={item.username}
+            // firstname={item.first_name}
+            // lastname={item.last_name}
           />
         )}
       ></FlatList>
+      <View style={styles.bottomContainer}>
+        <Text style={styles.bottomText}>
+          "Don't see your friend? Add them from Contacts or invite them to join
+          Planet!
+        </Text>
+      </View>
     </View>
   );
 }
@@ -83,6 +89,27 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-    fontSize: 30,
+    fontSize: 35,
+    fontFamily: "PPPierSans-Regular",
+  },
+  topText: {
+    color: "white",
+    fontSize: 18,
+    fontFamily: "PPPierSans-Regular",
+  },
+  bottomContainer: {
+    padding: 10,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  topContainer: {
+    marginTop: 10,
+    padding: 10,
+    alignItems: "center",
+  },
+  bottomText: {
+    color: "white",
+    fontSize: 13,
+    fontStyle: "italic",
   },
 });
