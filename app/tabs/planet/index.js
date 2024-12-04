@@ -93,11 +93,11 @@ export default function Account() {
         />
       </View>
       <View margin={10}>
-        <Text>Username (you cannot change this)</Text>
+        <Text style={[styles.label]}>Username (you cannot change this)</Text>
         <TextInput value={username} disabled={true} />
       </View>
       <View margin={10}>
-        <Text>First Name</Text>
+        <Text style={[styles.label]}>First Name</Text>
         <TextInput
           placeholder="Enter your first name"
           value={firstName}
@@ -105,7 +105,7 @@ export default function Account() {
         />
       </View>
       <View margin={10}>
-        <Text>Last Name</Text>
+        <Text style={[styles.label]}>Last Name</Text>
         <TextInput
           placeholder="Enter your last name"
           value={lastName}
@@ -143,5 +143,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textDecorationLine: "underline",
     fontFamily: "PPPierSans-Regular",
+  },
+  label: {
+    fontFamily: "PPPierSans-Regular",
+    paddingBottom: 8,
+    
   },
 });
