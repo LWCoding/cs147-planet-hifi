@@ -66,8 +66,8 @@ export default function PhotoStatus() {
         .update({ current_status_id: createdStatusData.status_id })
         .eq("user_id", userId);
 
-      router.back(); // Send user back after posting
-    } catch (error) {
+        router.push(`tabs/galaxy/${userId}`);
+      } catch (error) {
       console.error("Error adding post:", error.message);
     }
   };
@@ -81,7 +81,7 @@ export default function PhotoStatus() {
       >
         <ScrollView contentContainerStyle={[styles.scrollContent]}>
           <View margin={10}>
-            <Text variant="titleLarge" margin={5}>
+            <Text variant="titleLarge" margin={5} style={styles.label}>
               Photo Preview
             </Text>
           </View>
@@ -98,7 +98,7 @@ export default function PhotoStatus() {
             </View>
           </View>
           <View top={65}>
-            <Text variant="titleLarge" margin={5}>
+            <Text variant="titleLarge" margin={5} style={styles.prompt_label}>
               I'm feeling...
             </Text>
             <View margin={10}>
@@ -165,6 +165,15 @@ const styles = StyleSheet.create({
   photoPlanet: {
     position: "absolute",
     top: "85%",
-    left: "10%",
+    left: "37.5%",
+    
+  },
+  label: {
+    fontFamily: "PPPierSans-Regular",
+  },
+
+  prompt_label: {
+    fontFamily: "PPPierSans-Regular",
+    paddingHorizontal: 12
   },
 });
