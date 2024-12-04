@@ -46,7 +46,7 @@ export default function TextStatus() {
         .update({ current_status_id: createdStatusData.status_id })
         .eq("user_id", userId);
 
-      router.back(); // Send user back after posting
+        router.push(`tabs/galaxy/${userId}`);
     } catch (error) {
       console.error("Error adding post:", error.message);
     }
