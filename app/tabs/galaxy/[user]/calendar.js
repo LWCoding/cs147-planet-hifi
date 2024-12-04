@@ -32,9 +32,9 @@ const Calendar = () => {
   }, []);
 
   return (
-    <View style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
-        <ScrollView horizontal style={styles.calendarContainer}>
+    <ScrollView style={styles.outerScrollContainer}>
+      <ScrollView horizontal style={styles.calendarContainer}>
+        <View style={styles.calendarContent}>
           {days.map((day, dayIndex) => (
             <View key={dayIndex} style={styles.dayColumn}>
               <Text style={styles.dayHeader}>{day}</Text>
@@ -51,63 +51,52 @@ const Calendar = () => {
               ))}
             </View>
           ))}
-        </ScrollView>
-      </View>
-    </View>
+        </View>
+      </ScrollView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  outerContainer: {
+  outerScrollContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10, // Space around the container
-    backgroundColor: '#f0f0f0',
-  },
-  innerContainer: {
-    width: '95%', // Shrinks the calendar width to leave space on the sides
-    height: '90%', // Adjust height as needed
-    backgroundColor: 'white',
-    borderRadius: 10,
-    overflow: 'hidden', // Ensures the calendar fits neatly inside the container
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
+    padding: 10, // Padding around the calendar container for spacing
+    backgroundColor: '#f0f0f0', // Light background for better contrast
   },
   calendarContainer: {
-    flex: 1,
+    flex: 1, // Enables horizontal scrolling for the calendar
+  },
+  calendarContent: {
+    flexDirection: 'row', // Align day columns horizontally
   },
   dayColumn: {
-    width: 80, // Shrinks the width of each day column
-    borderRightWidth: 1,
-    borderColor: '#ddd',
+    width: 80, // Fixed width for each day column
+    borderRightWidth: 1, // Separator between days
+    borderColor: '#ddd', // Light gray color for separators
   },
   dayHeader: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    padding: 5,
-    backgroundColor: '#f5f5f5',
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-    fontSize: 14,
+    textAlign: 'center', // Center-align day names
+    fontWeight: 'bold', // Bold day names
+    padding: 5, // Space around the day name
+    backgroundColor: '#f5f5f5', // Light background for day headers
+    borderBottomWidth: 1, // Separator below day headers
+    borderColor: '#ddd', // Light gray color for separators
+    fontSize: 14, // Font size for day names
   },
   hourBlock: {
-    height: 40, // Reduce the height per hour block
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
+    height: 40, // Height for each hour block
+    justifyContent: 'center', // Center-align content vertically
+    alignItems: 'center', // Center-align content horizontally
+    borderBottomWidth: 1, // Separator between hour blocks
+    borderColor: '#ddd', // Light gray color for separators
   },
   availableBlock: {
-    backgroundColor: 'green',
-    borderRadius: 5, // Slightly rounded corners for available blocks
+    backgroundColor: 'green', // Highlight availability in green
+    borderRadius: 5, // Rounded corners for availability blocks
   },
   hourText: {
-    fontSize: 10,
-    color: '#333',
+    fontSize: 10, // Smaller font size for hour labels
+    color: '#333', // Dark gray color for text
   },
 });
 
