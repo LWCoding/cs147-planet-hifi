@@ -37,6 +37,7 @@ const styles = {
     borderRadius: "10%",
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: "PPPierSans-Regular"
   },
   buttonIcon: {
     marginBottom: 2,
@@ -44,5 +45,6 @@ const styles = {
   buttonText: {
     textAlign: "center",
     paddingHorizontal: 5,
+    fontFamily: "PPPierSans-Regular",
   },
 };
