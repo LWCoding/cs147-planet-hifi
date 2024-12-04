@@ -1,31 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
-const hours = Array.from({ length: 24 }, (_, i) => i); // 24 hours
+// Days of the week
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// Function to generate random availability
+// Function to generate random availability for each day
 const generateRandomAvailability = () => {
   const availability = {};
   days.forEach((day) => {
-    const availableHours = [];
-    const count = Math.floor(Math.random() * 5) + 1; // Random number of available hours (1-5)
-    while (availableHours.length < count) {
-      const randomHour = Math.floor(Math.random() * 24);
-      if (!availableHours.includes(randomHour)) {
-        availableHours.push(randomHour);
-      }
-    }
-    availability[day] = availableHours.sort((a, b) => a - b); // Sort hours for better visualization
+    const numBlocks = Math.floor(Math.random() * 10) + 1; // Randomize 1–10 available blocks
+    const blocks = Array.from({ length: numBlocks }, () =>
+      Math.floor(Math.random() * 24) + 1 // Randomize hours (1–24)
+    );
+    availability[day] = [...new Set(blocks)]; // Ensure no duplicates
   });
   return availability;
+};
+
+// Convert 24-hour format to 12-hour AM/PM format
+const formatHour = (hour) => {
+  const period = hour < 12 ? 'AM' : 'PM';
+  const adjustedHour = hour % 12 || 12; // Convert to 12-hour format (12 for midnight/noon)
+  return `${adjustedHour} ${period}`;
 };
 
 const Calendar = () => {
   const [availability, setAvailability] = useState({});
 
   useEffect(() => {
-    setAvailability(generateRandomAvailability()); // Set random availability on component mount
+    setAvailability(generateRandomAvailability());
   }, []);
 
   return (
@@ -35,7 +38,7 @@ const Calendar = () => {
           {days.map((day, dayIndex) => (
             <View key={dayIndex} style={styles.dayColumn}>
               <Text style={styles.dayHeader}>{day}</Text>
-              {hours.map((hour) => (
+              {Array.from({ length: 24 }, (_, i) => i + 1).map((hour) => (
                 <View
                   key={hour}
                   style={[
@@ -43,7 +46,7 @@ const Calendar = () => {
                     availability[day]?.includes(hour) && styles.availableBlock,
                   ]}
                 >
-                  <Text style={styles.hourText}>{hour}:00</Text>
+                  <Text style={styles.hourText}>{formatHour(hour)}</Text>
                 </View>
               ))}
             </View>
