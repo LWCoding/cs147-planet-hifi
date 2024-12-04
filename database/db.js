@@ -53,6 +53,19 @@ export const findPlanetById = async (userId) => {
   return userData;
 };
 
+// given a user id, fetches their friends' ids (array)
+export const fetchFriends = async (userId) => {
+  const { data: friendsData, error: friendsError } = await db
+    .from("friends")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+  if (friendsError) {
+    console.error("Error fetching user: ", error.message);
+  }
+  return friendsData.friends_ids;
+};
+
 // Fetches all planets from the database as well as their associated emotions
 // and returns a list of them.
 export const fetchAllPlanets = async () => {

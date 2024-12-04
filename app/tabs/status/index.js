@@ -27,7 +27,7 @@ export default function Status() {
       >
         <MaterialCommunityIcons
           style={[styles.iconButton, { backgroundColor: theme.colors.primary }]}
-          size={82}
+          size={62}
           name="camera"
           color={theme.colors.inverseSurface}
         />
@@ -41,7 +41,7 @@ export default function Status() {
       <TouchableOpacity style={styles.iconContainer} onPress={handlePressText}>
         <MaterialCommunityIcons
           style={[styles.iconButton, { backgroundColor: theme.colors.primary }]}
-          size={82}
+          size={62}
           name="format-text"
           color={theme.colors.inverseSurface}
         />
@@ -65,13 +65,16 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     borderRadius: 96,
-    padding: 12,
+    padding: 25,
     width: "100%",
   },
   iconButtonText: {
     textAlign: "center",
     paddingHorizontal: 36,
     marginVertical: 2,
+    fontFamily: "PPPierSans-Regular",
+    paddingTop: 10
+
   },
   iconContainer: {
     flex: 1,

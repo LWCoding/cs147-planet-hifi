@@ -1,5 +1,6 @@
-import { Tabs } from "expo-router";
+import { Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
+// Optional: Icons for the tabs (you can uncomment them if needed)
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import IonIcon from "@expo/vector-icons/Ionicons";
@@ -8,46 +9,38 @@ export default function Layout() {
   const theme = useTheme();
 
   return (
-    <Tabs
+    <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: false, // Disable header for all screens
         tabBarActiveTintColor: theme.colors.primary,
         tabBarStyle: {
           backgroundColor: theme.colors.background,
         },
         tabBarLabelStyle: {
-          fontFamily: "PPPierSans-Regular", // Add custom font
+          fontFamily: "PPPierSans-Regular", // Custom font for labels
           fontSize: 12, // Adjust size as needed
         },
       }}
     >
-      <Tabs.Screen
-        name="status"
+      <Stack.Screen
+        name="index"
         options={{
-          tabBarLabel: "Status",
+          tabBarLabel: "New Galaxy",
           tabBarIcon: ({ color }) => (
-            <MaterialIcon name="emoji-emotions" size={24} color={color} />
+            <IonIcon name="person-add" size={24} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="galaxy"
+
+      <Stack.Screen
+        name="addFriends"
         options={{
-          tabBarLabel: "Galaxy",
+          tabBarLabel: "Add Friends",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcon name="orbit" size={24} color={color} />
+            <IonIcon name="person-add" size={24} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="planet"
-        options={{
-          tabBarLabel: "My Planet",
-          tabBarIcon: ({ color }) => (
-            <IonIcon name="planet" size={24} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    </Stack>
   );
 }

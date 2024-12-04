@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput, SegmentedButtons, Button } from "react-native-paper";
 import { useState, useContext } from "react";
 
@@ -15,6 +15,10 @@ export default function TextStatus() {
 
   const [statusText, setStatusText] = useState();
   const [emotion, setEmotion] = useState();
+  // NOTE FROM KRISTINE: oh just realized we prob want to do what we did in A4 where we don't let users click on post if everything is null / disable the post button...
+  const handlePost = () => {
+    // Alert.alert("Your status has been updated!", [{ text: "OK :)" }]);
+  };
   const { userId } = useContext(UserContext);
 
   // Given an emotion string and text for the user's current status, inserts that into the database
