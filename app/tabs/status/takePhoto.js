@@ -1,6 +1,6 @@
-import { Camera, CameraView, useCameraPermissions } from "expo-camera";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -8,7 +8,7 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { ActivityIndicator, Button, Text } from "react-native-paper";
 
 import { useTheme } from "react-native-paper";
 
@@ -19,6 +19,7 @@ export default function PhotoStatus() {
   const cameraRef = useRef(null);
   const router = useRouter();
   const [cameraPerms, requestCameraPerms] = useCameraPermissions();
+  const [isSavingPicture, setIsSavingPicture] = useState(false);
 
   // If this is null, camera permissions are still loading
   if (!cameraPerms) {
@@ -29,9 +30,13 @@ export default function PhotoStatus() {
   if (!cameraPerms.granted) {
     return (
       <View
+        alignItems="center"
+        justifyContent="center"
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >
-        <Text>Camera permissions are required to take a photo</Text>
+        <Text margin={10} variant="labelLarge">
+          Camera permissions are required to take a photo
+        </Text>
         <Button onPress={requestCameraPerms}>Request Perms</Button>
       </View>
     );
@@ -39,16 +44,32 @@ export default function PhotoStatus() {
 
   const takePicture = async () => {
     console.log("Taking picture...");
-    const pic = await cameraRef.current.takePictureAsync();
+    setIsSavingPicture(true);
+
+    const pic = await cameraRef.current.takePictureAsync({ base64: true });
+    const base64String = pic.base64;
 
     router.push({
       pathname: "tabs/status/photoStatus",
-      params: { uri: pic.uri },
+      params: { uri: "data:image/png;base64," + base64String },
     });
+
+    setIsSavingPicture(false);
   };
 
   // Or else, load the camera background and the photo button
-  return (
+  return isSavingPicture ? (
+    <View
+      justifyContent="center"
+      alignItems="center"
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Text variant="labelLarge" margin={10}>
+        Saving your picture... This may take a moment!
+      </Text>
+      <ActivityIndicator size="large" animating={true} />
+    </View>
+  ) : (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
