@@ -44,11 +44,10 @@ export default function PhotoStatus() {
   const takePicture = async () => {
     console.log("Taking picture...");
     const pic = await cameraRef.current.takePictureAsync({ base64: true });
-    const base64String = pic.base64;
 
     router.push({
       pathname: "tabs/status/photoStatus",
-      params: { uri: "data:image/png;base64," + base64String },
+      params: { uri: pic.uri },
     });
   };
 
