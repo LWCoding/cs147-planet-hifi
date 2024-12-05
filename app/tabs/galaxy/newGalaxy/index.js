@@ -1,287 +1,202 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  Dimensions,
-  Alert,
-  ImageBackground,
+	View,
+	StyleSheet,
+	TouchableOpacity,
+	Image,
+	Alert,
+	ImageBackground,
+	ScrollView,
 } from "react-native";
+import { Text, TextInput } from "react-native-paper";
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
 // NOTE FROM KRISTINE: ADD BACK BUTTON NAV?
 
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import PlanetImages from "@/assets/planet";
-import db from "@/database/db";
+import { findPlanetById, getAllGalaxyNamesById } from "@/database/db";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
-
-const { width, height } = Dimensions.get("window");
+import Planet from "@/components/Planet";
 
 export default function NewGalaxy() {
-  const router = useRouter();
-  const theme = useTheme();
-  const { userId } = useContext(UserContext);
-  const [isEditing, setIsEditing] = useState(false);
-  const [galaxyName, setGalaxyName] = useState("New Galaxy");
-  const [userPlanet, setUserPlanet] = useState(null);
+	const router = useRouter();
+	const theme = useTheme();
 
-  // Given an emotion, return the corresponding image
-  const getImageFromEmotion = (emotion) => {
-    switch (emotion) {
-      case "happy":
-        return PlanetImages.faces.happy;
-      case "sad":
-        return PlanetImages.faces.sad;
-      case "angry":
-        return PlanetImages.faces.angry;
-      case "neutral":
-        return PlanetImages.faces.neutral;
-      default:
-        return PlanetImages.faces.happy; // Default to happy
-    }
-  };
-  const checkExisting = async (galaxyName) => {
-    const { data, error } = await db
-      .from("galaxies")
-      .select("*")
-      .eq("creator_userid", userId)
-      .eq("name", galaxyName);
-    if (error) {
-      console.error("err fetching galaxies");
-      return;
-    }
-    console.log(data);
-    if (data.length > 0) {
-      Alert.alert("Galaxy already exists! Choose a different name.");
-      return true;
-    }
-    return false;
-  };
-  const fetchUser = async () => {
-    //fetching first user in db
-    const { data: usersData, error: usersError } = await db
-      .from("users")
-      .select("*")
-      .limit(1);
+	const { userId } = useContext(UserContext);
+	const [isEditing, setIsEditing] = useState(false);
+	const [galaxyName, setGalaxyName] = useState("New Galaxy");
+	const [userPlanet, setUserPlanet] = useState(null);
 
-    if (usersError) {
-      console.error("Error fetching users: " + usersError.message);
-      return;
-    }
-    const { data: statusData, error: statusError } = await db
-      .from("statuses")
-      .select("*");
+	// Check if a provided galaxy name is already in use by the current user
+	const checkExisting = async (galaxyName) => {
+		const existingGalaxyNames = await getAllGalaxyNamesById(userId);
+		return existingGalaxyNames.includes(galaxyName);
+	};
 
-    if (statusError) {
-      console.error("Error fetching statuses: " + statusError.message);
-      return;
-    }
+	const fetchUser = async () => {
+		// Fetch current user's planet from db
+		const user = await findPlanetById(userId);
+		setUserPlanet(user);
+	};
 
-    const user = usersData[0];
+	useFocusEffect(
+		React.useCallback(() => {
+			let isActive = true;
 
-    let emotion = "happy";
-    if (user.current_status_id) {
-      const status = statusData.find(
-        (status) => status.user_id === user.user_id
-      );
-      if (status) {
-        emotion = status.emotion;
-      }
-    }
+			const fetchData = async () => {
+				if (!isActive) return;
+				await fetchUser();
+			};
 
-    const userInfo = {
-      username: user.username,
-      realname: user.first_name,
-      emotion,
-    };
-    console.log(userInfo);
-    setUserPlanet(userInfo);
-  };
+			fetchData();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      let isActive = true;
+			return () => {
+				isActive = false;
+			};
+		}, [])
+	);
 
-      const fetchData = async () => {
-        if (!isActive) return;
-        await fetchUser();
-      };
+	const handleEdit = () => {
+		setIsEditing(!isEditing);
+	};
 
-      fetchData();
+	const handleChangeText = (text) => {
+		setGalaxyName(text); // updating as user types
+	};
 
-      return () => {
-        isActive = false;
-      };
-    }, [])
-  );
+	const handleBlur = () => {
+		if (galaxyName.trim() === "") {
+			setGalaxyName("New Galaxy"); // resetting to placeholder if empty
+		}
+		setIsEditing(false);
+	};
 
-  const handleEdit = () => {
-    setIsEditing(!isEditing);
-  };
+	const addFriends = async () => {
+		const galaxyExists = await checkExisting(galaxyName);
 
-  const handleChangeText = (text) => {
-    setGalaxyName(text); // updating as user types
-  };
+		if (galaxyExists) {
+			return Alert.alert(
+				"Galaxy already exists! Choose a different name."
+			);
+		}
+		if (galaxyName === "New Galaxy") {
+			return Alert.alert("Please change the Galaxy name first!");
+		}
+		router.push({
+			pathname: "tabs/galaxy/newGalaxy/addFriends",
+			params: { galaxyName: galaxyName },
+		});
+	};
 
-  const handleBlur = () => {
-    if (galaxyName.trim() === "") {
-      setGalaxyName("New Galaxy"); // resetting to placeholder if empty
-    }
-    setIsEditing(false);
-  };
-
-  const addFriends = async () => {
-    const galaxyExists = await checkExisting(galaxyName);
-    if (galaxyExists) {
-      return;
-    }
-    if (galaxyName === "New Galaxy") {
-      Alert.alert("Please change the Galaxy name first!");
-      return;
-    }
-    try {
-      const { data: newGalaxy, error: insertError } = await db
-        .from("galaxies")
-        .insert([
-          {
-            creator_userid: userId,
-            name: galaxyName,
-            planets: [],
-          },
-        ]);
-
-      if (insertError) {
-        console.error("Error inserting Galaxy: ", insertError.message);
-        return;
-      }
-    } catch (error) {
-      console.error("Error in addFriends function: ", error.message);
-    }
-    // console.log(galaxyName);
-
-    router.push({
-      pathname: "tabs/galaxy/newGalaxy/addFriends",
-      params: { galaxyName: galaxyName },
-    });
-  };
-
-  return (
-    <ImageBackground
-      source={spaceBackgroundImage}
-      resizeMode="cover"
-      style={styles.image}
-    >
-      <View style={styles.container}>
-        <View style={styles.newGalaxy}>
-          {isEditing ? (
-            <TextInput
-              style={styles.textInput}
-              value={galaxyName}
-              onChangeText={handleChangeText}
-              autoFocus={true}
-              onBlur={handleBlur} // end editing when the input loses focus
-            />
-          ) : (
-            // if not editing, render current galaxy name (default: new galaxy)
-            <Text style={styles.text}>{galaxyName}</Text>
-          )}
-          <TouchableOpacity onPress={handleEdit}>
-            <Icon name="pencil" size={30} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.planetContainer}>
-          <Image source={PlanetImages.base} style={styles.planet} />
-          {userPlanet && (
-            <Image
-              style={styles.face}
-              source={getImageFromEmotion(userPlanet.emotion)}
-            />
-          )}
-        </View>
-        <TouchableOpacity style={styles.addFriends} onPress={addFriends}>
-          <Text
-            style={{
-              fontFamily: "PPPierSans-Regular",
-              fontSize: 16,
-              color: "#000",
-            }}
-          >
-            Add friends!
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
-  );
+	return (
+		<ImageBackground
+			source={spaceBackgroundImage}
+			resizeMode="cover"
+			style={styles.bgImage}
+		>
+			<ScrollView
+				contentContainerStyle={{
+					justifyContent: "flex-start",
+					alignItems: "center",
+				}}
+				style={styles.container}
+			>
+				<View style={styles.newGalaxy}>
+					{isEditing ? (
+						<TextInput
+							style={styles.textInput}
+							value={galaxyName}
+							onChangeText={handleChangeText}
+							autoFocus={true}
+							onBlur={handleBlur} // end editing when the input loses focus
+						/>
+					) : (
+						// if not editing, render current galaxy name (default: new galaxy)
+						<Text style={styles.text}>{galaxyName}</Text>
+					)}
+					<TouchableOpacity onPress={handleEdit}>
+						<Icon name="pencil" size={30} color="#FFFFFF" />
+					</TouchableOpacity>
+				</View>
+				<View padding={30}>
+					<Planet
+						width={150}
+						height={150}
+						isClickable={false}
+						isNameVisible={false}
+						userId={userId}
+					/>
+				</View>
+				<TouchableOpacity
+					style={styles.addFriends}
+					onPress={addFriends}
+				>
+					<Text
+						style={{
+							fontFamily: "PPPierSans-Regular",
+							fontSize: 16,
+							color: "#000",
+						}}
+					>
+						Add friends!
+					</Text>
+				</TouchableOpacity>
+			</ScrollView>
+		</ImageBackground>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-start",
-    paddingTop: 170,
-    alignItems: "center",
-    // backgroundColor: "rgb(29, 27, 30)",
-  },
-  image: {
-    flex: 1,
-  },
-  text: {
-    fontSize: 35,
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    marginRight: 10,
-    fontFamily: "PPPierSans-Regular",
-  },
-  textInput: {
-    fontSize: 35,
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    marginRight: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    width: 200,
-    fontFamily: "PPPierSans-Regular",
-  },
-  newGalaxy: {
-    // view for pencil and text
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  face: {
-    width: 100,
-    height: 100,
-    position: "absolute",
-    top: 30, // changed to 30 bc i put paddingtop
-  },
-  relativeOverText: {
-    top: -10, // Shift closer to planet
-    fontFamily: "PPPierSans-Regular",
-  },
-  planet: {
-    width: 100,
-    height: 100,
-  },
-  planetContainer: {
-    padding: 30,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addFriends: {
-    backgroundColor: "#9393BA",
-    borderRadius: 30,
-    width: 180,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    fontFamily: "PPPierSans-Regular",
-  },
+	container: {
+		flex: 1,
+		paddingTop: 170,
+	},
+	bgImage: {
+		flex: 1,
+		height: "120%",
+	},
+	text: {
+		fontSize: 35,
+		color: "#FFFFFF",
+		fontWeight: "bold",
+		marginRight: 10,
+		fontFamily: "PPPierSans-Regular",
+	},
+	textInput: {
+		fontSize: 35,
+		color: "#FFFFFF",
+		fontWeight: "bold",
+		marginRight: 10,
+		paddingHorizontal: 10,
+		paddingVertical: 5,
+		borderRadius: 5,
+		width: 200,
+		fontFamily: "PPPierSans-Regular",
+	},
+	newGalaxy: {
+		// view for pencil and text
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	face: {
+		width: 100,
+		height: 100,
+		position: "absolute",
+		top: 30, // changed to 30 bc i put paddingtop
+	},
+	relativeOverText: {
+		top: -10, // Shift closer to planet
+		fontFamily: "PPPierSans-Regular",
+	},
+	addFriends: {
+		backgroundColor: "#9393BA",
+		borderRadius: 30,
+		width: 180,
+		height: 50,
+		justifyContent: "center",
+		alignItems: "center",
+		fontFamily: "PPPierSans-Regular",
+	},
 });
