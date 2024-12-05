@@ -70,11 +70,6 @@ const Calendar = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Header */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Your Friend's Busy Times</Text>
-      </View>
-
       {/* Calendar */}
       <ScrollView style={styles.outerScrollContainer}>
         <ScrollView horizontal style={styles.calendarContainer}>
