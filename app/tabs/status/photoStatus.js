@@ -66,8 +66,8 @@ export default function PhotoStatus() {
         .update({ current_status_id: createdStatusData.status_id })
         .eq("user_id", userId);
 
-        router.push(`tabs/galaxy/${userId}`);
-      } catch (error) {
+      router.push(`tabs/galaxy/${userId}`);
+    } catch (error) {
       console.error("Error adding post:", error.message);
     }
   };
@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "85%",
     left: "37.5%",
-    
   },
   label: {
     fontFamily: "PPPierSans-Regular",
@@ -174,6 +173,6 @@ const styles = StyleSheet.create({
 
   prompt_label: {
     fontFamily: "PPPierSans-Regular",
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
 });
