@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { View, Image } from "react-native";
-import { Text } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 
 // Import components
@@ -7,6 +8,7 @@ import Planet from "./Planet";
 
 export default function ProfileButton({ user, status }) {
 	const theme = useTheme();
+	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
 	const formatTimestamp = (timestamp) => {
 		const date = new Date(timestamp);
@@ -41,14 +43,24 @@ export default function ProfileButton({ user, status }) {
 				height={50}
 				hardCodedEmotion={status.emotion}
 			/>
-			<Text style={styles.timestamp}>
-				{formatTimestamp(status.created_at)}
-			</Text>
-			<Image
-				style={styles.postImage}
-				source={{ uri: status.image_url }}
-			/>
-			<Text style={styles.postText}>{status.status_text}</Text>
+			<View style={styles.textContainer}>
+				<Text style={styles.timestamp}>
+					<Text style={{ fontWeight: "bold" }}>
+						{user.first_name}
+					</Text>{" "}
+					({formatTimestamp(status.created_at)})
+				</Text>
+				<Text numberOfLines={2} ellipsizeMode="tail">
+					{status.status_text}
+				</Text>
+			</View>
+			{status.image_url && (
+				<Image
+					source={{ uri: status.image_url }}
+					style={[styles.image]}
+					onLoadEnd={() => setIsImageLoaded(true)}
+				/>
+			)}
 		</View>
 	);
 }
@@ -65,13 +77,20 @@ const styles = {
 		alignItems: "center",
 		fontFamily: "PPPierSans-Regular",
 	},
+	textContainer: {
+		flexDirection: "column",
+		flex: 1,
+		fontFamily: "PPPierSans-Regular",
+		width: "100%",
+		height: "100%",
+		justifyContent: "space-evenly",
+		padding: 5,
+	},
 	postImage: {
 		flex: 1,
 	},
-	postText: {
-		textAlign: "center",
-		flex: 3,
-		paddingHorizontal: 5,
-		fontFamily: "PPPierSans-Regular",
+	image: {
+		width: 70,
+		height: 70,
 	},
 };
