@@ -87,7 +87,7 @@ export default function GalaxyStackLayout() {
           headerTitleStyle: {
             fontSize: 24,
             fontWeight: "bold",
-            fontFamily: "PPPierSans-Regular", // Custom font
+            fontFamily: "PPPierSans-Regular", 
             color: theme.colors.text,
           },
           headerTintColor: theme.colors.text, // Back button and icon colors

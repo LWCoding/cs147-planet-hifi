@@ -172,15 +172,15 @@ const Calendar = () => {
               ))}
             </ScrollView>
 
-            {/* Send Notification Button */}
+            <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.sendButton} onPress={handleSendNotification}>
-              <Text style={styles.buttonText}>Send Notification</Text>
+              <Text style={styles.buttonText}>Send</Text>
             </TouchableOpacity>
 
-            {/* Close Modal Button */}
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleCloseModal}>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
+          </View>
           </View>
         </View>
       </Modal>
@@ -252,10 +252,6 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
@@ -341,7 +337,37 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: 'center',
     fontSize: 16,
-  },  
+  }, 
+  buttonRow: {
+    flexDirection: 'row', // Align buttons side by side
+    justifyContent: 'space-between', // Evenly distribute buttons
+    marginTop: 15, // Add some space above the buttons
+  },
+  sendButton: {
+    flex: 1, // Equal width for both buttons
+    backgroundColor: '#575788',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 5, // Space between the buttons
+    alignItems: 'center',
+  },
+  cancelButton: {
+    flex: 1, // Equal width for both buttons
+    backgroundColor: '#dc3545',
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: 5, // Space between the buttons
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  cancelButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+   
 });
 
 export default Calendar;
