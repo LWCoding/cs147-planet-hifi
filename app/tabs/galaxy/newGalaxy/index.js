@@ -14,8 +14,7 @@ import spaceBackgroundImage from "@/assets/space-bg.jpg";
 
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import PlanetImages from "@/assets/planet";
-import db, { findPlanetById } from "@/database/db";
+import { findPlanetById, getAllGalaxyNamesById } from "@/database/db";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
@@ -30,23 +29,12 @@ export default function NewGalaxy() {
 	const [galaxyName, setGalaxyName] = useState("New Galaxy");
 	const [userPlanet, setUserPlanet] = useState(null);
 
+	// Check if a provided galaxy name is already in use by the current user
 	const checkExisting = async (galaxyName) => {
-		const { data, error } = await db
-			.from("galaxies")
-			.select("*")
-			.eq("creator_userid", userId)
-			.eq("name", galaxyName);
-		if (error) {
-			console.error("err fetching galaxies");
-			return;
-		}
-		console.log(data);
-		if (data.length > 0) {
-			Alert.alert("Galaxy already exists! Choose a different name.");
-			return true;
-		}
-		return false;
+		const existingGalaxyNames = await getAllGalaxyNamesById(userId);
+		return existingGalaxyNames.includes(galaxyName);
 	};
+
 	const fetchUser = async () => {
 		// Fetch current user's planet from db
 		const user = await findPlanetById(userId);
@@ -87,30 +75,15 @@ export default function NewGalaxy() {
 
 	const addFriends = async () => {
 		const galaxyExists = await checkExisting(galaxyName);
+
 		if (galaxyExists) {
-			return;
+			return Alert.alert(
+				"Galaxy already exists! Choose a different name."
+			);
 		}
 		if (galaxyName === "New Galaxy") {
-			Alert.alert("Please change the Galaxy name first!");
-			return;
+			return Alert.alert("Please change the Galaxy name first!");
 		}
-		try {
-			const { error: insertError } = await db.from("galaxies").insert([
-				{
-					creator_userid: userId,
-					name: galaxyName,
-					planets: [],
-				},
-			]);
-
-			if (insertError) {
-				console.error("Error inserting Galaxy: ", insertError.message);
-				return;
-			}
-		} catch (error) {
-			console.error("Error in addFriends function: ", error.message);
-		}
-
 		router.push({
 			pathname: "tabs/galaxy/newGalaxy/addFriends",
 			params: { galaxyName: galaxyName },
