@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -18,12 +18,14 @@ import PlanetImages from "@/assets/planet";
 import db from "@/database/db";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import { UserContext } from "@/contexts/UserContext";
 
 const { width, height } = Dimensions.get("window");
 
 export default function NewGalaxy() {
   const router = useRouter();
   const theme = useTheme();
+  const { userId } = useContext(UserContext);
   const [isEditing, setIsEditing] = useState(false);
   const [galaxyName, setGalaxyName] = useState("New Galaxy");
   const [userPlanet, setUserPlanet] = useState(null);
@@ -43,15 +45,17 @@ export default function NewGalaxy() {
         return PlanetImages.faces.happy; // Default to happy
     }
   };
-  const checkExisting = async (galName) => {
+  const checkExisting = async (galaxyName) => {
     const { data, error } = await db
       .from("galaxies")
-      .select("name")
+      .select("*")
+      .eq("creator_userid", userId)
       .eq("name", galaxyName);
     if (error) {
       console.error("err fetching galaxies");
       return;
     }
+    console.log(data);
     if (data.length > 0) {
       Alert.alert("Galaxy already exists! Choose a different name.");
       return true;
@@ -132,12 +136,12 @@ export default function NewGalaxy() {
   };
 
   const addFriends = async () => {
-    const galaxyExists = await checkExisting();
+    const galaxyExists = await checkExisting(galaxyName);
     if (galaxyExists) {
       return;
     }
     if (galaxyName === "New Galaxy") {
-      alert("Please change the Galaxy name first!");
+      Alert.alert("Please change the Galaxy name first!");
       return;
     }
     try {
@@ -145,6 +149,7 @@ export default function NewGalaxy() {
         .from("galaxies")
         .insert([
           {
+            creator_userid: userId,
             name: galaxyName,
             planets: [],
           },
