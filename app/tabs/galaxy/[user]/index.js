@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   expandButton: {
     position: "absolute",
     right: 40,
-    bottom: "32%",
+    bottom: 220,
   },
   buttonRow: {
     flexDirection: "row",
