@@ -1,11 +1,18 @@
 import { useEffect, useState, useContext } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ImageBackground,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import db, { fetchFriends } from "@/database/db";
 import { fetchAllPlanets } from "@/database/db";
 import FriendComponent from "@/components/FriendComponent";
+import spaceBackgroundImage from "@/assets/space-bg.jpg";
 
 export default function AddFriends() {
   const router = useRouter();
@@ -52,31 +59,37 @@ export default function AddFriends() {
     }
   }, [friendIds]);
   return (
-    <View style={styles.container}>
-      <View style={styles.topContainer}>
-        <Text style={styles.topText}>Add friends to</Text>
-        <Text style={styles.text}>{galaxyName}</Text>
+    <ImageBackground
+      source={spaceBackgroundImage}
+      resizeMode="cover"
+      style={styles.image}
+    >
+      <View style={styles.container}>
+        <View style={styles.topContainer}>
+          <Text style={styles.topText}>Add friends to</Text>
+          <Text style={styles.text}>{galaxyName}</Text>
+        </View>
+        <FlatList
+          data={friendPlanets}
+          renderItem={({ item }) => (
+            <FriendComponent
+              galaxyName={galaxyName}
+              planetObj={item}
+              // userId={item.user_id}
+              // username={item.username}
+              // firstname={item.first_name}
+              // lastname={item.last_name}
+            />
+          )}
+        ></FlatList>
+        <View style={styles.bottomContainer}>
+          <Text style={styles.bottomText}>
+            "Don't see your friend? Add them from Contacts or invite them to
+            join Planet!
+          </Text>
+        </View>
       </View>
-      <FlatList
-        data={friendPlanets}
-        renderItem={({ item }) => (
-          <FriendComponent
-            galaxyName={galaxyName}
-            planetObj={item}
-            // userId={item.user_id}
-            // username={item.username}
-            // firstname={item.first_name}
-            // lastname={item.last_name}
-          />
-        )}
-      ></FlatList>
-      <View style={styles.bottomContainer}>
-        <Text style={styles.bottomText}>
-          "Don't see your friend? Add them from Contacts or invite them to join
-          Planet!
-        </Text>
-      </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -85,7 +98,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgb(29, 27, 30)",
+    // backgroundColor: "rgb(29, 27, 30)",
+  },
+  image: {
+    flex: 1,
   },
   text: {
     color: "white",

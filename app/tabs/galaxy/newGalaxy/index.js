@@ -8,8 +8,9 @@ import {
   Image,
   Dimensions,
   Alert,
+  ImageBackground,
 } from "react-native";
-
+import spaceBackgroundImage from "@/assets/space-bg.jpg";
 // NOTE FROM KRISTINE: ADD BACK BUTTON NAV?
 
 import { useTheme } from "react-native-paper";
@@ -171,45 +172,51 @@ export default function NewGalaxy() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.newGalaxy}>
-        {isEditing ? (
-          <TextInput
-            style={styles.textInput}
-            value={galaxyName}
-            onChangeText={handleChangeText}
-            autoFocus={true}
-            onBlur={handleBlur} // end editing when the input loses focus
-          />
-        ) : (
-          // if not editing, render current galaxy name (default: new galaxy)
-          <Text style={styles.text}>{galaxyName}</Text>
-        )}
-        <TouchableOpacity onPress={handleEdit}>
-          <Icon name="pencil" size={30} color="#FFFFFF" />
+    <ImageBackground
+      source={spaceBackgroundImage}
+      resizeMode="cover"
+      style={styles.image}
+    >
+      <View style={styles.container}>
+        <View style={styles.newGalaxy}>
+          {isEditing ? (
+            <TextInput
+              style={styles.textInput}
+              value={galaxyName}
+              onChangeText={handleChangeText}
+              autoFocus={true}
+              onBlur={handleBlur} // end editing when the input loses focus
+            />
+          ) : (
+            // if not editing, render current galaxy name (default: new galaxy)
+            <Text style={styles.text}>{galaxyName}</Text>
+          )}
+          <TouchableOpacity onPress={handleEdit}>
+            <Icon name="pencil" size={30} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.planetContainer}>
+          <Image source={PlanetImages.base} style={styles.planet} />
+          {userPlanet && (
+            <Image
+              style={styles.face}
+              source={getImageFromEmotion(userPlanet.emotion)}
+            />
+          )}
+        </View>
+        <TouchableOpacity style={styles.addFriends} onPress={addFriends}>
+          <Text
+            style={{
+              fontFamily: "PPPierSans-Regular",
+              fontSize: 16,
+              color: "#000",
+            }}
+          >
+            Add friends!
+          </Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.planetContainer}>
-        <Image source={PlanetImages.base} style={styles.planet} />
-        {userPlanet && (
-          <Image
-            style={styles.face}
-            source={getImageFromEmotion(userPlanet.emotion)}
-          />
-        )}
-      </View>
-      <TouchableOpacity style={styles.addFriends} onPress={addFriends}>
-        <Text
-          style={{
-            fontFamily: "PPPierSans-Regular",
-            fontSize: 16,
-            color: "#000",
-          }}
-        >
-          Add friends!
-        </Text>
-      </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -219,7 +226,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingTop: 170,
     alignItems: "center",
-    backgroundColor: "rgb(29, 27, 30)",
+    // backgroundColor: "rgb(29, 27, 30)",
+  },
+  image: {
+    flex: 1,
   },
   text: {
     fontSize: 35,

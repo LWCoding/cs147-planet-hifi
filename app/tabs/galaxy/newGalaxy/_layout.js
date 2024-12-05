@@ -47,6 +47,8 @@ export default function Layout() {
           headerStyle: {
             backgroundColor: "#9393BA",
           },
+          headerTitle: "Add friends!",
+
           headerLeft: () => (
             <IonIcon
               name="arrow-back"
