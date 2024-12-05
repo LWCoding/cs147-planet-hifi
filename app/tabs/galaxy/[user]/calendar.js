@@ -5,12 +5,14 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
   Modal,
+  TextInput,
+  Alert,
 } from 'react-native';
 
-// Days of the week (Monday-Friday only for scheduling)
+// Days of the week (Monday-Sunday for scheduling)
 const daysForScheduling = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const periods = ['AM', 'PM']; // AM/PM options
 
 // Function to generate random availability for each day
 const generateRandomAvailability = () => {
@@ -25,20 +27,14 @@ const generateRandomAvailability = () => {
   return availability;
 };
 
-// Convert 24-hour format to 12-hour AM/PM format
-const formatHour = (hour) => {
-  const period = hour < 12 ? 'AM' : 'PM';
-  const adjustedHour = hour % 12 || 12; // Convert to 12-hour format (12 for midnight/noon)
-  return `${adjustedHour} ${period}`;
-};
-
 const Calendar = () => {
   const [availability, setAvailability] = useState({});
   const [isModalVisible, setModalVisible] = useState(false);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
-  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState(null);
   const [selectedTime, setSelectedTime] = useState('');
-  const [selectedPeriod, setSelectedPeriod] = useState('');
+  const [selectedMinute, setSelectedMinute] = useState('');
+  const [selectedPeriod, setSelectedPeriod] = useState(null);
 
   useEffect(() => {
     setAvailability(generateRandomAvailability());
@@ -48,8 +44,25 @@ const Calendar = () => {
   const handleOpenModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
 
-  // Handle notification confirmation
+  // Validate inputs and handle notification
   const handleSendNotification = () => {
+    if (!selectedDay) {
+      Alert.alert('Error', 'Please select a day.');
+      return;
+    }
+    if (!selectedTime || isNaN(selectedTime) || selectedTime < 1 || selectedTime > 12) {
+      Alert.alert('Error', 'Please enter a valid hour between 1 and 12.');
+      return;
+    }
+    if (!selectedMinute || isNaN(selectedMinute) || selectedMinute < 0 || selectedMinute > 59) {
+      Alert.alert('Error', 'Please enter a valid minute between 0 and 59.');
+      return;
+    }
+    if (!selectedPeriod) {
+      Alert.alert('Error', 'Please select AM or PM.');
+      return;
+    }
+
     setModalVisible(false);
     setNotificationVisible(true);
     setTimeout(() => setNotificationVisible(false), 2000); // Auto-close notification popup
@@ -57,6 +70,11 @@ const Calendar = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Your Friend's Busy Times</Text>
+      </View>
+
       {/* Calendar */}
       <ScrollView style={styles.outerScrollContainer}>
         <ScrollView horizontal style={styles.calendarContainer}>
@@ -72,7 +90,7 @@ const Calendar = () => {
                       availability[day]?.includes(hour) && styles.availableBlock,
                     ]}
                   >
-                    <Text style={styles.hourText}>{formatHour(hour)}</Text>
+                    <Text style={styles.hourText}>{`${hour % 12 || 12} ${hour < 12 ? 'AM' : 'PM'}`}</Text>
                   </View>
                 ))}
               </View>
@@ -92,47 +110,75 @@ const Calendar = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Schedule a Time</Text>
 
-            {/* Day Input */}
-            <Text>Day (Mon-Fri):</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter day (e.g., Mon)"
-              value={selectedDay}
-              onChangeText={setSelectedDay}
-            />
+            {/* Day Selection */}
+            <Text>Day (Mon-Sun):</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollableOptions}>
+              {daysForScheduling.map((day) => (
+                <TouchableOpacity
+                  key={day}
+                  style={[
+                    styles.option,
+                    selectedDay === day && { backgroundColor: '#575788' },
+                  ]}
+                  onPress={() => setSelectedDay(day)}
+                >
+                  <Text style={[styles.optionText, selectedDay === day && { color: 'white' }]}>{day}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
 
-            {/* Time Input */}
-            <Text>Time (0-12):</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter time (e.g., 10)"
-              keyboardType="numeric"
-              value={selectedTime}
-              onChangeText={setSelectedTime}
-            />
+            {/* Hour and Minute Inputs Side by Side */}
+            <View style={styles.timeContainer}>
+              {/* Hour Input */}
+              <View style={styles.inputWrapper}>
+                <Text>Hour (1-12):</Text>
+                <TextInput
+                  style={styles.inputBox}
+                  keyboardType="numeric"
+                  placeholder="Hour"
+                  value={selectedTime}
+                  onChangeText={(text) => setSelectedTime(text)}
+                />
+              </View>
 
-            {/* AM/PM Input */}
+              {/* Minute Input */}
+              <View style={styles.inputWrapper}>
+                <Text>Minute (0-59):</Text>
+                <TextInput
+                  style={styles.inputBox}
+                  keyboardType="numeric"
+                  placeholder="Minute"
+                  value={selectedMinute}
+                  onChangeText={(text) => setSelectedMinute(text)}
+                />
+              </View>
+            </View>
+
+
+            {/* AM/PM Selection */}
             <Text>AM/PM:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter AM or PM"
-              value={selectedPeriod}
-              onChangeText={setSelectedPeriod}
-            />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollableOptions}>
+              {periods.map((period) => (
+                <TouchableOpacity
+                  key={period}
+                  style={[
+                    styles.option,
+                    selectedPeriod === period && { backgroundColor: '#575788' },
+                  ]}
+                  onPress={() => setSelectedPeriod(period)}
+                >
+                  <Text style={[styles.optionText, selectedPeriod === period && { color: 'white' }]}>{period}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
 
             {/* Send Notification Button */}
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSendNotification}
-            >
+            <TouchableOpacity style={styles.sendButton} onPress={handleSendNotification}>
               <Text style={styles.buttonText}>Send Notification</Text>
             </TouchableOpacity>
 
             {/* Close Modal Button */}
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={handleCloseModal}
-            >
+            <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
               <Text style={styles.closeButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
@@ -150,6 +196,16 @@ const Calendar = () => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    padding: 15,
+    backgroundColor: '#575788',
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
   outerScrollContainer: {
     flex: 1,
     padding: 10,
@@ -191,7 +247,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   scheduleButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#575788',
     padding: 15,
     margin: 10,
     borderRadius: 10,
@@ -219,16 +275,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
   },
-  input: {
+  scrollableOptions: {
+    marginVertical: 10,
+  },
+  option: {
+    padding: 10,
+    marginHorizontal: 5,
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+  },
+  optionText: {
+    fontSize: 14,
+  },
+  inputBox: {
     width: '100%',
     padding: 10,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
     marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 16,
   },
   sendButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#575788',
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
@@ -246,7 +316,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     alignSelf: 'center',
-    backgroundColor: '#28a745',
+    backgroundColor: '#2C2C64',
     padding: 15,
     borderRadius: 5,
   },
@@ -254,6 +324,24 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  timeContainer: {
+    flexDirection: 'row', // Places inputs side by side
+    justifyContent: 'space-between', // Ensures even spacing
+    width: '100%',
+  },
+  inputWrapper: {
+    flex: 1, // Each input takes equal space
+    marginHorizontal: 5, // Adds space between the two inputs
+  },
+  inputBox: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    textAlign: 'center',
+    fontSize: 16,
+  },  
 });
 
 export default Calendar;

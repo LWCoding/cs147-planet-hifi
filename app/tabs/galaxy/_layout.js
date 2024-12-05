@@ -76,6 +76,23 @@ export default function GalaxyStackLayout() {
           },
         }}
       />
+      <Stack.Screen
+        name="calendar"
+        options={{
+          title: "Your Friend's Busy Times", 
+          headerTitleAlign: "center", 
+          headerStyle: {
+            backgroundColor: theme.colors.primary, 
+          },
+          headerTitleStyle: {
+            fontSize: 24,
+            fontWeight: "bold",
+            fontFamily: "PPPierSans-Regular", // Custom font
+            color: theme.colors.text,
+          },
+          headerTintColor: theme.colors.text, // Back button and icon colors
+        }}
+      />
     </Stack>
   );
 }
