@@ -3,15 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import db from "@/database/db";
 import Planet from "@/components/Planet";
 
-// NOTE FROM KRISTINE: if time, only display users not already added
-
-export default function FriendComponent({
-  galaxyName,
-  planetObj,
-  //   username,
-  //   firstname,
-  //   lastname,
-}) {
+export default function RemoveFriendComponent({ planetObj }) {
   const userId = planetObj.user_id;
   const [added, setAdded] = useState(false);
 
@@ -88,7 +80,7 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     flexDirection: "row",
-    width: 320,
+    width: 300,
     height: 150,
     backgroundColor: "#ADADC5",
     borderRadius: 30,
@@ -100,8 +92,7 @@ const styles = StyleSheet.create({
   rightContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 15,
-    padding: 10,
+    marginLeft: 30,
   },
   planet: {
     marginLeft: 10,
@@ -109,13 +100,12 @@ const styles = StyleSheet.create({
   text: {
     color: "black",
     fontWeight: "bold",
-    fontSize: 25,
+    fontSize: 30,
     margin: 15,
     fontFamily: "PPPierSans-Regular",
   },
   button: {
     padding: 10,
-    width: 150,
     backgroundColor: "#9393BA",
     borderRadius: 30,
     alignItems: "center",
