@@ -29,9 +29,13 @@ export default function PhotoStatus() {
   if (!cameraPerms.granted) {
     return (
       <View
+        alignItems="center"
+        justifyContent="center"
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >
-        <Text>Camera permissions are required to take a photo</Text>
+        <Text margin={10} variant="labelLarge">
+          Camera permissions are required to take a photo
+        </Text>
         <Button onPress={requestCameraPerms}>Request Perms</Button>
       </View>
     );
@@ -39,7 +43,8 @@ export default function PhotoStatus() {
 
   const takePicture = async () => {
     console.log("Taking picture...");
-    const pic = await cameraRef.current.takePictureAsync();
+    const pic = await cameraRef.current.takePictureAsync({ base64: true });
+    const base64String = pic.base64;
 
     router.push({
       pathname: "tabs/status/photoStatus",
