@@ -5,9 +5,12 @@ import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import db, { fetchFriends } from "@/database/db";
 import { fetchAllPlanets } from "@/database/db";
-import FriendComponent from "@/components/FriendComponent";
+import RemoveFriendComponent from "@/components/RemoveFriendComponent";
 
-export default function AddFriends() {
+// NOTE FROM KRISTINE: prob add logic so that if its the main galaxy,
+// you're only able to remove friends
+
+export default function RemoveFriends() {
   const router = useRouter();
   const { galaxyName } = useLocalSearchParams();
   const { userId } = useContext(UserContext);
@@ -34,8 +37,6 @@ export default function AddFriends() {
           array.push(friendPlanet);
         }
       }
-
-      console.log("Array of Friend Planets:", array);
       setFriendPlanets(array);
     } catch (error) {
       console.error("Error fetching planets:", error);

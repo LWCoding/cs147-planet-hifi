@@ -41,7 +41,6 @@ export default function Galaxy() {
     const allPlanets = await fetchAllPlanets();
     const friendIds = await fetchFriends(userId);
 
-    console.log(friendIds);
     // Find logged-in user's planet
     setMainPlanet(allPlanets.find((user) => user.user_id === userId));
 
