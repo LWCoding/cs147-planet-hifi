@@ -48,7 +48,7 @@ export default function PhotoStatus() {
 
     router.push({
       pathname: "tabs/status/photoStatus",
-      params: { uri: pic.uri },
+      params: { uri: "data:image/png;base64," + base64String },
     });
   };
 
