@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 // Days of the week (Monday-Friday only for scheduling)
-const daysForScheduling = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+const daysForScheduling = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // Function to generate random availability for each day
 const generateRandomAvailability = () => {
