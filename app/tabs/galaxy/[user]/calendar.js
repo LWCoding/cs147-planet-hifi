@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 // Days of the week (Monday-Sunday for scheduling)
 const daysForScheduling = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -81,7 +82,13 @@ const Calendar = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", padding: 10 }}>
+      <View
+        style={{
+          alignItems: "center",
+          padding: 10,
+          backgroundColor: "#CBCBE2",
+        }}
+      >
         <Text style={styles.headerText}>Your Friend's Busy Times</Text>
       </View>
       {/* Calendar */}
@@ -227,6 +234,7 @@ const Calendar = () => {
       {isNotificationVisible && (
         <View style={styles.notificationPopup}>
           <Text style={styles.notificationText}>Notification Sent!</Text>
+          <Icon name="paper-plane" size={30} color="black" />
         </View>
       )}
     </View>
@@ -290,8 +298,10 @@ const styles = StyleSheet.create({
   scheduleButton: {
     backgroundColor: "#575788",
     padding: 15,
-    margin: 10,
-    borderRadius: 10,
+    marginBottom: 15,
+    width: 300,
+    alignSelf: "center",
+    borderRadius: 20,
     alignItems: "center",
   },
   modalContainer: {
@@ -299,12 +309,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    position: "relative",
   },
   modalContent: {
     width: 300,
     padding: 20,
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: "center",
   },
   modalTitle: {
@@ -353,16 +364,16 @@ const styles = StyleSheet.create({
     fontFamily: "PPPierSans-Regular",
   },
   notificationPopup: {
+    alignItems: "center",
     position: "absolute",
-    bottom: 50,
+    bottom: 200,
     alignSelf: "center",
-    backgroundColor: "#2C2C64",
-    padding: 15,
-    borderRadius: 5,
+    backgroundColor: "#CBCBE2",
+    padding: 40,
+    borderRadius: 30,
   },
   notificationText: {
-    color: "white",
-    fontWeight: "bold",
+    color: "black",
     fontFamily: "PPPierSans-Regular",
   },
   timeContainer: {
