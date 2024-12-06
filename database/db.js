@@ -165,4 +165,19 @@ export const getAllGalaxyNamesById = async (userId) => {
 	return data;
 };
 
+export const fetchFriendsForUserId = async (userId) => {
+	// Get user
+	const user = await findPlanetById(userId);
+
+	// Get logged in user's friend ids
+	const friendIds = user["friend_ids"];
+
+	// find friends' planets
+	const allPlanets = await fetchAllPlanets();
+	let friendsPlanets = friendIds.map((friendId) =>
+		allPlanets.find((user) => user.user_id === friendId)
+	);
+
+	return friendsPlanets;
+};
 export default db;
