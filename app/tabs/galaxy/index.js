@@ -27,6 +27,7 @@ export default function Galaxy() {
   const [galaxyId, setGalaxyId] = useState(null);
   const [galaxyIdx, setGalaxyIdx] = useState(0);
   const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
+  const [allGalaxyObjects, setAllGalaxyObjects] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const { userId } = useContext(UserContext);
@@ -54,15 +55,29 @@ export default function Galaxy() {
 
       await db.from("galaxies").insert(galaxyData); // Add to database
     }
-    console.log(galaxies[galaxyIdx]);
-
-    const id = galaxies[galaxyIdx].galaxy_id;
 
     setAllUserGalaxyIds(galaxies);
-    setGalaxyId(id); // Get the `i`th galaxy and set it
-    const galaxyInfo = await findGalaxyById(id);
 
+    let galaxyObjects = {};
+    for (let i = 0; i < galaxies.length; i++) {
+      const id = galaxies[i]["galaxy_id"];
+      const galaxyInfo = await findGalaxyById(id);
+      galaxyObjects[id] = galaxyInfo;
+    }
+
+    setAllGalaxyObjects(galaxyObjects);
+
+    await fetchUsersInCurrentGalaxy();
+  };
+
+  const fetchUsersInCurrentGalaxy = async () => {
+    setIsLoading(true);
+
+    const id = allUserGalaxyIds[galaxyIdx].galaxy_id;
+    setGalaxyId(id); // Get the `i`th galaxy and set it
+    const galaxyInfo = allGalaxyObjects[id];
     setGalaxyName(galaxyInfo.name);
+
     setIsLoading(false);
   };
 
@@ -93,8 +108,12 @@ export default function Galaxy() {
   }, []);
 
   useEffect(() => {
-    fetchGalaxies();
+    fetchUsersInCurrentGalaxy();
   }, [galaxyIdx]);
+
+  useEffect(() => {
+    fetchGalaxies();
+  }, []);
 
   return (
     <View
@@ -137,11 +156,13 @@ export default function Galaxy() {
             to="/tabs/galaxy/newGalaxy"
             icon="plus-circle"
             text="New Galaxy"
+            disabled={isLoading}
           />
           <IconButton
             to="/tabs/galaxy/manageAll"
             icon="menu"
             text="Manage Galaxy"
+            disabled={isLoading}
             params={{ galaxyId: galaxyId, galaxyName: galaxyName }}
           />
         </View>
