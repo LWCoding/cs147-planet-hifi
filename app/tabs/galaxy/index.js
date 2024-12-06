@@ -60,8 +60,10 @@ export default function Galaxy() {
     setAllUserGalaxyIds(galaxies.map((galaxy) => galaxy.galaxy_id));
 
     let galaxyObjects = {};
+
     for (let i = 0; i < galaxies.length; i++) {
       const id = galaxies[i]["galaxy_id"];
+
       const galaxyInfo = await findGalaxyById(id);
       galaxyObjects[id] = galaxyInfo;
     }
@@ -116,6 +118,7 @@ export default function Galaxy() {
 
   useEffect(() => {
     if (allUserGalaxyIds != null && allGalaxyObjects != null) {
+      addToGalaxyIdx(0); // Update index
       fetchUsersInCurrentGalaxy();
     }
   }, [galaxyIdx, allUserGalaxyIds, allGalaxyObjects]);
