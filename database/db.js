@@ -53,20 +53,8 @@ export const findPlanetById = async (userId) => {
 	return userData;
 };
 
-// given a user id, fetches their friends' ids (array)
-export const fetchFriends = async (userId) => {
-	const { data: friendsData, error: friendsError } = await db
-		.from("friends")
-		.select("*")
-		.eq("user_id", userId)
-		.single();
-	if (friendsError) {
-		console.error("Error fetching user: ", error.message);
-	}
-	return friendsData.friends_ids;
-};
-
-export const fetchUsersGalaxies = async (userId) => {
+// Given a user id, fetches the user's friends' ids (array)
+export const fetchUserGalaxiesById = async (userId) => {
 	const { data: galaxiesData, error: galaxiesError } = await db
 		.from("galaxies")
 		.select("*")
