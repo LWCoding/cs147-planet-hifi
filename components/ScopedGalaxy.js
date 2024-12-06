@@ -17,10 +17,13 @@ const centerY = height / 2 - 100; // Center Y position
 const radius = 130; // Radius for circular layout
 const itemSize = 150; // Diameter of items
 
-export default function Galaxy({ galaxyId }) {
+export default function Galaxy({
+  galaxyId,
+  isGalaxyLoading,
+  setIsGalaxyLoading,
+}) {
   const [otherPlanets, setOtherPlanets] = useState(null);
   const [mainPlanet, setMainPlanet] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const { userId } = useContext(UserContext);
 
@@ -33,14 +36,14 @@ export default function Galaxy({ galaxyId }) {
   };
 
   const updateFriendPlanets = async () => {
-    setIsLoading(true);
+    setIsGalaxyLoading(true);
 
     // Set logged-in user's friends' planets
     const friendsPlanets = await fetchFriendsForGalaxyId(galaxyId);
 
     setOtherPlanets(friendsPlanets);
 
-    setIsLoading(false);
+    setIsGalaxyLoading(false);
   };
 
   // Get all planets from the database
@@ -55,7 +58,7 @@ export default function Galaxy({ galaxyId }) {
     }
   }, [galaxyId]);
 
-  if (isLoading) {
+  if (isGalaxyLoading) {
     return (
       <View style={[styles.loadingContainer]}>
         <ActivityIndicator size="large" animating={true} />

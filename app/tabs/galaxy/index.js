@@ -29,6 +29,7 @@ export default function Galaxy() {
   const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
   const [allGalaxyObjects, setAllGalaxyObjects] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGalaxyLoading, setIsGalaxyLoading] = useState(true);
 
   const { userId } = useContext(UserContext);
 
@@ -130,8 +131,8 @@ export default function Galaxy() {
       >
         <View marginTop={30} style={styles.buttonsAndTitle}>
           <TouchableOpacity
-            disabled={isLoading}
-            style={{ opacity: isLoading ? 0.4 : 1 }}
+            disabled={isGalaxyLoading}
+            style={{ opacity: isGalaxyLoading ? 0.4 : 1 }}
             onPress={() => addToGalaxyIdx(-1)}
           >
             <MaterialCommunityIcon
@@ -144,8 +145,8 @@ export default function Galaxy() {
             {galaxyName}
           </Text>
           <TouchableOpacity
-            disabled={isLoading}
-            style={{ opacity: isLoading ? 0.4 : 1 }}
+            disabled={isGalaxyLoading}
+            style={{ opacity: isGalaxyLoading ? 0.4 : 1 }}
             onPress={() => addToGalaxyIdx(1)}
           >
             <MaterialCommunityIcon
@@ -170,7 +171,11 @@ export default function Galaxy() {
             params={{ galaxyId: galaxyId, galaxyName: galaxyName }}
           />
         </View>
-        <ScopedGalaxy galaxyId={galaxyId} />
+        <ScopedGalaxy
+          galaxyId={galaxyId}
+          isGalaxyLoading={isGalaxyLoading}
+          setIsGalaxyLoading={setIsGalaxyLoading}
+        />
       </ImageBackground>
     </View>
   );
