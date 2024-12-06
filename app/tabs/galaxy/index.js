@@ -51,12 +51,12 @@ export default function Galaxy() {
   };
   // NOTE TO LUCAS: ok so the logic was to get the first galaxy only bc we dont need to fetch them all yet
   // bc of loading ? and so it pushes to the galaxyname screen
-  const navtoNextGalaxy = async () => {
-    const firstGal = await fetchFirstGalaxy(userId);
-    const galaxyName = firstGal.name;
-    console.log(galaxyName);
-    router.push(`/tabs/galaxy/${galaxyName}`);
-  };
+  // const navtoNextGalaxy = async () => {
+  //   const firstGal = await fetchFirstGalaxy(userId);
+  //   const galaxyName = firstGal.name;
+  //   console.log(galaxyName);
+  //   router.push(`/tabs/galaxy/${galaxyName}`);
+  // };
 
   // Get all planets from the database
   useEffect(() => {

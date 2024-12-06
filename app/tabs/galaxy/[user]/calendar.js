@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,19 +8,20 @@ import {
   Modal,
   TextInput,
   Alert,
-} from 'react-native';
+} from "react-native";
 
 // Days of the week (Monday-Sunday for scheduling)
-const daysForScheduling = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const periods = ['AM', 'PM']; // AM/PM options
+const daysForScheduling = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const periods = ["AM", "PM"]; // AM/PM options
 
 // Function to generate random availability for each day
 const generateRandomAvailability = () => {
   const availability = {};
   daysForScheduling.forEach((day) => {
     const numBlocks = Math.floor(Math.random() * 10) + 1; // Randomize 1–10 available blocks
-    const blocks = Array.from({ length: numBlocks }, () =>
-      Math.floor(Math.random() * 24) + 1 // Randomize hours (1–24)
+    const blocks = Array.from(
+      { length: numBlocks },
+      () => Math.floor(Math.random() * 24) + 1 // Randomize hours (1–24)
     );
     availability[day] = [...new Set(blocks)]; // Ensure no duplicates
   });
@@ -32,8 +33,8 @@ const Calendar = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedMinute, setSelectedMinute] = useState('');
+  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedMinute, setSelectedMinute] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState(null);
 
   useEffect(() => {
@@ -47,19 +48,29 @@ const Calendar = () => {
   // Validate inputs and handle notification
   const handleSendNotification = () => {
     if (!selectedDay) {
-      Alert.alert('Error', 'Please select a day.');
+      Alert.alert("Error", "Please select a day.");
       return;
     }
-    if (!selectedTime || isNaN(selectedTime) || selectedTime < 1 || selectedTime > 12) {
-      Alert.alert('Error', 'Please enter a valid hour between 1 and 12.');
+    if (
+      !selectedTime ||
+      isNaN(selectedTime) ||
+      selectedTime < 1 ||
+      selectedTime > 12
+    ) {
+      Alert.alert("Error", "Please enter a valid hour between 1 and 12.");
       return;
     }
-    if (!selectedMinute || isNaN(selectedMinute) || selectedMinute < 0 || selectedMinute > 59) {
-      Alert.alert('Error', 'Please enter a valid minute between 0 and 59.');
+    if (
+      !selectedMinute ||
+      isNaN(selectedMinute) ||
+      selectedMinute < 0 ||
+      selectedMinute > 59
+    ) {
+      Alert.alert("Error", "Please enter a valid minute between 0 and 59.");
       return;
     }
     if (!selectedPeriod) {
-      Alert.alert('Error', 'Please select AM or PM.');
+      Alert.alert("Error", "Please select AM or PM.");
       return;
     }
 
@@ -70,6 +81,9 @@ const Calendar = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      <View style={{ alignItems: "center", padding: 10 }}>
+        <Text style={styles.headerText}>Your Friend's Busy Times</Text>
+      </View>
       {/* Calendar */}
       <ScrollView style={styles.outerScrollContainer}>
         <ScrollView horizontal style={styles.calendarContainer}>
@@ -82,10 +96,12 @@ const Calendar = () => {
                     key={hour}
                     style={[
                       styles.hourBlock,
-                      availability[day]?.includes(hour) && styles.availableBlock,
+                      availability[day]?.includes(hour) && styles.busyBlock,
                     ]}
                   >
-                    <Text style={styles.hourText}>{`${hour % 12 || 12} ${hour < 12 ? 'AM' : 'PM'}`}</Text>
+                    <Text style={styles.hourText}>{`${hour % 12 || 12} ${
+                      hour < 12 ? "AM" : "PM"
+                    }`}</Text>
                   </View>
                 ))}
               </View>
@@ -107,17 +123,28 @@ const Calendar = () => {
 
             {/* Day Selection */}
             <Text>Day (Mon-Sun):</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollableOptions}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.scrollableOptions}
+            >
               {daysForScheduling.map((day) => (
                 <TouchableOpacity
                   key={day}
                   style={[
                     styles.option,
-                    selectedDay === day && { backgroundColor: '#575788' },
+                    selectedDay === day && { backgroundColor: "#575788" },
                   ]}
                   onPress={() => setSelectedDay(day)}
                 >
-                  <Text style={[styles.optionText, selectedDay === day && { color: 'white' }]}>{day}</Text>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      selectedDay === day && { color: "white" },
+                    ]}
+                  >
+                    {day}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -149,33 +176,49 @@ const Calendar = () => {
               </View>
             </View>
 
-
             {/* AM/PM Selection */}
             <Text>AM/PM:</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollableOptions}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.scrollableOptions}
+            >
               {periods.map((period) => (
                 <TouchableOpacity
                   key={period}
                   style={[
                     styles.option,
-                    selectedPeriod === period && { backgroundColor: '#575788' },
+                    selectedPeriod === period && { backgroundColor: "#575788" },
                   ]}
                   onPress={() => setSelectedPeriod(period)}
                 >
-                  <Text style={[styles.optionText, selectedPeriod === period && { color: 'white' }]}>{period}</Text>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      selectedPeriod === period && { color: "white" },
+                    ]}
+                  >
+                    {period}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
 
             <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.sendButton} onPress={handleSendNotification}>
-              <Text style={styles.buttonText}>Send</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={handleSendNotification}
+              >
+                <Text style={styles.buttonText}>Send</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.cancelButton} onPress={handleCloseModal}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={handleCloseModal}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -193,78 +236,82 @@ const Calendar = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     padding: 15,
-    backgroundColor: '#575788',
-    alignItems: 'center',
+    backgroundColor: "#575788",
+    alignItems: "center",
   },
   headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
   },
   outerScrollContainer: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   calendarContainer: {
     flex: 1,
   },
   calendarContent: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   dayColumn: {
     width: 80,
     borderRightWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
   },
   dayHeader: {
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
     padding: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderBottomWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     fontSize: 14,
   },
   hourBlock: {
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
   },
-  availableBlock: {
-    backgroundColor: 'green',
+  busyBlock: {
+    backgroundColor: "#D3D3D3",
     borderRadius: 5,
   },
   hourText: {
     fontSize: 10,
-    color: '#333',
+    color: "#333",
+    fontFamily: "PPPierSans-Regular",
   },
   scheduleButton: {
-    backgroundColor: '#575788',
+    backgroundColor: "#575788",
     padding: 15,
     margin: 10,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     width: 300,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
+    fontFamily: "PPPierSans-Regular",
   },
   scrollableOptions: {
     marginVertical: 10,
@@ -273,96 +320,100 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 5,
     borderRadius: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   optionText: {
     fontSize: 14,
+    fontFamily: "PPPierSans-Regular",
   },
   inputBox: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 16,
   },
   sendButton: {
-    backgroundColor: '#575788',
+    backgroundColor: "#575788",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
   },
   closeButton: {
-    backgroundColor: '#dc3545',
+    backgroundColor: "#dc3545",
     padding: 10,
     borderRadius: 5,
   },
   closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular",
   },
   notificationPopup: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 50,
-    alignSelf: 'center',
-    backgroundColor: '#2C2C64',
+    alignSelf: "center",
+    backgroundColor: "#2C2C64",
     padding: 15,
     borderRadius: 5,
   },
   notificationText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular",
   },
   timeContainer: {
-    flexDirection: 'row', // Places inputs side by side
-    justifyContent: 'space-between', // Ensures even spacing
-    width: '100%',
+    flexDirection: "row", // Places inputs side by side
+    justifyContent: "space-between", // Ensures even spacing
+    width: "100%",
   },
   inputWrapper: {
     flex: 1, // Each input takes equal space
     marginHorizontal: 5, // Adds space between the two inputs
   },
   inputBox: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 16,
-  }, 
+  },
   buttonRow: {
-    flexDirection: 'row', // Align buttons side by side
-    justifyContent: 'space-between', // Evenly distribute buttons
+    flexDirection: "row", // Align buttons side by side
+    justifyContent: "space-between", // Evenly distribute buttons
     marginTop: 15, // Add some space above the buttons
   },
   sendButton: {
     flex: 1, // Equal width for both buttons
-    backgroundColor: '#575788',
+    backgroundColor: "#575788",
     padding: 10,
     borderRadius: 5,
     marginRight: 5, // Space between the buttons
-    alignItems: 'center',
+    alignItems: "center",
   },
   cancelButton: {
     flex: 1, // Equal width for both buttons
-    backgroundColor: '#dc3545',
+    backgroundColor: "#dc3545",
     padding: 10,
     borderRadius: 5,
     marginLeft: 5, // Space between the buttons
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular",
   },
   cancelButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: "PPPierSans-Regular",
   },
-   
 });
 
 export default Calendar;
