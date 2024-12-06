@@ -36,7 +36,13 @@ export default function Layout() {
 					headerStyle: {
 						backgroundColor: "#9393BA",
 					},
-					headerTitle: "Create a New Galaxy",
+					headerTitle: "Create New Galaxy",
+
+					headerTitleStyle: {
+						fontSize: 24,
+						fontWeight: "bold",
+						fontFamily: "PPPierSans-Regular",
+					},
 				}}
 			/>
 
