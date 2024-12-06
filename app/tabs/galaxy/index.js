@@ -24,7 +24,6 @@ import IconButton from "@/components/IconButton";
 export default function Galaxy() {
   const theme = useTheme();
 
-  const [galaxyName, setGalaxyName] = useState("Loading...");
   const [galaxyIdx, setGalaxyIdx] = useState(0);
   const [galaxyCount, setGalaxyCount] = useState(1);
   const [allGalaxyPlanets, setAllGalaxyPlanets] = useState(null);
@@ -42,6 +41,7 @@ export default function Galaxy() {
 
   const fetchGalaxies = async () => {
     setIsLoading(true);
+    updateGalaxyIdx(0); // Trigger wrap-around if we're at an invalid index (e.g., just deleted last galaxy)
 
     let galaxies = await fetchUserGalaxiesById(userId);
 
@@ -120,13 +120,11 @@ export default function Galaxy() {
 
   useEffect(() => {
     fetchGalaxies();
-    setGalaxyIdx(0);
+    setGalaxyIdx(0); // Trigger updates for editing index to update name
   }, []);
 
   useEffect(() => {
-    if (allGalaxyPlanets != null) {
-      setGalaxyName(getCurrentGalaxy().galaxyName);
-    }
+    updateGalaxyIdx(0); // Trigger updates for editing index to update name
   }, [allGalaxyPlanets, galaxyIdx]);
 
   return (
@@ -151,7 +149,7 @@ export default function Galaxy() {
             />
           </TouchableOpacity>
           <Text style={styles.galaxyTitle} variant="displaySmall">
-            {galaxyName}
+            {isLoading ? "Loading..." : getCurrentGalaxy().galaxyName}
           </Text>
           <TouchableOpacity
             disabled={isLoading}
@@ -179,7 +177,7 @@ export default function Galaxy() {
             disabled={isLoading}
             params={{
               galaxyId: getCurrentGalaxy()?.galaxyId,
-              galaxyName: galaxyName,
+              galaxyName: getCurrentGalaxy()?.galaxyName,
             }}
           />
         </View>

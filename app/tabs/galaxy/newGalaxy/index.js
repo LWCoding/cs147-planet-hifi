@@ -126,6 +126,7 @@ export default function NewGalaxy() {
               value={galaxyName}
               onChangeText={handleChangeText}
               autoFocus={true}
+              maxLength={12}
               onBlur={handleBlur} // end editing when the input loses focus
             />
           ) : (
