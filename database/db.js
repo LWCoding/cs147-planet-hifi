@@ -123,6 +123,7 @@ export const findGalaxyById = async (galaxyId) => {
 		.select("*")
 		.eq("galaxy_id", galaxyId)
 		.single();
+
 	if (galaxiesError) {
 		console.error("Error fetching galaxy: ", galaxiesError.message);
 	}

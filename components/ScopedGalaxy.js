@@ -1,29 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import {
-	StyleSheet,
-	View,
-	Dimensions,
-	TouchableOpacity,
-	Text,
-	ImageBackground,
-} from "react-native";
-// NOTE FROM KRISTINE: HOW TO AVOID DUPLICATE OF PLANET NAMES LOL?
+import { StyleSheet, View, Dimensions, TouchableOpacity } from "react-native";
 
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import Planet from "@/components/Planet";
-import spaceBackgroundImage from "@/assets/space-bg.jpg";
-import {
-	fetchAllPlanets,
-	fetchFriendsForGalaxyId,
-	fetchFriendsForUserId,
-	fetchUserGalaxiesById,
-	findGalaxyById,
-} from "@/database/db";
+import { fetchFriendsForGalaxyId } from "@/database/db";
 import { findPlanetById } from "@/database/db";
-import IconButton from "@/components/IconButton";
 
 const galaxyMarginTop = 90; // How far from top entire galaxy should be pushed down
 
@@ -65,7 +48,9 @@ export default function Galaxy({ galaxyId }) {
 
 	// Uupdate friends whenever galaxy id changes
 	useEffect(() => {
-		updateFriendPlanets();
+		if (galaxyId != null) {
+			updateFriendPlanets();
+		}
 	}, [galaxyId]);
 
 	if (isLoading) {

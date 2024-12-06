@@ -38,8 +38,13 @@ export default function Galaxy() {
 
 	// Adds an `amt` to the galaxy index. Use `1` to go forward one index,
 	// and `-1` to go back one index.
-	const addToGalaxyIdx = async (amt) => {
-		setGalaxyIdx((galaxyIdx + amt) % allUserGalaxyIds.length);
+	const addToGalaxyIdx = (amt) => {
+		let calculatedIdx = galaxyIdx + amt;
+		if (calculatedIdx < 0) {
+			setGalaxyIdx(allUserGalaxyIds.length - 1);
+		} else {
+			setGalaxyIdx((galaxyIdx + amt) % allUserGalaxyIds.length);
+		}
 	};
 
 	useEffect(() => {

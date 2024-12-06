@@ -17,7 +17,6 @@ export default function Planet({
 }) {
 	const router = useRouter();
 	const [user, setUser] = useState(null);
-	const theme = useTheme();
 
 	const fetchUserInfo = async () => {
 		if (hardCodedEmotion) {
@@ -89,12 +88,6 @@ export default function Planet({
 	} else {
 		return (
 			<View style={styles.container}>
-				<ActivityIndicator
-					style={styles.loadingIndicatorOverPlanet}
-					size="small"
-					color={theme.colors.inversePrimary}
-					animating={true}
-				/>
 				<Image
 					source={PlanetImages.base}
 					style={[styles.planet, { width, height }]}
@@ -118,12 +111,5 @@ const styles = {
 	},
 	relativeOverText: {
 		top: -10, // Shift closer to planet
-	},
-	loadingIndicatorOverPlanet: {
-		position: "absolute",
-		top: "50%",
-		left: "50%",
-		transform: [{ translateX: -36 }, { translateY: -18 }], // Center the indicator
-		zIndex: 1,
 	},
 };
