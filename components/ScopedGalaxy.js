@@ -50,6 +50,7 @@ export default function Galaxy({ galaxyId }) {
 
   // Uupdate friends whenever galaxy id changes
   useEffect(() => {
+    console.log(galaxyId);
     if (galaxyId != null) {
       updateFriendPlanets();
     }

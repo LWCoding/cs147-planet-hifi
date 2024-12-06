@@ -204,6 +204,11 @@ export const fetchFriendsForGalaxyId = async (galaxyId) => {
 
   const friendIds = galaxy["planets"];
 
+  // If no friends found, return empty list
+  if (friendIds == null) {
+    return [];
+  }
+
   const allPlanets = await fetchAllPlanets();
   let friendsPlanets = friendIds.map((friendId) =>
     allPlanets.find((user) => user.user_id === friendId)
