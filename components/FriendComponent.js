@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: "row",
     width: 320,
-    height: 105,
+    height: 95,
     backgroundColor: "#ADADC5",
     borderRadius: 30,
     margin: 10,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontFamily: "PPPierSans-Regular",
   },
   button: {
-    padding: 10,
+    padding: 6,
     margin: 5,
     width: 120,
     borderRadius: 30,
