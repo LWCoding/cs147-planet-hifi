@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "test-cs147-app",
-    "slug": "test-cs147-app",
+    "slug": "cs-147",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -32,14 +32,15 @@
         "origin": false
       },
       "eas": {
-        "projectId": "c1c815ed-69fc-4b69-a275-77ce6425a826"
+        "projectId": "83507517-fd0b-48b0-aef2-c1dcb7db0570"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/c1c815ed-69fc-4b69-a275-77ce6425a826"
-    }
+      "url": "https://u.expo.dev/83507517-fd0b-48b0-aef2-c1dcb7db0570"
+    },
+    "owner": "kmayu"
   }
 }

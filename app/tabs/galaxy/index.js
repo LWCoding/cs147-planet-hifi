@@ -1,183 +1,186 @@
 import { useState, useEffect, useContext } from "react";
 import {
-	StyleSheet,
-	View,
-	Dimensions,
-	TouchableOpacity,
-	Text,
-	ImageBackground,
+  StyleSheet,
+  View,
+  ImageBackground,
+  TouchableOpacity,
 } from "react-native";
-// NOTE FROM KRISTINE: HOW TO AVOID DUPLICATE OF PLANET NAMES LOL?
-
-import { ActivityIndicator, useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { useRouter } from "expo-router";
+import db, {
+  fetchFriendsForUserId,
+  fetchUserGalaxiesById,
+  findGalaxyById,
+} from "@/database/db";
+import uuid from "react-native-uuid";
+import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import { UserContext } from "@/contexts/UserContext";
-import Planet from "@/components/Planet";
+import { Button, Text, useTheme } from "react-native-paper";
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
-import { fetchAllPlanets } from "@/database/db";
+
+// Import components
+import ScopedGalaxy from "@/components/ScopedGalaxy";
 import IconButton from "@/components/IconButton";
 
-const galaxyMarginTop = 50; // How far from top entire galaxy should be pushed down
-
-const { width, height } = Dimensions.get("window");
-const centerX = width / 2; // Center X position
-const centerY = height / 2 - 100; // Center Y position
-const radius = 140; // Radius for circular layout
-const itemSize = 150; // Diameter of items
-
 export default function Galaxy() {
-	const [otherPlanets, setOtherPlanets] = useState([]);
-	const [mainPlanet, setMainPlanet] = useState(null);
-	const { userId } = useContext(UserContext);
+  const theme = useTheme();
 
-	const theme = useTheme();
+  const [galaxyName, setGalaxyName] = useState("Loading...");
+  const [galaxyId, setGalaxyId] = useState(null);
+  const [galaxyIdx, setGalaxyIdx] = useState(0);
+  const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-	// Fetch all planets from the database and return them in the form
-	// [{username: String, realname: String, emotion: String}]
-	const fetchPlanets = async () => {
-		const allPlanets = await fetchAllPlanets();
+  const { userId } = useContext(UserContext);
 
-		// Find logged-in user's planet
-		setMainPlanet(allPlanets.find((user) => user.user_id === userId));
-		// Set all other planets
-		setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
-	};
+  const fetchGalaxies = async () => {
+    setIsLoading(true);
+    let galaxies = await fetchUserGalaxiesById(userId);
 
-	// Get all planets from the database
-	useEffect(() => {
-		fetchPlanets();
-	}, []);
+    // If there are no galaxies (first time load), create "All Friends" galaxy
+    if (galaxies.length == 0) {
+      let allFriends = await fetchFriendsForUserId(userId);
 
-	if (!mainPlanet || !otherPlanets) {
-		return (
-			<View
-				style={[
-					styles.loadingContainer,
-					{ backgroundColor: theme.colors.background },
-				]}
-			>
-				<ActivityIndicator size="large" animating={true} />
-			</View>
-		);
-	}
+      let validFriends = allFriends.filter((friend) => friend != null);
+      let allFriendIds = validFriends.map((friend) => friend.user_id);
 
-	return (
-		<View
-			style={[
-				styles.container,
-				{ backgroundColor: theme.colors.background },
-			]}
-		>
-			<ImageBackground
-				source={spaceBackgroundImage}
-				resizeMode="cover"
-				style={styles.bgImage}
-			>
-				<View
-					paddingHorizontal={50}
-					top={30}
-					style={styles.topButtonRow}
-				>
-					<IconButton
-						to="/tabs/galaxy/newGalaxy"
-						icon="plus-circle"
-						text="New Galaxy"
-					/>
-					<IconButton
-						to="/tabs/galaxy/manageAll"
-						icon="menu"
-						text="Manage Galaxy"
-					/>
-				</View>
-				{/* center planet */}
-				{mainPlanet != null && (
-					<View style={styles.centerItem}>
-						<Planet userId={mainPlanet.user_id} />
-					</View>
-				)}
+      const newUuid = uuid.v4();
+      const galaxyData = {
+        name: "All Friends",
+        creator_userid: userId,
+        planets: allFriendIds,
+        galaxy_id: newUuid,
+      };
 
-				{/* planets around center */}
-				{otherPlanets.map((item, index) => {
-					const angle = (index / otherPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
-					const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
-					const y =
-						centerY +
-						radius * Math.sin(angle) -
-						itemSize / 2 +
-						galaxyMarginTop; // Y position
+      galaxies = [galaxyData];
 
-					return (
-						<View
-							key={item.username}
-							style={[styles.item, { left: x, top: y }]}
-						>
-							<Planet userId={item.user_id} />
-						</View>
-					);
-				})}
-			</ImageBackground>
-		</View>
-	);
+      await db.from("galaxies").insert(galaxyData); // Add to database
+    }
+    console.log(galaxies[galaxyIdx]);
+
+    const id = galaxies[galaxyIdx].galaxy_id;
+
+    setAllUserGalaxyIds(galaxies);
+    setGalaxyId(id); // Get the `i`th galaxy and set it
+    const galaxyInfo = await findGalaxyById(id);
+
+    setGalaxyName(galaxyInfo.name);
+    setIsLoading(false);
+  };
+
+  // Adds an `amt` to the galaxy index. Use `1` to go forward one index,
+  // and `-1` to go back one index.
+  const addToGalaxyIdx = (amt) => {
+    let calculatedIdx = galaxyIdx + amt;
+    if (calculatedIdx < 0) {
+      setGalaxyIdx(allUserGalaxyIds.length - 1);
+    } else {
+      setGalaxyIdx((galaxyIdx + amt) % allUserGalaxyIds.length);
+    }
+  };
+
+  useEffect(() => {
+    db.channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          table: "galaxies",
+        },
+        (payload) => {
+          fetchGalaxies();
+        }
+      )
+      .subscribe();
+  }, []);
+
+  useEffect(() => {
+    fetchGalaxies();
+  }, [galaxyIdx]);
+
+  return (
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <ImageBackground
+        source={spaceBackgroundImage}
+        resizeMode="cover"
+        style={styles.bgImage}
+      >
+        <View marginTop={30} style={styles.buttonsAndTitle}>
+          <TouchableOpacity
+            disabled={isLoading}
+            style={{ opacity: isLoading ? 0.4 : 1 }}
+            onPress={() => addToGalaxyIdx(-1)}
+          >
+            <MaterialCommunityIcon
+              name="arrow-left"
+              size={36}
+              color={theme.colors.interactable}
+            />
+          </TouchableOpacity>
+          <Text style={styles.galaxyTitle} variant="displaySmall">
+            {galaxyName}
+          </Text>
+          <TouchableOpacity
+            disabled={isLoading}
+            style={{ opacity: isLoading ? 0.4 : 1 }}
+            onPress={() => addToGalaxyIdx(1)}
+          >
+            <MaterialCommunityIcon
+              name="arrow-right"
+              size={36}
+              color={theme.colors.interactable}
+            />
+          </TouchableOpacity>
+        </View>
+        <View paddingHorizontal={50} marginTop={25} style={styles.topButtonRow}>
+          <IconButton
+            to="/tabs/galaxy/newGalaxy"
+            icon="plus-circle"
+            text="New Galaxy"
+          />
+          <IconButton
+            to="/tabs/galaxy/manageAll"
+            icon="menu"
+            text="Manage Galaxy"
+            params={{ galaxyId: galaxyId, galaxyName: galaxyName }}
+          />
+        </View>
+        <ScopedGalaxy galaxyId={galaxyId} />
+      </ImageBackground>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-	loadingContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	container: {
-		flex: 1,
-		fontFamily: "PPPierSans-Regular",
-	},
-	newGalaxy: {
-		borderRadius: 30,
-		width: 180,
-		height: 50,
-		justifyContent: "center",
-		alignItems: "center",
-		fontFamily: "PPPierSans-Regular",
-	},
-	bgImage: {
-		flex: 1,
-		height: "120%",
-	},
-	topButtonRow: {
-		flex: 1,
-		flexDirection: "row",
-		justifyContent: "space-evenly",
-		fontFamily: "PPPierSans-Regular",
-	},
-	centerItem: {
-		position: "absolute",
-		left: centerX - itemSize / 2, // center horizontally
-		top: centerY - itemSize / 2 + galaxyMarginTop, // center vertically
-		width: itemSize,
-		height: itemSize,
-		justifyContent: "center",
-		alignItems: "center",
-		fontFamily: "PPPierSans-Regular",
-	},
-	item: {
-		position: "absolute", // how to get rid of cut off tho lol this might be a later problem? - kristine
-		width: itemSize,
-		height: itemSize,
-		justifyContent: "center",
-		alignItems: "center",
-		fontFamily: "PPPierSans-Regular",
-	},
-	iconContainer: {
-		width: 60,
-		height: 60,
-		borderRadius: 30, // half of width/height
-		justifyContent: "center",
-		alignItems: "center",
-		fontFamily: "PPPierSans-Regular",
-	},
-	buttonText: {
-		fontSize: 18,
-		fontWeight: "bold",
-		fontFamily: "PPPierSans-Regular", // Add custom font
-	},
+  container: {
+    flex: 1,
+    fontFamily: "PPPierSans-Regular",
+  },
+  buttonsAndTitle: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  galaxyTitle: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  newGalaxy: {
+    borderRadius: 30,
+    width: 180,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    fontFamily: "PPPierSans-Regular",
+  },
+  bgImage: {
+    flex: 1,
+    height: "120%",
+  },
+  topButtonRow: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    fontFamily: "PPPierSans-Regular",
+  },
 });

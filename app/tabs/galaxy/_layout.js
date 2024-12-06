@@ -32,17 +32,18 @@ export default function GalaxyStackLayout() {
       <Stack.Screen
         name="newGalaxy"
         options={{
-          headerTitle: "Create Galaxy",
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-            fontFamily: "PPPierSans-Regular", // Custom font
-          },
-          headerTitleStyle: {
-            fontSize: 24,
-            fontWeight: "bold",
-            fontFamily: "PPPierSans-Regular", // Custom font
-          },
+          headerShown: false,
+          // headerTitle: "Create Galaxy",
+          // headerTitleAlign: "center",
+          // headerStyle: {
+          //   backgroundColor: theme.colors.primary,
+          //   fontFamily: "PPPierSans-Regular", // Custom font
+          // },
+          // headerTitleStyle: {
+          //   fontSize: 24,
+          //   fontWeight: "bold",
+          //   fontFamily: "PPPierSans-Regular", // Custom font
+          // },
         }}
       />
       <Stack.Screen

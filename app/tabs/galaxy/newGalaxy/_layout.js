@@ -1,46 +1,71 @@
 import { Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
-// Optional: Icons for the tabs (you can uncomment them if needed)
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import IonIcon from "@expo/vector-icons/Ionicons";
+import { useRouter } from "expo-router";
 
 export default function Layout() {
-  const theme = useTheme();
+	const router = useRouter();
 
-  return (
-    <Stack
-      screenOptions={{
-        headerShown: false, // Disable header for all screens
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        tabBarLabelStyle: {
-          fontFamily: "PPPierSans-Regular", // Custom font for labels
-          fontSize: 12, // Adjust size as needed
-        },
-      }}
-    >
-      <Stack.Screen
-        name="index"
-        options={{
-          tabBarLabel: "New Galaxy",
-          tabBarIcon: ({ color }) => (
-            <IonIcon name="person-add" size={24} color={color} />
-          ),
-        }}
-      />
+	const theme = useTheme();
 
-      <Stack.Screen
-        name="addFriends"
-        options={{
-          tabBarLabel: "Add Friends",
-          tabBarIcon: ({ color }) => (
-            <IonIcon name="person-add" size={24} color={color} />
-          ),
-        }}
-      />
-    </Stack>
-  );
+	return (
+		<Stack
+			screenOptions={{
+				tabBarActiveTintColor: theme.colors.primary,
+				tabBarStyle: {
+					backgroundColor: theme.colors.background,
+				},
+				tabBarLabelStyle: {
+					fontFamily: "PPPierSans-Regular",
+					fontSize: 12,
+				},
+			}}
+		>
+			<Stack.Screen
+				name="index"
+				options={{
+					headerLeft: () => (
+						<IonIcon
+							name="arrow-back"
+							size={30}
+							color={theme.colors.text}
+							onPress={() => router.back()}
+							style={{ marginLeft: 10 }}
+						/>
+					),
+					headerStyle: {
+						backgroundColor: "#9393BA",
+					},
+					headerTitle: "Create New Galaxy",
+
+					headerTitleStyle: {
+						fontSize: 24,
+						fontWeight: "bold",
+						fontFamily: "PPPierSans-Regular",
+					},
+				}}
+			/>
+
+			<Stack.Screen
+				name="addFriends"
+				options={{
+					headerShown: true, // Show header for this screen
+					headerStyle: {
+						backgroundColor: "#9393BA",
+					},
+					headerTitle: "Add Friends",
+
+					headerLeft: () => (
+						<IonIcon
+							name="arrow-back"
+							size={30}
+							color={theme.colors.text}
+							onPress={() => router.back()}
+							style={{ marginLeft: 10 }}
+						/>
+					),
+				}}
+			/>
+		</Stack>
+	);
 }
