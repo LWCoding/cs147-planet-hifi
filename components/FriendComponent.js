@@ -9,55 +9,56 @@ import Planet from "@/components/Planet";
 export default function FriendComponent({
 	galaxyName,
 	planetObj,
+	toggleFriendInGalaxy,
 	//   username,
 	//   firstname,
 	//   lastname,
 }) {
 	const userId = planetObj.user_id;
-	const [added, setAdded] = useState(false);
+	const [isAdded, setIsAdded] = useState(false);
 	const theme = useTheme();
 
-	const addtoGalaxy = async () => {
-		let updatedArray = [];
+	// const addtoGalaxy = async () => {
+	// 	let updatedArray = [];
 
-		try {
-			const { data: galaxyData, error: fetchError } = await db
-				.from("galaxies")
-				.select("planets")
-				.eq("name", galaxyName)
-				.single();
+	// 	try {
+	// 		const { data: galaxyData, error: fetchError } = await db
+	// 			.from("galaxies")
+	// 			.select("planets")
+	// 			.eq("name", galaxyName)
+	// 			.single();
 
-			if (fetchError) {
-				console.error("Error fetching galaxy:", fetchError);
-				return;
-			}
-			updatedArray = galaxyData?.planets || [];
+	// 		if (fetchError) {
+	// 			console.error("Error fetching galaxy:", fetchError);
+	// 			return;
+	// 		}
+	// 		updatedArray = galaxyData?.planets || [];
 
-			const isAlreadyAdded = updatedArray.some(
-				(planet) => planet.user_id === userId
-			);
-			if (isAlreadyAdded) {
-				Alert.alert("This friend is already added to the galaxy.");
-				return;
-			}
-			updatedArray.push(userId);
+	// 		const isAlreadyAdded = updatedArray.some(
+	// 			(planet) => planet.user_id === userId
+	// 		);
+	// 		if (isAlreadyAdded) {
+	// 			Alert.alert("This friend is already added to the galaxy.");
+	// 			return;
+	// 		}
+	// 		updatedArray.push(userId);
 
-			const { data, error } = await db
-				.from("galaxies")
-				.upsert([{ name: galaxyName, planets: updatedArray }], {
-					onConflict: ["name"],
-				});
+	// 		const { data, error } = await db
+	// 			.from("galaxies")
+	// 			.upsert([{ name: galaxyName, planets: updatedArray }], {
+	// 				onConflict: ["name"],
+	// 			});
 
-			if (error) {
-				console.error("Error updating galaxy:", error);
-			} else {
-				console.log("Galaxy updated successfully:", data);
-				setAdded(true);
-			}
-		} catch (error) {
-			console.error("Unexpected error:", error);
-		}
-	};
+	// 		if (error) {
+	// 			console.error("Error updating galaxy:", error);
+	// 		} else {
+	// 			console.log("Galaxy updated successfully:", data);
+	// 			setAdded(true);
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("Unexpected error:", error);
+	// 	}
+	// };
 
 	// on render, useeffect check if someone is already in the array?
 
@@ -76,15 +77,20 @@ export default function FriendComponent({
 				</Text>
 				<TouchableOpacity
 					style={[
-						{ backgroundColor: theme.colors.primary },
+						{
+							backgroundColor: isAdded
+								? theme.colors.secondary
+								: theme.colors.primary,
+						},
 						styles.button,
-						added && styles.buttonDisabled,
 					]}
-					onPress={addtoGalaxy}
-					disabled={added}
+					onPress={() => {
+						const inGalaxy = toggleFriendInGalaxy(userId);
+						setIsAdded(inGalaxy);
+					}}
 				>
 					<Text variant="labelLarge" style={styles.buttonText}>
-						{added ? "Added!" : "Add Friend"}
+						{isAdded ? "Uninvite Friend" : "Invite Friend"}
 					</Text>
 				</TouchableOpacity>
 			</View>
