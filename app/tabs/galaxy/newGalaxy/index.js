@@ -138,6 +138,10 @@ export default function NewGalaxy() {
 						<Icon name="pencil" size={30} color="#FFFFFF" />
 					</TouchableOpacity>
 				</View>
+				<Text variant="labelLarge" style={styles.textDescription}>
+					Galaxies let you organize your friends into clusters! Only
+					you will see your galaxies.
+				</Text>
 				<View padding={30}>
 					<Planet
 						width={150}
@@ -180,6 +184,11 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		marginRight: 10,
 		fontFamily: "PPPierSans-Regular",
+	},
+	textDescription: {
+		marginHorizontal: 40,
+		textAlign: "center",
+		marginTop: 5,
 	},
 	textInput: {
 		fontSize: 35,
