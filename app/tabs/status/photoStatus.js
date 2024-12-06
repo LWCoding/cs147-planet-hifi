@@ -94,7 +94,7 @@ export default function PhotoStatus() {
               source={{ uri: uri }}
             />
             <View style={styles.photoPlanet}>
-              <Planet userId={user.user_id} isClickable={false} />
+              <Planet planet={user} isClickable={false} />
             </View>
           </View>
           <View top={65}>

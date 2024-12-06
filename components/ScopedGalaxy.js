@@ -71,7 +71,7 @@ export default function Galaxy({
       {/* center planet */}
       {mainPlanet != null && (
         <View style={styles.centerItem}>
-          <Planet userId={mainPlanet.user_id} />
+          <Planet planet={mainPlanet} />
         </View>
       )}
       <View style={styles.nextButtonContainer}>
@@ -89,7 +89,7 @@ export default function Galaxy({
 
         return (
           <View key={item.username} style={[styles.item, { left: x, top: y }]}>
-            <Planet userId={item.user_id} />
+            <Planet planet={item} />
           </View>
         );
       })}

@@ -20,6 +20,7 @@ export default function Account() {
   const theme = useTheme();
   const router = useRouter();
 
+  const [user, setUser] = useState(null);
   const [username, setUsername] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
@@ -29,6 +30,7 @@ export default function Account() {
 
   const fetchUserInfo = async () => {
     const user = await findPlanetById(userId);
+    setUser(user);
     setFirstName(user.first_name);
     setLastName(user.last_name);
     setUsername(user.username);
@@ -87,7 +89,7 @@ export default function Account() {
         <Planet
           width={150}
           height={150}
-          userId={userId}
+          planet={user}
           isClickable={false}
           isNameVisible={false}
         />
@@ -147,6 +149,5 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: "PPPierSans-Regular",
     paddingBottom: 8,
-    
   },
 });
