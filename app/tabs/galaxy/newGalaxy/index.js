@@ -205,16 +205,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 	},
-	face: {
-		width: 100,
-		height: 100,
-		position: "absolute",
-		top: 30, // changed to 30 bc i put paddingtop
-	},
-	relativeOverText: {
-		top: -10, // Shift closer to planet
-		fontFamily: "PPPierSans-Regular",
-	},
 	addFriends: {
 		backgroundColor: "#9393BA",
 		borderRadius: 30,

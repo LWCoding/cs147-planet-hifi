@@ -1,17 +1,17 @@
 import { useEffect, useState, useContext } from "react";
 import { View, StyleSheet, FlatList, ImageBackground } from "react-native";
-import { Text } from "react-native-paper";
-import { useRouter } from "expo-router";
+import { Text, ActivityIndicator } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
-import { fetchFriends } from "@/database/db";
-import { fetchAllPlanets } from "@/database/db";
+import { fetchFriends, fetchAllPlanets } from "@/database/db";
+
+// Import components
 import FriendComponent from "@/components/FriendComponent";
+
+// Import assets
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
-import { ActivityIndicator } from "react-native-paper";
 
 export default function AddFriends() {
-	const router = useRouter();
 	const { galaxyName } = useLocalSearchParams();
 	const { userId } = useContext(UserContext);
 	const [friendIds, setFriendIds] = useState([]);
@@ -57,12 +57,16 @@ export default function AddFriends() {
 		<ImageBackground
 			source={spaceBackgroundImage}
 			resizeMode="cover"
-			style={styles.image}
+			style={styles.bgImage}
 		>
 			<View style={styles.container}>
 				<View style={styles.topContainer}>
-					<Text style={styles.topText}>Add friends to</Text>
-					<Text style={styles.text}>{galaxyName}</Text>
+					<Text variant="titleMedium" style={styles.topText}>
+						Add friends to
+					</Text>
+					<Text variant="displaySmall" style={styles.text}>
+						{galaxyName}
+					</Text>
 				</View>
 				{friendPlanets.length === 0 && (
 					<ActivityIndicator
@@ -77,10 +81,6 @@ export default function AddFriends() {
 						<FriendComponent
 							galaxyName={galaxyName}
 							planetObj={item}
-							// userId={item.user_id}
-							// username={item.username}
-							// firstname={item.first_name}
-							// lastname={item.last_name}
 						/>
 					)}
 				></FlatList>
@@ -100,9 +100,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		// backgroundColor: "rgb(29, 27, 30)",
 	},
-	image: {
+	bgImage: {
 		flex: 1,
 	},
 	activityIndicator: {
@@ -111,11 +110,9 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	text: {
-		fontSize: 35,
 		fontFamily: "PPPierSans-Regular",
 	},
 	topText: {
-		fontSize: 18,
 		fontFamily: "PPPierSans-Regular",
 	},
 	bottomContainer: {
@@ -129,7 +126,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	bottomText: {
-		fontSize: 13,
 		fontStyle: "italic",
 		textAlign: "center",
 	},
