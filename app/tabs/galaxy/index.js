@@ -9,11 +9,12 @@ import db, {
   fetchFriendsForUserId,
   fetchUserGalaxiesById,
   findGalaxyById,
+  findPlanetById,
 } from "@/database/db";
 import uuid from "react-native-uuid";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import { UserContext } from "@/contexts/UserContext";
-import { Button, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
 
 // Import components
@@ -24,17 +25,24 @@ export default function Galaxy() {
   const theme = useTheme();
 
   const [galaxyName, setGalaxyName] = useState("Loading...");
-  const [galaxyId, setGalaxyId] = useState(null);
   const [galaxyIdx, setGalaxyIdx] = useState(0);
-  const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
-  const [allGalaxyObjects, setAllGalaxyObjects] = useState(null);
+  const [galaxyCount, setGalaxyCount] = useState(1);
+  const [allGalaxyPlanets, setAllGalaxyPlanets] = useState(null);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [isGalaxyLoading, setIsGalaxyLoading] = useState(true);
 
   const { userId } = useContext(UserContext);
 
+  const getCurrentGalaxy = () => {
+    if (!allGalaxyPlanets) {
+      return null;
+    }
+    return allGalaxyPlanets[galaxyIdx];
+  };
+
   const fetchGalaxies = async () => {
     setIsLoading(true);
+
     let galaxies = await fetchUserGalaxiesById(userId);
 
     // If there are no galaxies (first time load), create "All Friends" galaxy
@@ -57,43 +65,40 @@ export default function Galaxy() {
       await db.from("galaxies").insert(galaxyData); // Add to database
     }
 
-    setAllUserGalaxyIds(galaxies.map((galaxy) => galaxy.galaxy_id));
+    let galaxyPlanets = [];
 
-    let galaxyObjects = {};
+    setGalaxyCount(galaxies.length);
 
     for (let i = 0; i < galaxies.length; i++) {
       const id = galaxies[i]["galaxy_id"];
-
       const galaxyInfo = await findGalaxyById(id);
-      galaxyObjects[id] = galaxyInfo;
+      const planetIds = galaxyInfo.planets;
+      let planets = [];
+
+      for (let j = 0; j < planetIds.length; j++) {
+        const planet = await findPlanetById(planetIds[j]);
+        planets.push(planet);
+      }
+
+      galaxyPlanets.push({
+        galaxyName: galaxyInfo.name,
+        planets,
+      });
     }
 
-    setAllGalaxyObjects(galaxyObjects);
-
-    await fetchUsersInCurrentGalaxy();
-  };
-
-  const fetchUsersInCurrentGalaxy = async () => {
-    setIsLoading(true);
-
-    const id = allUserGalaxyIds[galaxyIdx];
-
-    setGalaxyId(id); // Get the `i`th galaxy and set it
-    const galaxyInfo = allGalaxyObjects[id];
-
-    setGalaxyName(galaxyInfo.name);
+    setAllGalaxyPlanets(galaxyPlanets);
 
     setIsLoading(false);
   };
 
   // Adds an `amt` to the galaxy index. Use `1` to go forward one index,
   // and `-1` to go back one index.
-  const addToGalaxyIdx = (amt) => {
+  const updateGalaxyIdx = (amt) => {
     let calculatedIdx = galaxyIdx + amt;
     if (calculatedIdx < 0) {
-      setGalaxyIdx(allUserGalaxyIds.length - 1);
+      setGalaxyIdx(galaxyCount - 1);
     } else {
-      setGalaxyIdx((galaxyIdx + amt) % allUserGalaxyIds.length);
+      setGalaxyIdx((galaxyIdx + amt) % galaxyCount);
     }
   };
 
@@ -114,14 +119,14 @@ export default function Galaxy() {
 
   useEffect(() => {
     fetchGalaxies();
+    setGalaxyIdx(0);
   }, []);
 
   useEffect(() => {
-    if (allUserGalaxyIds != null && allGalaxyObjects != null) {
-      addToGalaxyIdx(0); // Update index
-      fetchUsersInCurrentGalaxy();
+    if (allGalaxyPlanets != null) {
+      setGalaxyName(getCurrentGalaxy().galaxyName);
     }
-  }, [galaxyIdx, allUserGalaxyIds, allGalaxyObjects]);
+  }, [allGalaxyPlanets, galaxyIdx]);
 
   return (
     <View
@@ -134,9 +139,9 @@ export default function Galaxy() {
       >
         <View marginTop={30} style={styles.buttonsAndTitle}>
           <TouchableOpacity
-            disabled={isGalaxyLoading}
-            style={{ opacity: isGalaxyLoading ? 0.4 : 1 }}
-            onPress={() => addToGalaxyIdx(-1)}
+            disabled={isLoading}
+            style={{ opacity: isLoading ? 0.4 : 1 }}
+            onPress={() => updateGalaxyIdx(-1)}
           >
             <MaterialCommunityIcon
               name="arrow-left"
@@ -148,9 +153,9 @@ export default function Galaxy() {
             {galaxyName}
           </Text>
           <TouchableOpacity
-            disabled={isGalaxyLoading}
-            style={{ opacity: isGalaxyLoading ? 0.4 : 1 }}
-            onPress={() => addToGalaxyIdx(1)}
+            disabled={isLoading}
+            style={{ opacity: isLoading ? 0.4 : 1 }}
+            onPress={() => updateGalaxyIdx(1)}
           >
             <MaterialCommunityIcon
               name="arrow-right"
@@ -171,14 +176,19 @@ export default function Galaxy() {
             icon="menu"
             text="Manage Galaxy"
             disabled={isLoading}
-            params={{ galaxyId: galaxyId, galaxyName: galaxyName }}
+            params={{
+              galaxyId: getCurrentGalaxy()?.galaxy_id,
+              galaxyName: galaxyName,
+            }}
           />
         </View>
-        <ScopedGalaxy
-          galaxyId={galaxyId}
-          isGalaxyLoading={isGalaxyLoading}
-          setIsGalaxyLoading={setIsGalaxyLoading}
-        />
+        {isLoading ? (
+          <View style={[styles.loadingContainer]}>
+            <ActivityIndicator size="large" animating={true} />
+          </View>
+        ) : (
+          <ScopedGalaxy galaxyPlanets={getCurrentGalaxy()?.planets} />
+        )}
       </ImageBackground>
     </View>
   );
@@ -188,6 +198,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     fontFamily: "PPPierSans-Regular",
+  },
+  loadingContainer: {
+    flex: 1,
   },
   buttonsAndTitle: {
     flexDirection: "row",

@@ -17,13 +17,8 @@ const centerY = height / 2 - 100; // Center Y position
 const radius = 130; // Radius for circular layout
 const itemSize = 150; // Diameter of items
 
-export default function Galaxy({
-  galaxyId,
-  isGalaxyLoading,
-  setIsGalaxyLoading,
-}) {
-  const [otherPlanets, setOtherPlanets] = useState(null);
-  const [mainPlanet, setMainPlanet] = useState(null);
+export default function ScopedGalaxy({ galaxyPlanets }) {
+  const [user, setUser] = useState(null);
 
   const { userId } = useContext(UserContext);
 
@@ -32,18 +27,7 @@ export default function Galaxy({
   const fetchPlanets = async () => {
     // Set logged-in user's planet
     const userPlanet = await findPlanetById(userId);
-    setMainPlanet(userPlanet);
-  };
-
-  const updateFriendPlanets = async () => {
-    setIsGalaxyLoading(true);
-
-    // Set logged-in user's friends' planets
-    const friendsPlanets = await fetchFriendsForGalaxyId(galaxyId);
-
-    setOtherPlanets(friendsPlanets);
-
-    setIsGalaxyLoading(false);
+    setUser(userPlanet);
   };
 
   // Get all planets from the database
@@ -51,27 +35,12 @@ export default function Galaxy({
     fetchPlanets();
   }, []);
 
-  // Uupdate friends whenever galaxy id changes
-  useEffect(() => {
-    if (galaxyId != null) {
-      updateFriendPlanets();
-    }
-  }, [galaxyId]);
-
-  if (isGalaxyLoading) {
-    return (
-      <View style={[styles.loadingContainer]}>
-        <ActivityIndicator size="large" animating={true} />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* center planet */}
-      {mainPlanet != null && (
+      {user != null && (
         <View style={styles.centerItem}>
-          <Planet planet={mainPlanet} />
+          <Planet planet={user} />
         </View>
       )}
       <View style={styles.nextButtonContainer}>
@@ -81,14 +50,14 @@ export default function Galaxy({
       </View>
 
       {/* planets around center */}
-      {otherPlanets.map((item, index) => {
-        const angle = (index / otherPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
+      {galaxyPlanets.map((item, index) => {
+        const angle = (index / galaxyPlanets.length) * (2 * Math.PI); // Angle for spacing planets evenly
         const x = centerX + radius * Math.cos(angle) - itemSize / 2; // X position
         const y =
           centerY + radius * Math.sin(angle) - itemSize / 2 + galaxyMarginTop; // Y position
 
         return (
-          <View key={item.username} style={[styles.item, { left: x, top: y }]}>
+          <View key={item.user_id} style={[styles.item, { left: x, top: y }]}>
             <Planet planet={item} />
           </View>
         );
@@ -100,9 +69,6 @@ export default function Galaxy({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-  },
-  loadingContainer: {
-    flex: 1,
   },
   newGalaxy: {
     borderRadius: 30,
