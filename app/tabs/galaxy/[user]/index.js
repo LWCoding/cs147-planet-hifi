@@ -91,7 +91,7 @@ export default function userDetails() {
         )}
         <View style={styles.planetContainer}>
           <Planet
-            userId={inputtedUserId}
+            planet={user}
             width={150}
             height={150}
             isClickable={false}
