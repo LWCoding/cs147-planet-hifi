@@ -27,10 +27,12 @@ export default function Galaxy() {
 	const [galaxyId, setGalaxyId] = useState(null);
 	const [galaxyIdx, setGalaxyIdx] = useState(0);
 	const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const { userId } = useContext(UserContext);
 
 	const fetchGalaxies = async () => {
+		setIsLoading(true);
 		let galaxies = await fetchUserGalaxiesById(userId);
 
 		// If there are no galaxies (first time load), create "All Friends" galaxy
@@ -60,6 +62,7 @@ export default function Galaxy() {
 		const galaxyInfo = await findGalaxyById(id);
 
 		setGalaxyName(galaxyInfo.name);
+		setIsLoading(false);
 	};
 
 	// Adds an `amt` to the galaxy index. Use `1` to go forward one index,
@@ -72,6 +75,21 @@ export default function Galaxy() {
 			setGalaxyIdx((galaxyIdx + amt) % allUserGalaxyIds.length);
 		}
 	};
+
+	useEffect(() => {
+		db.channel("schema-db-changes")
+			.on(
+				"postgres_changes",
+				{
+					event: "*",
+					table: "galaxies",
+				},
+				(payload) => {
+					fetchGalaxies();
+				}
+			)
+			.subscribe();
+	}, []);
 
 	useEffect(() => {
 		fetchGalaxies();
@@ -90,7 +108,11 @@ export default function Galaxy() {
 				style={styles.bgImage}
 			>
 				<View marginTop={30} style={styles.buttonsAndTitle}>
-					<TouchableOpacity onPress={() => addToGalaxyIdx(-1)}>
+					<TouchableOpacity
+						disabled={isLoading}
+						style={{ opacity: isLoading ? 0.4 : 1 }}
+						onPress={() => addToGalaxyIdx(-1)}
+					>
 						<MaterialCommunityIcon
 							name="arrow-left"
 							size={36}
@@ -100,7 +122,11 @@ export default function Galaxy() {
 					<Text style={styles.galaxyTitle} variant="displaySmall">
 						{galaxyName}
 					</Text>
-					<TouchableOpacity onPress={() => addToGalaxyIdx(1)}>
+					<TouchableOpacity
+						disabled={isLoading}
+						style={{ opacity: isLoading ? 0.4 : 1 }}
+						onPress={() => addToGalaxyIdx(1)}
+					>
 						<MaterialCommunityIcon
 							name="arrow-right"
 							size={36}
@@ -122,6 +148,7 @@ export default function Galaxy() {
 						to="/tabs/galaxy/manageAll"
 						icon="menu"
 						text="Manage Galaxy"
+						params={{ galaxyId: galaxyId, galaxyName: galaxyName }}
 					/>
 				</View>
 				<ScopedGalaxy galaxyId={galaxyId} />

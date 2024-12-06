@@ -1,78 +1,139 @@
 import { useEffect, useState, useContext } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { useRouter } from "expo-router";
-import { useLocalSearchParams } from "expo-router";
+import {
+	View,
+	StyleSheet,
+	FlatList,
+	ImageBackground,
+	Alert,
+} from "react-native";
+import { Text, ActivityIndicator, Button, useTheme } from "react-native-paper";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
-import db, { fetchFriends } from "@/database/db";
-import { fetchAllPlanets } from "@/database/db";
-import RemoveFriendComponent from "@/components/RemoveFriendComponent";
+import db, { fetchFriendsForUserId, findGalaxyById } from "@/database/db";
 
-export default function RemoveFriends() {
+// Import components
+import FriendComponent from "@/components/FriendComponent";
+
+// Import assets
+import spaceBackgroundImage from "@/assets/space-bg.jpg";
+
+export default function ManageFriends() {
+	const { galaxyId, galaxyName } = useLocalSearchParams();
 	const { userId } = useContext(UserContext);
-	const [friendIds, setFriendIds] = useState([]);
-	const [friendPlanets, setFriendPlanets] = useState([]);
 
-	const fetchFriendIds = async () => {
-		const friendsIds = await fetchFriends(userId);
-		console.log("Fetched Friend IDs:", friendsIds);
-		setFriendIds(friendsIds);
+	const [friendPlanets, setFriendPlanets] = useState(null);
+	const [addedFriendIds, setAddedFriendIds] = useState(null);
+
+	const router = useRouter();
+	const theme = useTheme();
+
+	// Function is called when an "add friend" button is pressed
+	const toggleFriendInGalaxy = (friendId) => {
+		let tempFriendIds = addedFriendIds;
+
+		// Either remove or add the friend
+		if (tempFriendIds.includes(friendId)) {
+			tempFriendIds = tempFriendIds.filter((id) => id !== friendId);
+		} else {
+			tempFriendIds = [...addedFriendIds, friendId];
+		}
+
+		setAddedFriendIds(tempFriendIds);
+
+		// Return true if friend is now in database, else false
+		return tempFriendIds.includes(friendId);
 	};
+
 	const fetchPlanets = async () => {
 		try {
-			const allPlanets = await fetchAllPlanets();
-			console.log("All Planets:", allPlanets);
+			const friendPlanets = await fetchFriendsForUserId(userId);
+			setFriendPlanets(friendPlanets);
 
-			let array = [];
-			for (let i = 0; i < friendIds.length; i++) {
-				const friendId = friendIds[i];
-				const friendPlanet = allPlanets.find(
-					(planet) => planet.user_id === friendId
-				);
-				if (friendPlanet) {
-					array.push(friendPlanet);
-				}
-			}
-			setFriendPlanets(array);
+			const alreadyAddedFriends = await findGalaxyById(galaxyId);
+			setAddedFriendIds(alreadyAddedFriends.planets);
 		} catch (error) {
 			console.error("Error fetching planets:", error);
 		}
 	};
 
-	useEffect(() => {
-		fetchFriendIds();
-	}, []);
+	const submitGalaxy = async () => {
+		try {
+			// Creat
+			const updatedGalaxyData = {
+				name: galaxyName,
+				planets: addedFriendIds,
+			};
+
+			// Update galaxy object in database
+			const { error } = await db
+				.from("galaxies")
+				.update(updatedGalaxyData)
+				.eq("galaxy_id", galaxyId);
+
+			if (error) {
+				Alert.alert("Error updating galaxy: ", error);
+				console.error("Error updating galaxy:", error);
+				return;
+			}
+
+			Alert.alert("Galaxy updated successfully!");
+
+			router.dismissTo("tabs/galaxy"); // Go back to main screen
+		} catch (error) {
+			console.error("Error updating galaxy:", error);
+		}
+	};
 
 	useEffect(() => {
-		if (friendIds.length > 0) {
-			fetchPlanets(); // fetch planets when friendIds is updated
-		}
-	}, [friendIds]);
+		fetchPlanets();
+	}, []);
+
 	return (
-		<View style={styles.container}>
-			<View style={styles.topContainer}>
-				<Text style={styles.topText}>Add friends to</Text>
-				<Text style={styles.text}>{galaxyName}</Text>
-			</View>
-			<FlatList
-				data={friendPlanets}
-				renderItem={({ item }) => (
-					<FriendComponent
-						galaxyName={galaxyName}
-						planetObj={item}
-						// userId={item.user_id}
-						// username={item.username}
-						// firstname={item.first_name}
-						// lastname={item.last_name}
+		<ImageBackground
+			source={spaceBackgroundImage}
+			resizeMode="cover"
+			style={styles.bgImage}
+		>
+			<View style={styles.container}>
+				<View style={styles.topContainer}>
+					<Text variant="titleMedium" style={styles.topText}>
+						Manage friends in
+					</Text>
+					<Text variant="displaySmall" style={styles.text}>
+						{galaxyName}
+					</Text>
+				</View>
+				{!friendPlanets && (
+					<ActivityIndicator
+						style={styles.activityIndicator}
+						size="large"
+						animating={true}
 					/>
 				)}
-			></FlatList>
-			<View style={styles.bottomContainer}>
-				<Text style={styles.bottomText}>
-					"Don't see your friend? Add them from Contacts or invite
-					them to join Planet!
-				</Text>
+				<FlatList
+					data={friendPlanets}
+					renderItem={({ item }) => (
+						<FriendComponent
+							galaxyName={galaxyName}
+							planetObj={item}
+							toggleFriendInGalaxy={toggleFriendInGalaxy}
+							isToggled={addedFriendIds?.includes(item.user_id)}
+						/>
+					)}
+				></FlatList>
+				<View style={styles.bottomContainer}>
+					<View marginVertical={10}>
+						<Button
+							buttonColor={theme.colors.interactable}
+							mode="contained"
+							onPress={submitGalaxy}
+						>
+							Save
+						</Button>
+					</View>
+				</View>
 			</View>
-		</View>
+		</ImageBackground>
 	);
 }
 
@@ -81,16 +142,19 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgb(29, 27, 30)",
+	},
+	bgImage: {
+		flex: 1,
+	},
+	activityIndicator: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	text: {
-		color: "white",
-		fontSize: 35,
 		fontFamily: "PPPierSans-Regular",
 	},
 	topText: {
-		color: "white",
-		fontSize: 18,
 		fontFamily: "PPPierSans-Regular",
 	},
 	bottomContainer: {
@@ -104,8 +168,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	bottomText: {
-		color: "white",
-		fontSize: 13,
 		fontStyle: "italic",
+		textAlign: "center",
 	},
 });

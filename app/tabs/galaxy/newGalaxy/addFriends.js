@@ -111,6 +111,7 @@ export default function AddFriends() {
 							galaxyName={galaxyName}
 							planetObj={item}
 							toggleFriendInGalaxy={toggleFriendInGalaxy}
+							isToggled={addedFriendIds?.includes(item.user_id)}
 						/>
 					)}
 				></FlatList>
