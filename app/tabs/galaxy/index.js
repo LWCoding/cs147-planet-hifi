@@ -186,7 +186,11 @@ export default function Galaxy() {
             <ActivityIndicator size="large" animating={true} />
           </View>
         ) : (
-          <ScopedGalaxy galaxyPlanets={getCurrentGalaxy()?.planets} />
+          <ScopedGalaxy
+            galaxyPlanets={getCurrentGalaxy()?.planets.sort((a, b) =>
+              a.first_name.localeCompare(b.first_name)
+            )}
+          />
         )}
       </ImageBackground>
     </View>
