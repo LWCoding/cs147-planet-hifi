@@ -1,6 +1,7 @@
 import { Stack, useRouter } from "expo-router";
 import { TouchableOpacity, Text } from "react-native";
 import { useTheme } from "react-native-paper";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function UserLayout() {
   const router = useRouter();
@@ -40,30 +41,30 @@ export default function UserLayout() {
         }}
       />
       <Stack.Screen
-      name="calendar"
-      options={{
-        title: "Your Friend's Busy Times", 
-        headerTitleAlign: "center", 
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontSize: 16, marginLeft: 10, color: "white" }}>
-              Back
-            </Text>
-          </TouchableOpacity>
-        ),
-        headerStyle: {
-          backgroundColor: "#2C2C64", // Consistent header background
-        },
-        headerTitleStyle: {
-          fontSize: 24,
-          fontWeight: "bold",
-          fontFamily: "PPPierSans-Regular", // Custom font
-          color: "white", // Title color
-        },
-        headerTintColor: theme.colors.text, // Back button and icon colors
-      }}
-    />
+        name="calendar"
+        options={{
+          presentation: "modal",
+          title: null,
+          // title: "Your Friend's Busy Times",
+          headerTitleAlign: "center",
 
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text style={{ fontSize: 16, marginLeft: 10 }}>Back</Text>
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            backgroundColor: "#9393BA",
+            padding: 20,
+          },
+          headerTitleStyle: {
+            fontSize: 20,
+            fontFamily: "PPPierSans-Regular", // Custom font
+            color: "black", // Title color
+          },
+          headerTintColor: theme.colors.text, // Back button and icon colors
+        }}
+      />
     </Stack>
   );
 }

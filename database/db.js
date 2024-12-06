@@ -55,6 +55,7 @@ export const findPlanetById = async (userId) => {
 
 // Given a user id, fetches the user's friends' ids (array)
 export const fetchUserGalaxiesById = async (userId) => {
+<<<<<<< Updated upstream
   const { data: galaxiesData, error: galaxiesError } = await db
     .from("galaxies")
     .select("*")
@@ -78,6 +79,16 @@ export const fetchFirstGalaxy = async (userId) => {
     console.error("Error fetching galaxies: ", galError.message);
   }
   return galaxyData;
+=======
+	const { data: galaxiesData, error: galaxiesError } = await db
+		.from("galaxies")
+		.select("*")
+		.eq("creator_userid", userId);
+	if (galaxiesError) {
+		console.error("Error fetching galaxies: ", error.message);
+	}
+	return galaxiesData;
+>>>>>>> Stashed changes
 };
 
 // Fetches all planets from the database as well as their associated emotions
@@ -129,6 +140,20 @@ export const fetchAllStatusesById = async (userId) => {
   }
 
   return statusData;
+};
+
+// Given a galaxy id, fetches the galaxy
+export const findGalaxyById = async (galaxyId) => {
+	const { data: galaxiesData, error: galaxiesError } = await db
+		.from("galaxies")
+		.select("*")
+		.eq("galaxy_id", galaxyId)
+		.single();
+	if (galaxiesError) {
+		console.error("Error fetching galaxy: ", galaxiesError.message);
+	}
+
+	return galaxiesData;
 };
 
 // Given a status id, asynchronously fetches the status's data from the database
@@ -194,4 +219,18 @@ export const fetchFriendsForUserId = async (userId) => {
 
   return friendsPlanets;
 };
+
+export const fetchFriendsForGalaxyId = async (galaxyId) => {
+	const galaxy = await findGalaxyById(galaxyId);
+
+	const friendIds = galaxy["planets"];
+
+	const allPlanets = await fetchAllPlanets();
+	let friendsPlanets = friendIds.map((friendId) =>
+		allPlanets.find((user) => user.user_id === friendId)
+	);
+
+	return friendsPlanets;
+};
+
 export default db;
