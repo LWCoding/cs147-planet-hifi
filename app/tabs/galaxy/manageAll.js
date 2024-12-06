@@ -47,6 +47,9 @@ export default function ManageFriends() {
   const fetchPlanets = async () => {
     try {
       const friendPlanets = await fetchFriendsForUserId(userId);
+      friendPlanets = friendPlanets.sort((a, b) =>
+        a.first_name.localeCompare(b.first_name)
+      );
       setFriendPlanets(friendPlanets);
 
       const alreadyAddedFriends = await findGalaxyById(galaxyId);

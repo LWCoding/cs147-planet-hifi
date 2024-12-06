@@ -45,7 +45,10 @@ export default function AddFriends() {
 
   const fetchPlanets = async () => {
     try {
-      const friendPlanets = await fetchFriendsForUserId(userId);
+      let friendPlanets = await fetchFriendsForUserId(userId);
+      friendPlanets = friendPlanets.sort((a, b) =>
+        a.first_name.localeCompare(b.first_name)
+      );
       setFriendPlanets(friendPlanets);
     } catch (error) {
       console.error("Error fetching planets:", error);
