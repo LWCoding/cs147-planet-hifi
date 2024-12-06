@@ -4,7 +4,7 @@ import { ActivityIndicator, Text } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
-import { findPlanetById, findStatusById } from "@/database/db";
+import db, { findPlanetById, findStatusById } from "@/database/db";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IconButton from "@/components/IconButton";
@@ -50,6 +50,22 @@ export default function userDetails() {
   const navtoImage = () => {
     navigation.navigate("image", { url: status.image_url });
   };
+
+  // If we detect a status has been inserted, update this page
+  useEffect(() => {
+    db.channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          table: "statuses",
+        },
+        (payload) => {
+          fetchUserInfo();
+        }
+      )
+      .subscribe();
+  }, []);
 
   let renderItem = null;
 
