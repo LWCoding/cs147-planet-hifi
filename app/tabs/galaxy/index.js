@@ -82,6 +82,7 @@ export default function Galaxy() {
 
       galaxyPlanets.push({
         galaxyName: galaxyInfo.name,
+        galaxyId: galaxyInfo.galaxy_id,
         planets,
       });
     }
@@ -177,7 +178,7 @@ export default function Galaxy() {
             text="Manage Galaxy"
             disabled={isLoading}
             params={{
-              galaxyId: getCurrentGalaxy()?.galaxy_id,
+              galaxyId: getCurrentGalaxy()?.galaxyId,
               galaxyName: galaxyName,
             }}
           />
