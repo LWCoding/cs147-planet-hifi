@@ -23,7 +23,7 @@ import IconButton from "@/components/IconButton";
 export default function Galaxy() {
 	const theme = useTheme();
 
-	const [galaxyName, setGalaxyName] = useState("");
+	const [galaxyName, setGalaxyName] = useState("Loading...");
 	const [galaxyId, setGalaxyId] = useState(null);
 	const [galaxyIdx, setGalaxyIdx] = useState(0);
 	const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
