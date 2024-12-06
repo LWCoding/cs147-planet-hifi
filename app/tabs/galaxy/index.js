@@ -56,7 +56,7 @@ export default function Galaxy() {
       await db.from("galaxies").insert(galaxyData); // Add to database
     }
 
-    setAllUserGalaxyIds(galaxies);
+    setAllUserGalaxyIds(galaxies.map((galaxy) => galaxy.galaxy_id));
 
     let galaxyObjects = {};
     for (let i = 0; i < galaxies.length; i++) {
@@ -73,9 +73,11 @@ export default function Galaxy() {
   const fetchUsersInCurrentGalaxy = async () => {
     setIsLoading(true);
 
-    const id = allUserGalaxyIds[galaxyIdx].galaxy_id;
+    const id = allUserGalaxyIds[galaxyIdx];
+
     setGalaxyId(id); // Get the `i`th galaxy and set it
     const galaxyInfo = allGalaxyObjects[id];
+
     setGalaxyName(galaxyInfo.name);
 
     setIsLoading(false);
@@ -108,12 +110,14 @@ export default function Galaxy() {
   }, []);
 
   useEffect(() => {
-    fetchUsersInCurrentGalaxy();
-  }, [galaxyIdx]);
-
-  useEffect(() => {
     fetchGalaxies();
   }, []);
+
+  useEffect(() => {
+    if (allUserGalaxyIds != null) {
+      fetchUsersInCurrentGalaxy();
+    }
+  }, [galaxyIdx, allUserGalaxyIds]);
 
   return (
     <View
