@@ -47,7 +47,6 @@ export default function UserLayout() {
           title: null,
           // title: "Your Friend's Busy Times",
           headerTitleAlign: "center",
-
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Text style={{ fontSize: 16, marginLeft: 10 }}>Back</Text>

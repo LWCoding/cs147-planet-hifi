@@ -19,7 +19,7 @@ const periods = ["AM", "PM"]; // AM/PM options
 const generateRandomAvailability = () => {
   const availability = {};
   daysForScheduling.forEach((day) => {
-    const numBlocks = Math.floor(Math.random() * 10) + 1; // Randomize 1–10 available blocks
+    const numBlocks = Math.floor(Math.random() * 20) + 1; // Randomize 1–20 available blocks
     const blocks = Array.from(
       { length: numBlocks },
       () => Math.floor(Math.random() * 24) + 1 // Randomize hours (1–24)
