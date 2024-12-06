@@ -37,6 +37,7 @@ export default function Galaxy({ galaxyId }) {
 
     // Set logged-in user's friends' planets
     const friendsPlanets = await fetchFriendsForGalaxyId(galaxyId);
+
     setOtherPlanets(friendsPlanets);
 
     setIsLoading(false);
