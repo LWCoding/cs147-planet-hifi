@@ -188,10 +188,12 @@ export const fetchFriendsForUserId = async (userId) => {
   const friendIds = user["friend_ids"];
 
   // find friends' planets
-  const allPlanets = await fetchAllPlanets();
-  let friendsPlanets = friendIds.map((friendId) =>
-    allPlanets.find((user) => user.user_id === friendId)
-  );
+  let friendsPlanets = [];
+  for (let i = 0; i < friendIds.length; i++) {
+    const friend = await findPlanetById(friendIds[i]);
+    friendsPlanets.push(friend);
+  }
+
   friendsPlanets = friendsPlanets.filter((friend) => {
     return friend !== undefined;
   });

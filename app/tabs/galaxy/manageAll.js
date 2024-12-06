@@ -10,6 +10,7 @@ import { Text, ActivityIndicator, Button, useTheme } from "react-native-paper";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import db, { fetchFriendsForUserId, findGalaxyById } from "@/database/db";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 // Import components
 import FriendComponent from "@/components/FriendComponent";
@@ -87,6 +88,25 @@ export default function ManageFriends() {
     }
   };
 
+  const confirmDeleteGalaxy = () => {
+    Alert.alert(
+      "Confirm Deletion", // Title of the alert
+      'Are you sure you want to delete your galaxy "' + galaxyName + '"?', // Message to display
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "Yes",
+          isPreferred: true,
+          onPress: () => {
+            deleteGalaxy();
+          },
+        },
+      ]
+    );
+  };
+
   const deleteGalaxy = async () => {
     // Delete the galaxy
     try {
@@ -148,21 +168,24 @@ export default function ManageFriends() {
         ></FlatList>
         <View style={styles.bottomContainer}>
           <View style={styles.buttonRow} marginVertical={10}>
-            <Button
-              buttonColor={theme.colors.interactable}
-              mode="contained"
-              onPress={submitGalaxy}
-            >
-              Save
-            </Button>
-            <Button
-              buttonColor={theme.colors.error}
-              textColor={theme.colors.errorContainer}
-              mode="contained"
-              onPress={deleteGalaxy}
-            >
-              Delete Galaxy
-            </Button>
+            <View marginHorizontal={12}>
+              <Button
+                buttonColor={theme.colors.error}
+                mode="contained"
+                onPress={confirmDeleteGalaxy}
+              >
+                Delete Galaxy
+              </Button>
+            </View>
+            <View marginHorizontal={12}>
+              <Button
+                buttonColor={theme.colors.interactable}
+                mode="contained"
+                onPress={submitGalaxy}
+              >
+                Save Changes
+              </Button>
+            </View>
           </View>
         </View>
       </View>
