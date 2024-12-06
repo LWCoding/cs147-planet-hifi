@@ -82,7 +82,25 @@ export default function NewGalaxy() {
 			);
 		}
 		if (galaxyName === "New Galaxy") {
-			return Alert.alert("Please change the Galaxy name first!");
+			Alert.alert(
+				"Confirm Galaxy Name", // Title of the alert
+				'Are you sure you want to name your new galaxy "New Galaxy"?', // Message to display
+				[
+					{
+						text: "Cancel",
+					},
+					{
+						text: "Yes",
+						isPreferred: true,
+						onPress: () =>
+							router.push({
+								pathname: "tabs/galaxy/newGalaxy/addFriends",
+								params: { galaxyName: galaxyName },
+							}),
+					},
+				]
+			);
+			return;
 		}
 		router.push({
 			pathname: "tabs/galaxy/newGalaxy/addFriends",
@@ -140,7 +158,7 @@ export default function NewGalaxy() {
 							color: "#000",
 						}}
 					>
-						Add friends!
+						Create Galaxy
 					</Text>
 				</TouchableOpacity>
 			</ScrollView>
@@ -159,14 +177,12 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 35,
-		color: "#FFFFFF",
 		fontWeight: "bold",
 		marginRight: 10,
 		fontFamily: "PPPierSans-Regular",
 	},
 	textInput: {
 		fontSize: 35,
-		color: "#FFFFFF",
 		fontWeight: "bold",
 		marginRight: 10,
 		paddingHorizontal: 10,
