@@ -101,7 +101,7 @@ export const fetchAllPlanets = async () => {
     .select("*");
 
   if (usersError) {
-    console.error("Error fetching users: " + error.message);
+    console.error("Error fetching users: " + usersError.message);
   }
 
   const { data: statusData, error: statusError } = await db
@@ -109,7 +109,7 @@ export const fetchAllPlanets = async () => {
     .select("*");
 
   if (statusError) {
-    console.error("Error fetching statuses: " + error.message);
+    console.error("Error fetching statuses: " + statusError.message);
   }
 
   const usersInfo = usersData.map((user) => {

@@ -82,7 +82,25 @@ export default function NewGalaxy() {
 			);
 		}
 		if (galaxyName === "New Galaxy") {
-			return Alert.alert("Please change the Galaxy name first!");
+			Alert.alert(
+				"Confirm Galaxy Name", // Title of the alert
+				'Are you sure you want to name your new galaxy "New Galaxy"?', // Message to display
+				[
+					{
+						text: "Cancel",
+					},
+					{
+						text: "Yes",
+						isPreferred: true,
+						onPress: () =>
+							router.push({
+								pathname: "tabs/galaxy/newGalaxy/addFriends",
+								params: { galaxyName: galaxyName },
+							}),
+					},
+				]
+			);
+			return;
 		}
 		router.push({
 			pathname: "tabs/galaxy/newGalaxy/addFriends",
@@ -120,6 +138,10 @@ export default function NewGalaxy() {
 						<Icon name="pencil" size={30} color="#FFFFFF" />
 					</TouchableOpacity>
 				</View>
+				<Text variant="labelLarge" style={styles.textDescription}>
+					Galaxies let you organize your friends into clusters! Only
+					you will see your galaxies.
+				</Text>
 				<View padding={30}>
 					<Planet
 						width={150}
@@ -140,7 +162,7 @@ export default function NewGalaxy() {
 							color: "#000",
 						}}
 					>
-						Add friends!
+						Create Galaxy
 					</Text>
 				</TouchableOpacity>
 			</ScrollView>
@@ -159,14 +181,17 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 35,
-		color: "#FFFFFF",
 		fontWeight: "bold",
 		marginRight: 10,
 		fontFamily: "PPPierSans-Regular",
 	},
+	textDescription: {
+		marginHorizontal: 40,
+		textAlign: "center",
+		marginTop: 5,
+	},
 	textInput: {
 		fontSize: 35,
-		color: "#FFFFFF",
 		fontWeight: "bold",
 		marginRight: 10,
 		paddingHorizontal: 10,
@@ -179,16 +204,6 @@ const styles = StyleSheet.create({
 		// view for pencil and text
 		flexDirection: "row",
 		alignItems: "center",
-	},
-	face: {
-		width: 100,
-		height: 100,
-		position: "absolute",
-		top: 30, // changed to 30 bc i put paddingtop
-	},
-	relativeOverText: {
-		top: -10, // Shift closer to planet
-		fontFamily: "PPPierSans-Regular",
 	},
 	addFriends: {
 		backgroundColor: "#9393BA",
