@@ -191,6 +191,9 @@ export const fetchFriendsForUserId = async (userId) => {
 	let friendsPlanets = friendIds.map((friendId) =>
 		allPlanets.find((user) => user.user_id === friendId)
 	);
+	friendsPlanets = friendsPlanets.filter((friend) => {
+		return friend !== undefined;
+	});
 
 	return friendsPlanets;
 };

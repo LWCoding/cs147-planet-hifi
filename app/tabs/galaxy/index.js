@@ -90,20 +90,11 @@ export default function Galaxy() {
 				style={styles.bgImage}
 			>
 				<View marginTop={30} style={styles.buttonsAndTitle}>
-					<TouchableOpacity
-						onPress={() => addToGalaxyIdx(-1)}
-						disabled={true}
-					>
+					<TouchableOpacity onPress={() => addToGalaxyIdx(-1)}>
 						<MaterialCommunityIcon
 							name="arrow-left"
 							size={36}
 							color={theme.colors.interactable}
-							style={{
-								display:
-									allUserGalaxyIds?.length === 1
-										? "none"
-										: "flex",
-							}}
 						/>
 					</TouchableOpacity>
 					<Text style={styles.galaxyTitle} variant="displaySmall">
@@ -114,12 +105,6 @@ export default function Galaxy() {
 							name="arrow-right"
 							size={36}
 							color={theme.colors.interactable}
-							style={{
-								display:
-									allUserGalaxyIds?.length === 1
-										? "none"
-										: "flex",
-							}}
 						/>
 					</TouchableOpacity>
 				</View>
