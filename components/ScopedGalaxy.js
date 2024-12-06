@@ -32,7 +32,7 @@ export default function Galaxy({ galaxyId }) {
     setMainPlanet(userPlanet);
   };
 
-  const updateFriendPlanets = debounce(async () => {
+  const updateFriendPlanets = async () => {
     setIsLoading(true);
 
     // Set logged-in user's friends' planets
@@ -41,7 +41,7 @@ export default function Galaxy({ galaxyId }) {
     setOtherPlanets(friendsPlanets);
 
     setIsLoading(false);
-  }, 300);
+  };
 
   // Get all planets from the database
   useEffect(() => {
@@ -50,7 +50,6 @@ export default function Galaxy({ galaxyId }) {
 
   // Uupdate friends whenever galaxy id changes
   useEffect(() => {
-    console.log(galaxyId);
     if (galaxyId != null) {
       updateFriendPlanets();
     }
