@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import Planet from "@/components/Planet";
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
-import { fetchAllPlanets } from "@/database/db";
+import { fetchAllPlanets, fetchUsersGalaxies } from "@/database/db";
 import { fetchFriends } from "@/database/db";
 import { findPlanetById } from "@/database/db";
 import IconButton from "@/components/IconButton";
@@ -54,10 +54,19 @@ export default function Galaxy() {
     // PREVIOUS, RENDER ALL USERS: setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
   };
 
+  // const fetchGalaxies = async () => {
+  //   const galaxies = await fetchUsersGalaxies(userId);
+
+  // };
+
   // Get all planets from the database
   useEffect(() => {
     fetchPlanets();
   }, []);
+
+  // useEffect(() => {
+  //   fetchGalaxies();
+  // }, [otherPlanets]);
 
   if (!mainPlanet || !otherPlanets) {
     return (
@@ -99,6 +108,11 @@ export default function Galaxy() {
             <Planet userId={mainPlanet.user_id} />
           </View>
         )}
+        <View style={styles.nextButtonContainer}>
+          <TouchableOpacity style={styles.nextButton}>
+            <Icon name="arrow-right" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
 
         {/* planets around center */}
         {otherPlanets.map((item, index) => {
@@ -179,5 +193,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     fontFamily: "PPPierSans-Regular",
+  },
+  nextButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+  },
+  nextButton: {
+    backgroundColor: "#9393BA",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
   },
 });
