@@ -43,6 +43,7 @@ export default function UserLayout() {
       name="calendar"
       options={{
         title: "Your Friend's Busy Times", 
+        // headerShown: false // HELP
         headerTitleAlign: "center", 
         headerLeft: () => (
           <TouchableOpacity onPress={() => router.back()}>
