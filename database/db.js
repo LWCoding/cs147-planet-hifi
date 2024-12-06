@@ -58,7 +58,8 @@ export const fetchUserGalaxiesById = async (userId) => {
   const { data: galaxiesData, error: galaxiesError } = await db
     .from("galaxies")
     .select("*")
-    .eq("creator_userid", userId);
+    .eq("creator_userid", userId)
+    .order("created_at", { descending: true });
   if (galaxiesError) {
     console.error("Error fetching galaxies: ", error.message);
   }
