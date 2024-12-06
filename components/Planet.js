@@ -1,6 +1,6 @@
 import { View, Image, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
-import { ActivityIndicator, Text } from "react-native-paper";
+import { ActivityIndicator, Text, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { findPlanetById } from "@/database/db";
 
@@ -86,7 +86,17 @@ export default function Planet({
 			</View>
 		);
 	} else {
-		return <ActivityIndicator size="small" animating={true} />;
+		return (
+			<View style={styles.container}>
+				<Image
+					source={PlanetImages.base}
+					style={[styles.planet, { width, height }]}
+				/>
+				{isNameVisible && (
+					<Text style={styles.relativeOverText}>Loading...</Text>
+				)}
+			</View>
+		);
 	}
 }
 

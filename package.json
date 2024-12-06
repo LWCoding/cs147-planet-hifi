@@ -19,6 +19,7 @@
     "expo-router": "~4.0.5",
     "expo-status-bar": "~2.0.0",
     "expo-updates": "~0.26.9",
+    "expo-updates": "~0.26.9",
     "react": "^18.3.1",
     "react-native": "^0.76.2",
     "react-native-big-calendar": "^4.16.0",
@@ -28,6 +29,7 @@
     "react-native-screens": "~4.0.0",
     "react-native-svg": "^15.10.0",
     "react-native-url-polyfill": "^2.0.0",
+    "react-native-uuid": "^2.0.3",
     "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
