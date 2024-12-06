@@ -5,7 +5,12 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 } from "react-native";
-import { fetchUserGalaxiesById, findGalaxyById } from "@/database/db";
+import db, {
+	fetchFriendsForUserId,
+	fetchUserGalaxiesById,
+	findGalaxyById,
+} from "@/database/db";
+import uuid from "react-native-uuid";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import { UserContext } from "@/contexts/UserContext";
 import { Button, Text, useTheme } from "react-native-paper";
@@ -22,14 +27,35 @@ export default function Galaxy() {
 	const [galaxyId, setGalaxyId] = useState(null);
 	const [galaxyIdx, setGalaxyIdx] = useState(0);
 	const [allUserGalaxyIds, setAllUserGalaxyIds] = useState(null);
+
 	const { userId } = useContext(UserContext);
 
 	const fetchGalaxies = async () => {
-		const galaxies = await fetchUserGalaxiesById(userId);
-		setAllUserGalaxyIds(galaxies);
+		let galaxies = await fetchUserGalaxiesById(userId);
+
+		// If there are no galaxies (first time load), create "All Friends" galaxy
+		if (galaxies.length == 0) {
+			let allFriends = await fetchFriendsForUserId(userId);
+
+			let validFriends = allFriends.filter((friend) => friend != null);
+			let allFriendIds = validFriends.map((friend) => friend.user_id);
+
+			const newUuid = uuid.v4();
+			const galaxyData = {
+				name: "All Friends",
+				creator_userid: userId,
+				planets: allFriendIds,
+				galaxy_id: newUuid,
+			};
+
+			galaxies = [galaxyData];
+
+			await db.from("galaxies").insert(galaxyData); // Add to database
+		}
 
 		const id = galaxies[galaxyIdx].galaxy_id;
 
+		setAllUserGalaxyIds(galaxies);
 		setGalaxyId(id); // Get the `i`th galaxy and set it
 		const galaxyInfo = await findGalaxyById(id);
 
@@ -64,11 +90,20 @@ export default function Galaxy() {
 				style={styles.bgImage}
 			>
 				<View marginTop={30} style={styles.buttonsAndTitle}>
-					<TouchableOpacity onPress={() => addToGalaxyIdx(-1)}>
+					<TouchableOpacity
+						onPress={() => addToGalaxyIdx(-1)}
+						disabled={true}
+					>
 						<MaterialCommunityIcon
 							name="arrow-left"
 							size={36}
 							color={theme.colors.interactable}
+							style={{
+								display:
+									allUserGalaxyIds?.length === 1
+										? "none"
+										: "flex",
+							}}
 						/>
 					</TouchableOpacity>
 					<Text style={styles.galaxyTitle} variant="displaySmall">
@@ -79,6 +114,12 @@ export default function Galaxy() {
 							name="arrow-right"
 							size={36}
 							color={theme.colors.interactable}
+							style={{
+								display:
+									allUserGalaxyIds?.length === 1
+										? "none"
+										: "flex",
+							}}
 						/>
 					</TouchableOpacity>
 				</View>
