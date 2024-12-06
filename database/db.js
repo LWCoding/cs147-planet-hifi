@@ -71,11 +71,26 @@ export const fetchUsersGalaxies = async (userId) => {
     .from("galaxies")
     .select("*")
     .eq("creator_userid", userId)
+    .order("created_at", { ascending: true })
     .single();
   if (galaxiesError) {
-    console.error("Error fetching galaxies: ", error.message);
+    console.error("Error fetching galaxies: ", galaxiesError.message);
   }
   return galaxiesData;
+};
+
+export const fetchFirstGalaxy = async (userId) => {
+  const { data: galaxyData, error: galError } = await db
+    .from("galaxies")
+    .select("*")
+    .eq("creator_userid", userId)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .single();
+  if (galError) {
+    console.error("Error fetching galaxies: ", galError.message);
+  }
+  return galaxyData;
 };
 
 // Fetches all planets from the database as well as their associated emotions

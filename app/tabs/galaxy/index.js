@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import Planet from "@/components/Planet";
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
-import { fetchAllPlanets, fetchUsersGalaxies } from "@/database/db";
+import { fetchAllPlanets, fetchFirstGalaxy } from "@/database/db";
 import { fetchFriends } from "@/database/db";
 import { findPlanetById } from "@/database/db";
 import IconButton from "@/components/IconButton";
@@ -34,6 +34,7 @@ export default function Galaxy() {
   const { userId } = useContext(UserContext);
 
   const theme = useTheme();
+  const router = useRouter();
 
   // Fetch all planets from the database and return them in the form
   // [{username: String, realname: String, emotion: String}]
@@ -51,22 +52,21 @@ export default function Galaxy() {
       friendsPlanets.push(friendPlanet);
     }
     setOtherPlanets(friendsPlanets);
-    // PREVIOUS, RENDER ALL USERS: setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
+    // KRISTINE CHANGE: PREVIOUS, RENDER ALL USERS: setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
   };
-
-  // const fetchGalaxies = async () => {
-  //   const galaxies = await fetchUsersGalaxies(userId);
-
-  // };
+  // NOTE TO LUCAS: ok so the logic was to get the first galaxy only bc we dont need to fetch them all yet
+  // bc of loading ? and so it pushes to the galaxyname screen
+  const navtoNextGalaxy = async () => {
+    const firstGal = await fetchFirstGalaxy(userId);
+    const galaxyName = firstGal.name;
+    console.log(galaxyName);
+    router.push(`/tabs/galaxy/${galaxyName}`);
+  };
 
   // Get all planets from the database
   useEffect(() => {
     fetchPlanets();
   }, []);
-
-  // useEffect(() => {
-  //   fetchGalaxies();
-  // }, [otherPlanets]);
 
   if (!mainPlanet || !otherPlanets) {
     return (
@@ -108,8 +108,10 @@ export default function Galaxy() {
             <Planet userId={mainPlanet.user_id} />
           </View>
         )}
+        {/* NOTE TO LUCAS: lol this is my button to nav btw not pretty but i cant even get it to function - kristine*/}
+
         <View style={styles.nextButtonContainer}>
-          <TouchableOpacity style={styles.nextButton}>
+          <TouchableOpacity style={styles.nextButton} onPress={navtoNextGalaxy}>
             <Icon name="arrow-right" size={24} color="white" />
           </TouchableOpacity>
         </View>

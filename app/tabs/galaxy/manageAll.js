@@ -12,7 +12,7 @@ import RemoveFriendComponent from "@/components/RemoveFriendComponent";
 
 export default function RemoveFriends() {
   const router = useRouter();
-  const { galaxyName } = useLocalSearchParams();
+  const { galaxyName: name } = useLocalSearchParams();
   const { userId } = useContext(UserContext);
   const [friendIds, setFriendIds] = useState([]);
   const [friendPlanets, setFriendPlanets] = useState([]);
