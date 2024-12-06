@@ -3,7 +3,11 @@ import { View, StyleSheet, FlatList, ImageBackground } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
-import { fetchFriends, fetchAllPlanets } from "@/database/db";
+import {
+	fetchAllPlanets,
+	fetchFriendsForUserId,
+	findPlanetById,
+} from "@/database/db";
 
 // Import components
 import FriendComponent from "@/components/FriendComponent";
@@ -14,44 +18,20 @@ import spaceBackgroundImage from "@/assets/space-bg.jpg";
 export default function AddFriends() {
 	const { galaxyName } = useLocalSearchParams();
 	const { userId } = useContext(UserContext);
-	const [friendIds, setFriendIds] = useState([]);
 	const [friendPlanets, setFriendPlanets] = useState([]);
-
-	const fetchFriendIds = async () => {
-		const friendsIds = await fetchFriends(userId);
-		setFriendIds(friendsIds);
-	};
 
 	const fetchPlanets = async () => {
 		try {
-			const allPlanets = await fetchAllPlanets();
-
-			let array = [];
-			for (let i = 0; i < friendIds.length; i++) {
-				const friendId = friendIds[i];
-				const friendPlanet = allPlanets.find(
-					(planet) => planet.user_id === friendId
-				);
-				if (friendPlanet) {
-					array.push(friendPlanet);
-				}
-			}
-
-			setFriendPlanets(array);
+			const friendPlanets = await fetchFriendsForUserId(userId);
+			setFriendPlanets(friendPlanets);
 		} catch (error) {
 			console.error("Error fetching planets:", error);
 		}
 	};
 
 	useEffect(() => {
-		fetchFriendIds();
+		fetchPlanets();
 	}, []);
-
-	useEffect(() => {
-		if (friendIds.length > 0) {
-			fetchPlanets(); // fetch planets when friendIds is updated
-		}
-	}, [friendIds]);
 
 	return (
 		<ImageBackground

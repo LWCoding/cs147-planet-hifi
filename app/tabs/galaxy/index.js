@@ -15,7 +15,11 @@ import { useRouter } from "expo-router";
 import { UserContext } from "@/contexts/UserContext";
 import Planet from "@/components/Planet";
 import spaceBackgroundImage from "@/assets/space-bg.jpg";
-import { fetchAllPlanets, fetchFirstGalaxy } from "@/database/db";
+import {
+  fetchAllPlanets,
+  fetchFriendsForUserId,
+  fetchUsersGalaxies,
+} from "@/database/db";
 import { fetchFriends } from "@/database/db";
 import { findPlanetById } from "@/database/db";
 import IconButton from "@/components/IconButton";
@@ -29,30 +33,21 @@ const radius = 140; // Radius for circular layout
 const itemSize = 150; // Diameter of items
 
 export default function Galaxy() {
-  const [otherPlanets, setOtherPlanets] = useState([]);
+  const [otherPlanets, setOtherPlanets] = useState(null);
   const [mainPlanet, setMainPlanet] = useState(null);
   const { userId } = useContext(UserContext);
 
   const theme = useTheme();
   const router = useRouter();
 
-  // Fetch all planets from the database and return them in the form
-  // [{username: String, realname: String, emotion: String}]
   const fetchPlanets = async () => {
-    const allPlanets = await fetchAllPlanets();
-    const friendIds = await fetchFriends(userId);
+    // Set logged-in user's planet
+    const userPlanet = await findPlanetById(userId);
+    setMainPlanet(userPlanet);
 
-    // Find logged-in user's planet
-    setMainPlanet(allPlanets.find((user) => user.user_id === userId));
-
-    // find friends' planets
-    let friendsPlanets = [];
-    for (let i = 0; i < friendIds.length; i++) {
-      const friendPlanet = await findPlanetById(friendIds[i]);
-      friendsPlanets.push(friendPlanet);
-    }
+    // Set logged-in user's friends' planets
+    const friendsPlanets = await fetchFriendsForUserId(userId);
     setOtherPlanets(friendsPlanets);
-    // KRISTINE CHANGE: PREVIOUS, RENDER ALL USERS: setOtherPlanets(allPlanets.filter((user) => user.user_id !== userId));
   };
   // NOTE TO LUCAS: ok so the logic was to get the first galaxy only bc we dont need to fetch them all yet
   // bc of loading ? and so it pushes to the galaxyname screen
@@ -67,6 +62,10 @@ export default function Galaxy() {
   useEffect(() => {
     fetchPlanets();
   }, []);
+
+  // useEffect(() => {
+  //   fetchGalaxies();
+  // }, [otherPlanets]);
 
   if (!mainPlanet || !otherPlanets) {
     return (
@@ -108,10 +107,8 @@ export default function Galaxy() {
             <Planet userId={mainPlanet.user_id} />
           </View>
         )}
-        {/* NOTE TO LUCAS: lol this is my button to nav btw not pretty but i cant even get it to function - kristine*/}
-
         <View style={styles.nextButtonContainer}>
-          <TouchableOpacity style={styles.nextButton} onPress={navtoNextGalaxy}>
+          <TouchableOpacity style={styles.nextButton}>
             <Icon name="arrow-right" size={24} color="white" />
           </TouchableOpacity>
         </View>

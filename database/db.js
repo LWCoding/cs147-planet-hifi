@@ -53,28 +53,15 @@ export const findPlanetById = async (userId) => {
   return userData;
 };
 
-// given a user id, fetches their friends' ids (array)
-export const fetchFriends = async (userId) => {
-  const { data: friendsData, error: friendsError } = await db
-    .from("friends")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
-  if (friendsError) {
-    console.error("Error fetching user: ", error.message);
-  }
-  return friendsData.friends_ids;
-};
-
-export const fetchUsersGalaxies = async (userId) => {
+// Given a user id, fetches the user's friends' ids (array)
+export const fetchUserGalaxiesById = async (userId) => {
   const { data: galaxiesData, error: galaxiesError } = await db
     .from("galaxies")
     .select("*")
     .eq("creator_userid", userId)
-    .order("created_at", { ascending: true })
     .single();
   if (galaxiesError) {
-    console.error("Error fetching galaxies: ", galaxiesError.message);
+    console.error("Error fetching galaxies: ", error.message);
   }
   return galaxiesData;
 };
@@ -192,4 +179,19 @@ export const getAllGalaxyNamesById = async (userId) => {
   return data;
 };
 
+export const fetchFriendsForUserId = async (userId) => {
+  // Get user
+  const user = await findPlanetById(userId);
+
+  // Get logged in user's friend ids
+  const friendIds = user["friend_ids"];
+
+  // find friends' planets
+  const allPlanets = await fetchAllPlanets();
+  let friendsPlanets = friendIds.map((friendId) =>
+    allPlanets.find((user) => user.user_id === friendId)
+  );
+
+  return friendsPlanets;
+};
 export default db;
