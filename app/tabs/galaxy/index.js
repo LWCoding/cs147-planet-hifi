@@ -78,9 +78,6 @@ export default function Galaxy() {
     setGalaxyId(id); // Get the `i`th galaxy and set it
     const galaxyInfo = allGalaxyObjects[id];
 
-    console.log("Z");
-    console.log(galaxyInfo);
-
     setGalaxyName(galaxyInfo.name);
 
     setIsLoading(false);
