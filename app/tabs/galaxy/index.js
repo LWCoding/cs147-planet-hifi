@@ -112,7 +112,12 @@ export default function Galaxy() {
           table: "galaxies",
         },
         (payload) => {
-          fetchGalaxies();
+          fetchGalaxies().then(() => {
+            if (payload.eventType === "INSERT") {
+              console.log(galaxyCount - 1);
+              setGalaxyIdx(galaxyCount - 1); // Set index to last possible index (newly made galaxy)
+            }
+          });
         }
       )
       .subscribe();
