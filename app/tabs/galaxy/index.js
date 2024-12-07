@@ -114,7 +114,6 @@ export default function Galaxy() {
         (payload) => {
           fetchGalaxies().then(() => {
             if (payload.eventType === "INSERT") {
-              console.log(galaxyCount - 1);
               setGalaxyIdx(galaxyCount - 1); // Set index to last possible index (newly made galaxy)
             }
           });
